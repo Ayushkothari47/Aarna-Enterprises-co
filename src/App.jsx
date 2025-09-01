@@ -26,7 +26,7 @@ function HeroSection() {
     <section className="relative bg-cover bg-center h-[60vh] text-center text-white" style={{ backgroundImage: `url(${images[currentImageIndex]})` }}>
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 pt-32 pb-16">
-        <h1 className="text-4xl font-semibold">Pranav loves Himanshi</h1>
+        <h1 className="text-4xl font-semibold">Explore The World With Us</h1>
         <p className="text-xl mt-4">Find amazing destinations and book your next adventure.</p>
         <a href="#tours" className="mt-8 inline-block bg-orange-500 text-white py-2 px-6 rounded-full text-lg hover:bg-orange-400">
           Start Your Journey
