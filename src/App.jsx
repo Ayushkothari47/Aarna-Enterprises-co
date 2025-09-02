@@ -9,11 +9,12 @@ import rishikeshImage from './assets/rishikesh.png';
 import badrinathImage from './assets/kedarnath.png';
 import musoorieImage from './assets/musoorie.jpg';
 
+
 // Hero Section Component
 function HeroSection() {
   const images = [rishikeshImage, badrinathImage, musoorieImage]; // Array of images
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // State to keep track of the current image
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length); // Loop through images
@@ -26,10 +27,16 @@ function HeroSection() {
     <section className="relative bg-cover bg-center h-[60vh] text-center text-white" style={{ backgroundImage: `url(${images[currentImageIndex]})` }}>
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 pt-32 pb-16">
-        <h1 className="text-4xl font-semibold">Explore The World With Us</h1>
-        <p className="text-xl mt-4">Find amazing destinations and book your next adventure.</p>
-        <a href="#tours" className="mt-8 inline-block bg-orange-500 text-white py-2 px-6 rounded-full text-lg hover:bg-orange-400">
-          Start Your Journey
+        <h1 className="text-3xl font-semibold">
+          Explore <span className="text-5xl">"THE <span className="text-yellow-500">WORLD</span>"</span> Together
+        </h1>
+        {/* <p className="text-xl mt-4">Find amazing destinations and book your next adventure.</p> */}
+        <a
+          href="#tours"
+          className="mt-15 inline-block border-5 border-yellow-500 text-yellow-400 py-4 px-7 text-xl hover:bg-yellow-400 hover:text-black"
+          style={{ fontFamily: "cursive" }}
+        >
+          Make Enquiry
         </a>
       </div>
     </section>
@@ -65,10 +72,14 @@ function App() {
   return (
     <div className={`bg-gray-100 text-gray-900 ${isLoginOpen || isSignupOpen ? "overflow-hidden" : ""}`}>
       {/* Navbar */}
-      <header className="sticky top-0 flex justify-between items-center p-6 bg-black opacity-90 shadow-lg z-50">
+      <header className="top-0 flex justify-between items-center p-6 bg-black opacity-90 shadow-lg z-50">
         {/* Left side: AARNA ENTERPRISES */}
         <div className="text-2xl font-bold text-white">
-          AARNA ENTERPRISES
+          AARNA{" "}
+          <span className="text-yellow-500" style={{ fontFamily: "cursive" }}>
+            ENTERPRISES
+          </span>
+         
         </div>
 
         {/* Right side: Logo Links & Buttons */}
@@ -85,17 +96,13 @@ function App() {
           </a>
 
           {/* Login and Sign Up Buttons */}
-          <button onClick={openLoginModal} className="text-white hover:text-yellow-300">Login</button>
-          <button onClick={openSignupModal} className="bg-white text-black font-bold px-4 py-2 rounded-full hover:bg-yellow-300">Sign Up</button>
+          <button onClick={openLoginModal} className="bg-white text-black px-6 py-2 hover:bg-yellow-300">LOGIN</button>
+          {/* <button onClick={openSignupModal} className="bg-white text-black font-bold px-4 py-2 rounded-full hover:bg-yellow-300">Sign Up</button> */}
         </nav>
       </header>
+      <HeroSection />
 
-      {/* Hero Section */}
-      <HeroSection /> {/* Here is the HeroSection Component */}
-
-      {/* User Home Section */}
-      <section id="tours" className="py-16 px-6 bg-gray-100">
-        <h2 className="text-3xl text-center font-semibold mb-8">Explore Our Tours</h2>
+      <section id="tours" className="bg-black">
         <UserHome />
       </section>
 
@@ -104,31 +111,33 @@ function App() {
         <p>&copy; 2025 TravelX. All Rights Reserved.</p>
       </footer>
 
+
+
       {/* Modal for Login */}
       {isLoginOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          {/* Backdrop with blur */}
-          <div className="absolute inset-0 bg-opacity-60 backdrop-blur-md"></div>
-          <div className="bg-white p-6 rounded-lg w-96 relative">
-            <button onClick={closeLoginModal} className="absolute top-2 right-2 text-black text-xl">X</button>
-            <h2 className="text-3xl text-center text-black font-semibold mb-8">Admin Login</h2>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+          <div className="relative bg-black rounded-xl shadow-2xl w-96 p-6 border-4 border-black flex flex-col items-center animate-fadeIn">
+            <button
+              onClick={closeLoginModal}
+              className="absolute top-3 right-3 text-white text-2xl font-bold hover:text-red-500 transition-colors"
+            >
+              ×
+            </button>
+
+            <h2 className="text-3xl text-white mb-6 drop-shadow-lg">
+            Admin Login
+            </h2>
+
             <Login />
+
+            <div className="mt-4 w-full text-center text-white font-semibold text-sm">
+              Powered by <span className="italic">AARNA ENTERPRISES</span>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Modal for Sign Up */}
-      {isSignupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          {/* Backdrop with blur */}
-          <div className="absolute inset-0 bg-opacity-60 backdrop-blur-md"></div>
-          <div className="bg-white p-6 rounded-lg w-96 relative">
-            <button onClick={closeSignupModal} className="absolute top-2 right-2 text-black text-xl">X</button>
-            <h2 className="text-3xl text-center text-black font-semibold mb-8">Sign Up</h2>
-            <UserLogin />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
