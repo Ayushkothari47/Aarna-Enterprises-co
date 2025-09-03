@@ -3,12 +3,15 @@ import planeIcon from '../assets/plane.png';
 import trainIcon from '../assets/train.png';
 import taxiIcon from '../assets/taxi.png';
 
+import designBg from '../assets/b-shape-1.webp';
+
+
 const NavBar = () => {
   const [activeTab, setActiveTab] = useState('taxi'); // default active tab
 
   return (
     <div>
-      <header className="top-0 flex justify-between items-center p-6 bg-black opacity-90 shadow-lg z-50">
+      <header className="top-0 flex justify-between items-center p-6 bg-gray-800 opacity-90 shadow-lg z-50">
         {/* Brand */}
         <div className="text-2xl font-bold text-white">
           AARNA{' '}
@@ -26,16 +29,15 @@ const NavBar = () => {
               className="flex items-center justify-center transition-all duration-300 transform focus:outline-none"
             >
               <img src={taxiIcon} alt="Cab Book" className="w-6 h-6" />
-            
-            <span
-              className={`ml-2 whitespace-nowrap transition-all duration-300 ${
-                activeTab === 'taxi'
+
+              <span
+                className={`ml-2 whitespace-nowrap transition-all duration-300 ${activeTab === 'taxi'
                   ? 'text-yellow-300 opacity-100 max-w-[100px]'
                   : 'opacity-0 max-w-0 overflow-hidden group-hover:opacity-100 group-hover:max-w-[100px]'
-              }`}
-            >
-              | TAXI
-            </span>
+                  }`}
+              >
+                | TAXI
+              </span>
             </button>
           </span>
 
@@ -46,16 +48,15 @@ const NavBar = () => {
               className="flex items-center justify-center transition-all duration-300 transform focus:outline-none"
             >
               <img src={planeIcon} alt="Airport" className="w-6 h-6" />
-            
-            <span
-              className={`ml-2 whitespace-nowrap transition-all duration-300 ${
-                activeTab === 'airport'
+
+              <span
+                className={`ml-2 whitespace-nowrap transition-all duration-300 ${activeTab === 'airport'
                   ? 'text-yellow-300 opacity-100 max-w-[100px]'
                   : 'opacity-0 max-w-0 overflow-hidden group-hover:opacity-100 group-hover:max-w-[100px]'
-              }`}
-            >
-              | AIRPORT
-            </span>
+                  }`}
+              >
+                | AIRPORT
+              </span>
             </button>
           </span>
 
@@ -66,19 +67,18 @@ const NavBar = () => {
               className="flex items-center justify-center transition-all duration-300 transform focus:outline-none"
             >
               <img src={trainIcon} alt="Station" className="w-6 h-6" />
-            
-            <span
-              className={`ml-2 whitespace-nowrap transition-all duration-300 ${
-                activeTab === 'station'
+
+              <span
+                className={`ml-2 whitespace-nowrap transition-all duration-300 ${activeTab === 'station'
                   ? 'text-yellow-300 opacity-100 max-w-[100px]'
                   : 'opacity-0 max-w-0 overflow-hidden group-hover:opacity-100 group-hover:max-w-[100px]'
-              }`}
-            >
-              | STATION
-            </span>
+                  }`}
+              >
+                | STATION
+              </span>
             </button>
           </span>
-          
+
         </nav>
 
         {/* Right side: Other links */}
@@ -98,8 +98,78 @@ const NavBar = () => {
         {activeTab === 'taxi' && (
           <div className="text-black">
             {/* Replace with your real taxi booking form */}
-            <h2 className="text-lg font-bold mb-2">Taxi Booking Form</h2>
-            <p>Form fields for booking a taxi go here...</p>
+            {activeTab === 'taxi' && (
+              
+              <div className="w-full max-w-4xl mx-auto bg-gray-800 p-8 sm:p-10 lg:p-12 rounded-lg shadow-md text-white">
+              
+              
+                <h2 className="text-2xl text-center font-bold mb-6 text-yellow-300">Taxi Booking</h2>
+
+                <form className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Pickup Location */}
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                      Pickup Location
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter pickup location"
+                      className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    />
+                  </div>
+
+                  {/* Drop Location */}
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                      Drop Location
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter drop location"
+                      className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    />
+                  </div>
+
+                  {/* Pickup Date & Time */}
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                      Pickup Date & Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    />
+                  </div>
+
+                  {/* Car Type */}
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                      Car Type
+                    </label>
+                    <select
+                      className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    >
+                      <option value="">Select a car type</option>
+                      <option value="sedan">Sedan</option>
+                      <option value="suv">SUV</option>
+                      <option value="hatchback">Hatchback</option>
+                    </select>
+                  </div>
+
+                  {/* Full-width submit button — spans both columns */}
+                  <div className="lg:col-span-2">
+                    <button
+                      type="submit"
+                      className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 rounded-md transition duration-300"
+                    >
+                      Book Taxi
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            )}
+
           </div>
         )}
 
