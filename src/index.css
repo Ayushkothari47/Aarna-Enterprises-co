@@ -2,3 +2,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .slide-fade-in {
+    @apply opacity-0 translate-x-[-10px] transition-all duration-500;
+  }
+
+  .group-hover\:slide-fade-in:hover .slide-fade-in {
+    @apply opacity-100 translate-x-0;
+  }
+
+  .slide-fade-out {
+    @apply opacity-0 -translate-x-2 transition-all duration-800;
+  }
+}
