@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"; // Importing useEffect
 import Login from "./components/admin/Login";
 import UserHome from "./components/user/UserHome";
-import UserLogin from "./components/user/UserLogin";
 import homeIcon from './assets/home.png';
 import galleryIcon from './assets/gallery.png';
 import taxiIcon from './assets/taxi.png';
@@ -59,16 +58,7 @@ function App() {
     setIsLoginOpen(false);
   };
 
-  // Function to open SignUp modal
-  const openSignupModal = () => {
-    setIsSignupOpen(true);
-  };
-
-  // Function to close SignUp modal
-  const closeSignupModal = () => {
-    setIsSignupOpen(false);
-  };
-
+ 
   return (
     <div className={`bg-gray-100 text-gray-900 ${isLoginOpen || isSignupOpen ? "overflow-hidden" : ""}`}>
       {/* Navbar */}
@@ -79,7 +69,7 @@ function App() {
           <span className="text-yellow-500" style={{ fontFamily: "cursive" }}>
             ENTERPRISES
           </span>
-         
+          
         </div>
 
         {/* Right side: Logo Links & Buttons */}
@@ -95,9 +85,8 @@ function App() {
             <img src={galleryIcon} alt="Gallery" className="w-6 h-6" />
           </a>
 
-          {/* Login and Sign Up Buttons */}
-          <button onClick={openLoginModal} className="bg-white text-black px-6 py-2 hover:bg-yellow-300">LOGIN</button>
-          {/* <button onClick={openSignupModal} className="bg-white text-black font-bold px-4 py-2 rounded-full hover:bg-yellow-300">Sign Up</button> */}
+          <button onClick={openLoginModal} className="bg-white font-semibold text-black px-6 py-2 hover:bg-yellow-300">LOGIN</button>
+        
         </nav>
       </header>
       <HeroSection />
