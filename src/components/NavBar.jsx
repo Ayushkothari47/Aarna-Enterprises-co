@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import planeIcon from '../assets/plane.png';
 import trainIcon from '../assets/train.png';
 import taxiIcon from '../assets/taxi.png';
-
-import designBg from '../assets/b-shape-1.webp';
-
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const [activeTab, setActiveTab] = useState('taxi'); // default active tab
@@ -87,9 +85,9 @@ const NavBar = () => {
             Gallery
           </span>
           <span className="text-gray-400 select-none">|</span>
-          <span className="py-2 rounded-md hover:text-yellow-300 transition-colors cursor-pointer">
-            About Us
-          </span>
+          <Link to="/about" className="py-2 rounded-md hover:text-yellow-300 transition-colors cursor-pointer">
+          About Us
+        </Link>
         </nav>
       </header>
 
