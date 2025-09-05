@@ -1,5 +1,5 @@
 import React from 'react';
-import '../components/user/UserHome.css';
+import '../components/user/userHome.css';
 import kedarnath from '../assets/kedarnath.png';  // Ensure this path is correct
 
 const TourPackagePLP = () => {
