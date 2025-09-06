@@ -1,4 +1,24 @@
 
+.section-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 20px; /* Add spacing between sections */
+}
+
+.tour-package
+{
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.travel-suggestions 
+{
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgb(11, 32, 63);
+}
+
+
 .tour-package-plp {
   max-width: 1200px;
   margin: 0 auto;
@@ -109,4 +129,31 @@
   font-size: 1rem;
   color: #555;
   text-align: center;
+}
+
+
+.load-more-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.load-more-btn {
+  padding: 12px 25px;
+  background-color: #f59e0b; /* Yellow color */
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.load-more-btn:hover {
+  background-color: #d97706; /* Darker yellow */
+  transform: scale(1.05);
+}
+
+.load-more-btn:focus {
+  outline: none;
 }

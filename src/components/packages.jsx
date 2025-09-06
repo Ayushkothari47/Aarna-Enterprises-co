@@ -1,4 +1,6 @@
+// TourPackagePLP.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../components/user/userHome.css';
 import kedarnath from '../assets/kedarnath.png';  // Ensure this path is correct
 
@@ -7,7 +9,7 @@ const TourPackagePLP = () => {
     {
       id: 1,
       name: 'Char Dham Yatra',
-      image: kedarnath,  // Directly use the imported image
+      image: kedarnath,
       description: 'A spiritual journey through the four sacred shrines in Uttarakhand.',
     },
     {
@@ -47,13 +49,15 @@ const TourPackagePLP = () => {
       <h2 className="plp-title">Popular Tour Packages</h2>
       <div className="tour-package-cards">
         {tourPackages.map((tour) => (
-          <div className="tour-card" key={tour.id}>
-            <img src={tour.image} alt={tour.name} className="tour-card-img" />
-            <div className="tour-card-content">
-              <h3 className="tour-card-title">{tour.name}</h3>
-              <p className="tour-card-description">{tour.description}</p>
+          <Link to={`/tour/${tour.id}`} key={tour.id} className="tour-card-link">
+            <div className="tour-card">
+              <img src={tour.image} alt={tour.name} className="tour-card-img" />
+              <div className="tour-card-content">
+                <h3 className="tour-card-title">{tour.name}</h3>
+                <p className="tour-card-description">{tour.description}</p>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

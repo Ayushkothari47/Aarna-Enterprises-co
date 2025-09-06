@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../components/user/userHome.css';
 import kedarnath from '../assets/kedarnath.png';  // Default image for testing (you can customize per route)
 
 const TravelSuggestions = () => {
+  // The initial set of routes
   const routes = [
     { id: 1, from: 'Delhi', to: 'Rishikesh', image: kedarnath },
     { id: 2, from: 'Rishikesh', to: 'Dehradun', image: kedarnath },
@@ -15,11 +16,19 @@ const TravelSuggestions = () => {
     { id: 9, from: 'Delhi', to: 'Nainital', image: kedarnath },
   ];
 
+  // State to control how many routes are shown
+  const [shownRoutesCount, setShownRoutesCount] = useState(6);
+
+  // Function to handle "LOAD MORE" button click
+  const loadMoreRoutes = () => {
+    setShownRoutesCount(prevCount => prevCount + 6); // Increase by 6 each time
+  };
+
   return (
     <div className="suggestions-container">
       <h2 className="suggestions-title">Travel Suggestions</h2>
       <div className="suggestions-list">
-        {routes.map((route) => (
+        {routes.slice(0, shownRoutesCount).map((route) => (
           <div className="suggestion-card" key={route.id}>
             <img src={route.image} alt={`${route.from} to ${route.to}`} className="suggestion-img" />
             <h3 className="suggestion-title">
@@ -31,6 +40,13 @@ const TravelSuggestions = () => {
           </div>
         ))}
       </div>
+      
+      {/* Conditionally show the LOAD MORE button */}
+      {shownRoutesCount < routes.length && (
+        <div className="load-more-container">
+          <button className="load-more-btn" onClick={loadMoreRoutes}>LOAD MORE</button>
+        </div>
+      )}
     </div>
   );
 };

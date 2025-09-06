@@ -4,8 +4,9 @@ import Login from "./components/admin/Login";
 import UserHome from "./components/user/UserHome";
 import Footer from "./components/Footer";
 import NavBar from "./components/NavBar";
-import About from "./components/About"
-
+import About from "./components/About";
+import PDP from "./components/PDP";
+import UserInfo from "./components/userInfo";
 
 
 // Main App Component with Router
@@ -32,6 +33,10 @@ function App() {
            <Route path="/about" component={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<UserHome />} />
+          <Route path="/UserInfo" element={<UserInfo />} />
+          <Route path="/PDP" element={<PDP />} />
+          
+
        
         </Routes>
 
