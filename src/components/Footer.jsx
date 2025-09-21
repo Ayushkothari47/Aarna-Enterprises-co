@@ -97,7 +97,7 @@ const Footer = () => {
           <h3 className="text-lg font-semibold text-yellow-300 mb-2">Google Rating</h3>
           <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-400 text-xl">
             {renderStars(googleRating)} {/* Render the stars based on the googleRating */}
-            <span className="text-yellow-300">{googleRating}</span> {/* Display the rating value */}
+            <span className="text-white">{googleRating}</span> {/* Display the rating value */}
           </div>
         </div>
 

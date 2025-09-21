@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 
 
-const NavBar = () => {
+const NavBar = ({ dropLocation, setDropLocation, bookingFormRef }) => {
   const [activeTab, setActiveTab] = useState('taxi'); // default active tab
 
   const [passengers, setPassengers] = useState(1);  // Default to 1 passenger
@@ -111,12 +111,14 @@ const NavBar = () => {
 
       {/* Booking Form Section */}
       <section className="p-6 bg-gray-100">
+      
+        
         {activeTab === 'taxi' && (
           <div className="text-black">
             {/* Replace with your real taxi booking form */}
             {activeTab === 'taxi' && (
 
-              <div className="w-full max-w-4xl mx-auto bg-gray-800 p-8 sm:p-10 lg:p-12 rounded-lg shadow-md text-white">
+              <div ref={bookingFormRef} className="w-full max-w-4xl mx-auto bg-gray-800 p-8 sm:p-10 lg:p-12 rounded-lg shadow-md text-white">
 
 
                 <h2 className="text-2xl text-center font-bold mb-6 text-yellow-300">Taxi Booking</h2>
@@ -141,9 +143,12 @@ const NavBar = () => {
                     </label>
                     <input
                       type="text"
+                      value={dropLocation || ""}
+                      onChange={(e) => setDropLocation(e.target.value)}
                       placeholder="Enter drop location"
                       className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
                     />
+
                   </div>
 
                   {/* Pickup Date & Time */}
@@ -153,7 +158,7 @@ const NavBar = () => {
                     </label>
                     <input
                       type="datetime-local"
-                      className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400  "
                     />
                   </div>
 

@@ -1,21 +1,27 @@
-import React from 'react';
-import TourPackagePLP from '.././packages.jsx';  // Import TourPackagePLP component
-import TravelSuggestions from '../suggestions.jsx'
-import PDP from '../PDP.jsx'
+import React, { useState } from 'react';
+import TourPackagePLP from '../packages.jsx';  
+import TravelSuggestions from '../suggestions.jsx';
+import PDP from '../PDP.jsx';
+import NavBar from '../NavBar.jsx';  // make sure path is correct
 
-const UserHome = () => {
+const UserHome = ({ dropLocation, setDropLocation, scrollToBookingForm }) => {
   return (
-    <div class="section-container">
-      <div class="tour-package">
+    <div className="section-container">
+      <div className="tour-package">
         <TourPackagePLP />
       </div>
-      <div class="travel-suggestions">
-        <TravelSuggestions />
+
+      <div className="travel-suggestions">
+        <TravelSuggestions 
+          setDropLocation={setDropLocation} 
+          scrollToBookingForm={scrollToBookingForm} 
+        />
       </div>
+
       <PDP />
     </div>
-
   );
 };
+
 
 export default UserHome;

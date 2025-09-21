@@ -3,44 +3,50 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../components/user/userHome.css';
 import kedarnath from '../assets/kedarnath.png';  // Ensure this path is correct
+import charDham from '../assets/4Dham.png'
+import doDham from '../assets/2Dham.webp'
+import badrinath from '../assets/badrinath.png'
+import musoorie from '../assets/musoorie.jpg'
+import adventure from '../assets/adventure.jpg'
+
 
 const TourPackagePLP = () => {
   const tourPackages = [
     {
       id: 1,
       name: 'Char Dham Yatra',
-      image: kedarnath,
-      description: 'A spiritual journey through the four sacred shrines in Uttarakhand.',
+      image: charDham,
+      description: 'Embark on the sacred journey of Char Dham – where devotion meets divinity',
     },
     {
       id: 2,
-      name: 'Himachal Tour',
-      image: kedarnath,
-      description: 'Explore the scenic beauty of Himachal Pradesh with this amazing tour package.',
+      name: 'Do Dham Yatra',
+      image: doDham,
+      description: 'Two sacred shrines, one divine experience – Do Dham Yatra',
     },
     {
       id: 3,
-      name: 'Goa Beaches',
+      name: 'Kedarnath Dham Yatra',
       image: kedarnath,
-      description: 'Relax and unwind at the beautiful beaches of Goa.',
+      description: 'Seek Lord Shiva’s blessings in the lap of snow-clad peaks',
     },
     {
       id: 4,
-      name: 'Kerala Backwaters',
-      image: kedarnath,
-      description: 'Experience the tranquil beauty of Kerala’s backwaters.',
+      name: 'Badrinath Dham Yatra',
+      image: badrinath,
+      description: 'Experience serenity, spirituality, and the blessings of Lord Badri Vishal',
     },
     {
       id: 5,
-      name: 'Andaman Islands',
-      image: kedarnath,
-      description: 'A tropical paradise with stunning beaches and coral reefs.',
+      name: 'Musoorie Tour',
+      image: musoorie,
+      description: 'Mussoorie – where clouds come down to meet you',
     },
     {
       id: 6,
-      name: 'Rajasthan Heritage Tour',
-      image: kedarnath,
-      description: 'Discover the rich history and culture of Rajasthan’s majestic forts and palaces.',
+      name: 'Adventure Package',
+      image: adventure,
+      description: 'From mountains to rivers, experience the wild side of travel',
     },
   ];
 

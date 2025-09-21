@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/admin/Login";
 import UserHome from "./components/user/UserHome";
@@ -7,40 +7,51 @@ import NavBar from "./components/NavBar";
 import About from "./components/About";
 import PDP from "./components/PDP";
 import UserInfo from "./components/userInfo";
+import React, { useState, useRef } from "react";
 
 
-// Main App Component with Router
 function App() {
+  const [dropLocation, setDropLocation] = useState("");
+  const bookingFormRef = useRef(null);
+
+  // Function to scroll to the form
+  const scrollToBookingForm = () => {
+    if (bookingFormRef.current) {
+      bookingFormRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Router>
       <div className="bg-gray-100 text-gray-900 overflow-hidden">
-        {/* Navbar */}
-        <NavBar />
+        {/* NavBar gets dropLocation */}
+        <NavBar
+          dropLocation={dropLocation}
+          setDropLocation={setDropLocation}
+          bookingFormRef={bookingFormRef}
+        />
 
-        {/* Routes */}
+
         <Routes>
           <Route
             path="/"
             element={
-              <>
-                {/* <HeroSection /> */}
-                <section id="tours" className="bg-black">
-                  <UserHome />
-                </section>
-              </>
+              <section id="tours" className="bg-black">
+                <UserHome
+                  dropLocation={dropLocation}
+                  setDropLocation={setDropLocation}
+                  scrollToBookingForm={scrollToBookingForm} 
+                />
+              </section>
             }
           />
-           <Route path="/about" component={<About />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<UserHome />} />
+          <Route path="/home" element={<UserHome setDropLocation={setDropLocation} scrollToBookingForm={scrollToBookingForm} dropLocation={dropLocation} />} />
           <Route path="/UserInfo" element={<UserInfo />} />
           <Route path="/PDP" element={<PDP />} />
-          
-
-       
         </Routes>
 
-        {/* Footer */}
         <Footer />
       </div>
     </Router>
