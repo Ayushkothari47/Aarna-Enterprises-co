@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import NavBar from "./components/NavBar";
 import About from "./components/About";
 import PDP from "./components/PDP";
+import ImageGallery from "./components/ImageGallery";
 import UserInfo from "./components/userInfo";
 import React, { useState, useRef } from "react";
 
@@ -45,11 +46,13 @@ function App() {
               </section>
             }
           />
+           <Route path="/gallery" element={<ImageGallery />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<UserHome setDropLocation={setDropLocation} scrollToBookingForm={scrollToBookingForm} dropLocation={dropLocation} />} />
           <Route path="/UserInfo" element={<UserInfo />} />
           <Route path="/PDP" element={<PDP />} />
+          
         </Routes>
 
         <Footer />

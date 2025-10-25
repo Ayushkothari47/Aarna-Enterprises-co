@@ -100,7 +100,10 @@ const NavBar = ({ dropLocation, setDropLocation, bookingFormRef }) => {
         {/* Right side: Other links */}
         <nav className="flex items-center space-x-4 text-white text-sm">
           <span className="py-2 rounded-md hover:text-yellow-300 transition-colors cursor-pointer">
+           <Link to="/gallery" className="py-2 rounded-md hover:text-yellow-300 transition-colors cursor-pointer">
             Gallery
+          </Link>
+            
           </span>
           <span className="text-gray-400 select-none">|</span>
           <Link to="/about" className="py-2 rounded-md hover:text-yellow-300 transition-colors cursor-pointer">
