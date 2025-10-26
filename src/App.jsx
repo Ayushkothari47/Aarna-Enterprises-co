@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import HomePage from "./pages/HomePage";
-import Navbar from "./components/NavBar";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 function App() {
