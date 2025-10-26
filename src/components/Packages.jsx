@@ -55,12 +55,12 @@ const Packages = () => {
         {tourData.map((tour, index) => (
           <div
             key={index}
-            className="bg-white text-black rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="bg-gray-800 text-yellow-400 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
             <img src={tour.image} alt={tour.title} className="w-full h-48 object-cover" />
             <div className="p-4">
               <h3 className="text-lg font-semibold mb-2">{tour.title}</h3>
-              <p className="text-gray-700 text-sm">{tour.description}</p>
+              <p className="text-white text-sm">{tour.description}</p>
             </div>
           </div>
         ))}

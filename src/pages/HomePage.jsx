@@ -4,7 +4,7 @@ import Packages from '../components/Packages.jsx'
 function HomePage() {
   return (
     <div>
-        <div>
+        <div className='bg-gray-950'>
         <Packages/>
         </div>
         <div>
