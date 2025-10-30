@@ -1,62 +1,164 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const dummyImages = [
-  "https://imgs.search.brave.com/81ey4HP3yd967S8TO04GwT1iaERXbHD6MK93_hbvyHA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hLnN0/b3J5Ymxvay5jb20v/Zi8yMDQ2MzcvNTY4/eDM2MS9hY2NkN2Vh/NGQ3L3N5ZG5leV9l/ZnN5ZG5leS1yZXNp/emVkLmpwZy9tLzYy/MHgwL2ZpbHRlcnM6/cXVhbGl0eSg3MCkv",
-  "https://imgs.search.brave.com/zBvJcrcnh87c93rgdIBsx6oqoQ45IV50_dCInpNJMxc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNjI0/ODk2MjMyL3Bob3Rv/L3NpbGhvdWV0dGUtYS1tYW4tYXNpYS13/aXRoLWJhY2twYWNr/LXRha2luZy1hLXBo/b3RvLmpwZz9zPTYx/Mng2MTImdz0wJms9/MjAmYz1MSXVuQTNW/SUVFaWwtbU9jbHls/aEx1c2taSXRsb0Nr/V1BfdXlMNzl5ZVRJ/PQ",
-  "https://imgs.search.brave.com/KC0G5phHBSYBpwCHjEHyTzevmpqCYlKUsKPtbWOjyGA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNTAx/ODE5MDQ4L3Bob3Rv/L3lvdW5nLXRvdXJp/c3Qtd2l0aC1jYW1l/cmEuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPXl3ZGhxcklq/cmRvV21rVjJ2UWtk/dG5iSkNZLVY0ajZt/dWZ3YUkzbjd1OXM9",
-  "https://imgs.search.brave.com/KC0G5phHBSYBpwCHjEHyTzevmpqCYlKUsKPtbWOjyGA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvNTAx/ODE5MDQ4L3Bob3Rv/L3lvdW5nLXRvdXJp/c3Qtd2l0aC1jYW1l/cmEuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPXl3ZGhxcklq/cmRvV21rVjJ2UWtk/dG5iSkNZLVY0ajZt/dWZ3YUkzbjd1OXM9"
-];
+const SERVER_URL = "http://localhost:3000";
+const getImgAPI = `${SERVER_URL}/gallery/fetchApprovedImage`;
+const uploadImg = `${SERVER_URL}/gallery/upload-image`;
 
 const ImageGallery = () => {
-  const [images, setImages] = useState(dummyImages);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [author, setAuthor] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleImageUpload = (event) => {
-    const files = event.target.files;
-    const newImages = [];
-    for (let i = 0; i < files.length; i++) {
-      newImages.push(URL.createObjectURL(files[i]));
+  // Fetch approved images
+  const fetchApprovedImages = async () => {
+    try {
+      const res = await axios.get(getImgAPI);
+      setImages(res.data.data || []);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    } finally {
+      setLoading(false);
     }
-    setImages((prev) => [...prev, ...newImages]);
+  };
+
+  useEffect(() => {
+    fetchApprovedImages();
+  }, []);
+
+  // When user selects a file
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setPreviewURL(URL.createObjectURL(file));
+    setShowConfirm(true);
+  };
+
+  // Upload confirmed image
+  const handleConfirmUpload = async () => {
+    if (!author.trim()) {
+      alert("Please enter your name before uploading.");
+      return;
+    }
+
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+    formData.append("author", author.trim());
+
+    try {
+      await axios.post(uploadImg, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("✅ Image uploaded successfully!");
+      setShowConfirm(false);
+      setPreviewURL(null);
+      setSelectedFile(null);
+      fetchApprovedImages();
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("❌ Upload failed. Check console for details.");
+    }
+  };
+
+  // Cancel confirmation
+  const handleCancel = () => {
+    setShowConfirm(false);
+    setPreviewURL(null);
+    setSelectedFile(null);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 p-4 sm:p-6">
-      {/* Header */}
       <h2 className="text-4xl sm:text-5xl font-extrabold text-white text-center mb-6 drop-shadow-lg">
-        Dark Mode Image Gallery
+        Moments Captured !
       </h2>
 
-      {/* Upload Button */}
-      <div className="flex justify-center mb-6">
+      {/* Author Input + Upload */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mb-6">
+        <input
+          type="text"
+          placeholder="Enter your name"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          className="px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+        />
         <label className="cursor-pointer bg-gray-800 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-gray-700 transition">
-          Upload Images
+          Upload Image
           <input
             type="file"
             accept="image/*"
-            multiple
             className="hidden"
-            onChange={handleImageUpload}
+            onChange={handleFileChange}
           />
         </label>
       </div>
 
-      {/* Image Grid */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-          {images.map((src, index) => (
-            <div
-              key={index}
-              className="break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 bg-gray-800"
-            >
+      {/* Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-gray-800 p-6 rounded-xl shadow-xl w-96 text-center">
+            <h3 className="text-xl text-white mb-4">Confirm Upload</h3>
+            {previewURL && (
               <img
-                src={src}
-                alt={`Uploaded ${index}`}
-                className="w-full object-cover rounded-xl"
+                src={previewURL}
+                alt="Preview"
+                className="w-full h-64 object-cover rounded-lg mb-4 border border-gray-700"
               />
+            )}
+            <p className="text-gray-400 mb-4">
+              Are you sure you want to upload this image as{" "}
+              <span className="text-blue-400 font-semibold">{author}</span>?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleConfirmUpload}
+                className="bg-blue-600 px-4 py-2 rounded-lg text-white hover:bg-blue-700"
+              >
+                Yes, Upload
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-gray-600 px-4 py-2 rounded-lg text-white hover:bg-gray-700"
+              >
+                Cancel
+              </button>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Image Grid */}
+      {loading ? (
+        <p className="text-white text-center">Loading images...</p>
+      ) : images.length === 0 ? (
+        <p className="text-gray-400 text-center">No approved images yet.</p>
+      ) : (
+        <div className="flex-1 overflow-y-auto">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+            {images.map((img, index) => (
+              <div
+                key={index}
+                className="break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 bg-gray-800"
+              >
+                <img
+                  src={img.url}
+                  alt={img.author || `Image ${index}`}
+                  className="w-full object-cover rounded-xl"
+                />
+                <p className="text-gray-400 text-sm text-center py-2">
+                  Uploaded by: {img.author || "Unknown"}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
