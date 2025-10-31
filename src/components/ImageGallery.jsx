@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const SERVER_URL = "http://localhost:3000";
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const getImgAPI = `${SERVER_URL}/gallery/fetchApprovedImage`;
 const uploadImg = `${SERVER_URL}/gallery/upload-image`;
+
+
+
 
 const ImageGallery = () => {
   const [images, setImages] = useState([]);
@@ -12,6 +15,8 @@ const ImageGallery = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [fullscreenImg, setFullscreenImg] = useState(null); // 👈 NEW STATE
+  const [uploading, setUploading] = useState(false);
 
   // Fetch approved images
   const fetchApprovedImages = async () => {
@@ -52,10 +57,11 @@ const ImageGallery = () => {
     formData.append("author", author.trim());
 
     try {
+      setUploading(true); // start uploading
       await axios.post(uploadImg, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("✅ Image uploaded successfully!");
+      alert("Image uploaded successfully! Wait for admin Approval");
       setShowConfirm(false);
       setPreviewURL(null);
       setSelectedFile(null);
@@ -63,14 +69,27 @@ const ImageGallery = () => {
     } catch (error) {
       console.error("Upload failed:", error);
       alert("❌ Upload failed. Check console for details.");
+    } finally {
+      setUploading(false); // stop uploading
     }
   };
+
 
   // Cancel confirmation
   const handleCancel = () => {
     setShowConfirm(false);
     setPreviewURL(null);
     setSelectedFile(null);
+  };
+
+  // Open fullscreen view
+  const handleImageClick = (url) => {
+    setFullscreenImg(url);
+  };
+
+  // Close fullscreen
+  const closeFullscreen = () => {
+    setFullscreenImg(null);
   };
 
   return (
@@ -118,17 +137,32 @@ const ImageGallery = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={handleConfirmUpload}
-                className="bg-blue-600 px-4 py-2 rounded-lg text-white hover:bg-blue-700"
-              >
-                Yes, Upload
+                disabled={uploading}
+                className={`px-4 py-2 rounded-lg text-white ${uploading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+              > Confirm
+                {uploading && (
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center rounded-xl">
+                    <div className="loader border-t-4 border-blue-500 rounded-full w-10 h-10 animate-spin mb-3"></div>
+                    <p className="text-white text-sm">Uploading...</p>
+                  </div>
+                )}
+
               </button>
               <button
                 onClick={handleCancel}
-                className="bg-gray-600 px-4 py-2 rounded-lg text-white hover:bg-gray-700"
+                disabled={uploading}
+                className={`px-4 py-2 rounded-lg text-white ${uploading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-gray-600 hover:bg-gray-700"
+                  }`}
               >
                 Cancel
               </button>
             </div>
+
           </div>
         </div>
       )}
@@ -144,12 +178,13 @@ const ImageGallery = () => {
             {images.map((img, index) => (
               <div
                 key={index}
-                className="break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 bg-gray-800"
+                onClick={() => handleImageClick(img.url)} // 👈 open fullscreen
+                className="break-inside-avoid rounded-xl overflow-hidden shadow-lg bg-gray-800 cursor-pointer hover: transition-all duration-300"
               >
                 <img
                   src={img.url}
                   alt={img.author || `Image ${index}`}
-                  className="w-full object-cover rounded-xl"
+                  className="w-full object-cover rounded-xl hover:scale-105 transition-transform duration-300"
                 />
                 <p className="text-gray-400 text-sm text-center py-2">
                   Uploaded by: {img.author || "Unknown"}
@@ -157,6 +192,26 @@ const ImageGallery = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Fullscreen Modal */}
+      {fullscreenImg && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50"
+          onClick={closeFullscreen}
+        >
+          <img
+            src={fullscreenImg}
+            alt="Fullscreen"
+            className="max-w-[90%] max-h-[90%] rounded-xl shadow-2xl transition-transform duration-300 scale-100 hover:scale-105"
+          />
+          <button
+            onClick={closeFullscreen}
+            className="absolute top-5 right-5 text-white text-3xl font-bold hover:text-red-400"
+          >
+            ×
+          </button>
         </div>
       )}
     </div>
