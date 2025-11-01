@@ -1,66 +1,72 @@
-import React from "react";
-import kedarnath from '../assets/kedarnath.png';  // Ensure this path is correct
-import charDham from '../assets/4Dham.png'
-import doDham from '../assets/2Dham.webp'
-import badrinath from '../assets/badrinath.png'
-import musoorie from '../assets/musoorie.jpg'
-import adventure from '../assets/adventure.jpg'
-
-const tourData = [
-  {
-    id: 1,
-    title: "Char Dham Yatra",
-    description: "Embark on the sacred journey of Char Dham – where devotion meets divinity",
-    image: charDham,
-  },
-  {
-    id: 2,
-    title: "Do Dham Yatra",
-    description: "Two sacred shrines, one divine experience – Do Dham Yatra",
-    image: doDham,
-  },
-  {
-    id: 3,
-    title: "Kedarnath Dham Yatra",
-    description: "Seek Lord Shiva's blessings in the lap of snow-clad peaks",
-    image: kedarnath,
-  },
-  {
-    id: 4,
-    title: "Badrinath Dham Yatra",
-    description: "Experience serenity, spirituality, and the blessings of Lord Badri Vishal",
-    image: badrinath,
-  },
-  {
-    id: 5,
-    title: "Mussoorie Tour",
-    description: "Mussoorie – where clouds come down to meet you",
-    image: musoorie,
-  },
-  {
-    id: 6,
-    title: "Adventure Package",
-    description: "From mountains to rivers, experience the wild side of travel",
-    image: adventure,
-  },
-];
+import React, { useEffect, useState } from "react";
 
 const Packages = () => {
+  const [tourData, setTourData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/package/fetchAllPackages");
+        if (!response.ok) {
+          throw new Error("Failed to fetch packages");
+        }
+        const data = await response.json();
+        // Map API response to match your component structure
+        const formattedData = data.data.map((pkg, index) => ({
+          id: index + 1,
+          title: pkg.packageName.replace(/"/g, ""), // Remove quotes from API strings
+          description: pkg.packageDescription.replace(/"/g, ""),
+          price: `₹${pkg.price.toLocaleString()} / person`,
+          image: pkg.thumbnail_url,
+        }));
+        setTourData(formattedData);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchPackages();
+  }, []);
+
+  if (loading) return <p className="text-center text-white py-12">Loading packages...</p>;
+  if (error) return <p className="text-center text-red-500 py-12">{error}</p>;
+
   return (
-    <div className="py-12">
+    <div className="py-12 bg-black">
       <h2 className="text-2xl font-bold text-yellow-400 text-center mb-8">
         Popular Tour Packages
       </h2>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 md:px-12">
-        {tourData.map((tour, index) => (
+        {tourData.map((tour) => (
           <div
-            key={index}
-            className="bg-gray-800 text-yellow-400 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+            key={tour.id}
+            className="bg-gray-800 text-yellow-400 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
           >
-            <img src={tour.image} alt={tour.title} className="w-full h-48 object-cover" />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{tour.title}</h3>
-              <p className="text-white text-sm">{tour.description}</p>
+            <img
+              src={tour.image}
+              alt={tour.title}
+              className="w-full h-48 object-cover"
+            />
+
+            <div className="p-4 flex flex-col justify-between h-48">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">{tour.title}</h3>
+                <p className="text-white text-sm mb-3">{tour.description}</p>
+                <p className="text-yellow-300 font-semibold">{tour.price}</p>
+              </div>
+
+              <button
+                className="mt-4 bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-300 transition duration-200"
+                onClick={() => alert(`Viewing: ${tour.title}`)}
+              >
+                View Package
+              </button>
             </div>
           </div>
         ))}

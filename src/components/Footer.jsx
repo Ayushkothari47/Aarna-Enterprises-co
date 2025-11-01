@@ -45,13 +45,13 @@ const Footer = () => {
             <span className="flex items-center gap-2 justify-center md:justify-start">
               <MdPhone className="text-yellow-400 text-lg" />
               <a href="tel:+919717598168" className="hover:text-yellow-300 transition-colors">
-                +91 9717598168
+                +919717598168
               </a>
             </span>
             <span className="flex items-center gap-2 justify-center md:justify-start">
               <MdPhone className="text-yellow-400 text-lg" />
               <a href="tel:+918851622107" className="hover:text-yellow-300 transition-colors">
-                +91 8851622107
+                +918851622107
               </a>
             </span>
           </p>
@@ -75,6 +75,9 @@ const Footer = () => {
             </li>
             <li>
               <a href="/about" className="hover:text-yellow-400 transition-colors">About Us</a>
+            </li>
+            <li>
+              <a href="/gallery" className="hover:text-yellow-400 transition-colors">Gallery</a>
             </li>
           </ul>
         </div>
