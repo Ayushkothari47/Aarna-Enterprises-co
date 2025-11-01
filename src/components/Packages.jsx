@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const allPackages = `${SERVER_URL}/package/fetchAllPackages`;
+
+
 const Packages = () => {
   const [tourData, setTourData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -8,7 +12,7 @@ const Packages = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await fetch("http://localhost:3000/package/fetchAllPackages");
+        const response = await fetch(allPackages);
         if (!response.ok) {
           throw new Error("Failed to fetch packages, Unable to reach server");
         }
