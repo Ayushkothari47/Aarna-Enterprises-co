@@ -186,7 +186,7 @@ const ImageGallery = () => {
         <p className="text-gray-400 text-center">No approved images yet.</p>
       ) : (
         <div className="flex-1 overflow-y-auto flex justify-center">
-          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 space-y-4 mx-auto max-w-7xl px-2">
+          <div className="columns-2 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 space-y-4 mx-auto max-w-7xl px-2">
             {images.map((img, index) => (
               <div
                 key={index}
