@@ -94,8 +94,8 @@ const ImageGallery = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 p-4 sm:p-6">
-      <h2 className="text-4xl sm:text-5xl font-extrabold text-white text-center mb-6 drop-shadow-lg">
-        Moments Captured !
+      <h2 className="text-4xl sm:text-5xl font-bold text-white text-center mb-6 drop-shadow-lg">
+        Our Gallery
       </h2>
 
       {/* Author Input + Upload */}
