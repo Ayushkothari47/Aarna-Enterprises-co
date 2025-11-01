@@ -10,7 +10,7 @@ const Packages = () => {
       try {
         const response = await fetch("http://localhost:3000/package/fetchAllPackages");
         if (!response.ok) {
-          throw new Error("Failed to fetch packages");
+          throw new Error("Failed to fetch packages, Unable to reach server");
         }
         const data = await response.json();
         // Map API response to match your component structure

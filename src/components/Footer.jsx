@@ -24,12 +24,14 @@ const Footer = () => {
         {/* Brand Info */}
         <div className="flex-1 flex flex-col justify-start text-center md:text-left">
           <h2 className="text-2xl font-bold text-yellow-400 mb-2">
-            <span className="text-white">Aarna</span> Enterprises
+            <span className="text-white">AARNA</span>ENTERPRISES
           </h2>
-          <p className="text-gray-400 mb-3">
+          <a href="https://www.google.com/maps/dir//10,+Bhalla+Farm+Rd,+Shyampur,+Rishikesh,+Uttarakhand+249204/@30.0641564,78.1521692,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0xe2bde1ee02fb6a5:0xa560b6e13bc61b5b!2m2!1d78.2345706!2d30.0641821?hl=en-IN&entry=ttu&g_ep=EgoyMDI1MTAyOS4yIKXMDSoASAFQAw%3D%3D" target="_blank">
+          <p className="text-gray-400 mb-3 hover:text-yellow-400 transition-colors">
             Bhalla Farm no: 10, Shyampur, Rishikesh <br />
             Uttarakhand, 249204, India
           </p>
+          </a>
 
           <p className="flex items-center justify-center md:justify-start text-gray-400 gap-2 mb-1">
             <MdEmail className="text-yellow-400 text-lg" />
@@ -89,7 +91,7 @@ const Footer = () => {
         <div className="flex-1 flex flex-col justify-start text-center md:text-left">
           <h3 className="text-lg font-semibold text-yellow-300 mb-2">Follow Us</h3>
           <div className="flex justify-center md:justify-start space-x-4 text-gray-400 text-xl mb-4 md:mb-0">
-            <a href="#" className="hover:text-yellow-400" aria-label="Facebook"><FaFacebookF /></a>
+            <a href="https://www.facebook.com/profile.php?id=61561679429891&mibextid=ZbWKwL" className="hover:text-yellow-400" aria-label="Facebook" target="_blank"><FaFacebookF /></a>
             <a href="#" className="hover:text-yellow-400" aria-label="Twitter"><FaTwitter /></a>
             <a href="#" className="hover:text-yellow-400" aria-label="Instagram"><FaInstagram /></a>
           </div>
