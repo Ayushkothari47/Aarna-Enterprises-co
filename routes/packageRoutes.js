@@ -12,7 +12,6 @@ router.post(
     { name: 'img1', maxCount: 1 },
     { name: 'img2', maxCount: 1 },
     { name: 'img3', maxCount: 1 },
-    { name: 'img4', maxCount: 1 },
   ]),
   packageController.addPackage
 );

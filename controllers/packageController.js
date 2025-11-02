@@ -41,6 +41,8 @@ exports.addPackage = async (req, res) => {
       }
     }
 
+    uploadedImages.img1 = uploadedImages.thumbnail_url
+
     const newPackage = new Package({
       packageId,
       packageName,
