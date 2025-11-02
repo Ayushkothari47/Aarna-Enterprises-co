@@ -34,7 +34,7 @@ const Navbar = () => {
           <div className="text-2xl font-bold text-white flex items-center space-x-1">
             <Link to="/" className="flex items-center">
               <span>AARNA</span>
-              <span className="text-yellow-500" style={{ fontFamily: "cursive" }}>
+              <span className="text-yellow-500">
                 ENTERPRISES
               </span>
             </Link>
