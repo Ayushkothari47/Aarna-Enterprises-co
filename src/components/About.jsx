@@ -2,7 +2,7 @@ import React from "react";
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import Team from "../Icons/team.jpg";
 import Ayush from "../Icons/ak.jpg";
-import Anup from "../Icons/team.jpg";
+import Anup from "../Icons/Anup.jpeg";
 
 const developers = [
   {
@@ -17,9 +17,9 @@ const developers = [
     name: "Anup Mondal",
     role: "Frontend Developer",
     img: Anup,
-    github: "https://github.com/anup",
-    linkedin: "https://www.linkedin.com/in/anup/",
-    instagram: "https://instagram.com/anup",
+    github: "https://github.com/mondalanup868",
+    linkedin: "https://www.linkedin.com/in/anup-mondal-8762b9236/",
+    instagram: "https://www.instagram.com/mr_pro_ducer?utm_source=qr&igsh=MTE1ejgydWR2bmt3Mg==",
   },
 ];
 
