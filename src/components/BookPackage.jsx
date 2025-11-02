@@ -5,7 +5,6 @@ const BookPackage = () => {
   const location = useLocation();
   const packageData = location.state?.package;
 
-  // ✅ Handle no package case
   if (!packageData) {
     return (
       <p className="text-center text-red-400 py-20">
@@ -14,17 +13,27 @@ const BookPackage = () => {
     );
   }
 
-  // ✅ Hooks should always be outside conditions
+  // ✅ Hooks outside conditions
   const [currentImage, setCurrentImage] = useState(0);
 
+  // ✅ Build images array (skip duplicates)
   const images = [
-    { id: 0, src: packageData.image, alt: packageData.title },
-  ];
+    packageData.thumbnail_url,
+    packageData.img2,
+    packageData.img3,
+  ]
+    .filter((url, index, self) => url && self.indexOf(url) === index)
+    .map((url, idx) => ({
+      id: idx,
+      src: url,
+      alt: `${packageData.packageName || packageData.title} - Image ${idx + 1}`,
+    }));
+
 
   const packageDetails = {
-    title: packageData.title,
+    title: packageData.packageName || packageData.title,
     price: packageData.price,
-    description: packageData.description,
+    description: packageData.packageDescription || packageData.description,
   };
 
   const handleCarouselChange = (index) => {
@@ -34,54 +43,62 @@ const BookPackage = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center py-10 px-4">
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10">
+
         {/* Left Section - Image Carousel */}
         <div className="flex flex-col items-center">
-          {/* Main Image */}
-          <div className="w-full rounded-xl overflow-hidden shadow-lg">
-            <img
-              src={images[currentImage].src}
-              alt={images[currentImage].alt}
-              className="w-full h-96 object-cover transition-all duration-500"
-            />
-          </div>
-
-          {/* Thumbnails */}
-          <div className="flex justify-center gap-4 mt-6">
-            {images.map((image, index) => (
-              <div
-                key={image.id}
-                onClick={() => handleCarouselChange(index)}
-                className={`w-20 h-20 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                  currentImage === index
-                    ? "border-yellow-400 scale-105"
-                    : "border-gray-600 hover:border-yellow-300"
-                }`}
-              >
+          {images.length > 0 ? (
+            <>
+              {/* Main Image */}
+              <div className="w-full rounded-xl overflow-hidden shadow-lg">
                 <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="w-full h-full object-cover"
+                  src={images[currentImage].src}
+                  alt={images[currentImage].alt}
+                  className="w-full h-96 object-cover transition-all duration-500"
                 />
               </div>
-            ))}
-          </div>
+
+              {/* Thumbnails */}
+              <div className="flex justify-center gap-4 mt-6 flex-wrap">
+                {images.map((image, index) => (
+                  <div
+                    key={image.id}
+                    onClick={() => handleCarouselChange(index)}
+                    className={`w-20 h-20 cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${currentImage === index
+                      ? "border-yellow-400 scale-105"
+                      : "border-gray-600 hover:border-yellow-300"
+                      }`}
+                  >
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            // ✅ Fallback if no images are available
+            <div className="text-gray-400 text-center py-20">
+              No images available for this package
+            </div>
+          )}
         </div>
+
 
         {/* Right Section - Details & Form */}
         <div className="flex flex-col justify-center bg-gray-800 rounded-xl p-6 shadow-lg">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-yellow-400 mb-2">
+          <div className="mb-6 text-center md:text-left">
+            <h2 className="text-2xl font-bold text-yellow-400 mb-3">
               {packageDetails.title}
             </h2>
-            <div className="text-yellow-400 font-semibold text-2xl flex items-baseline gap-1">
-              <span>{packageDetails.price}</span>
-              <span className="text-yellow-400 font-semibold text-lg">
-                / person
-              </span>
-            </div>
+            <p className="text-yellow-200 font-semibold text-lg md:text-xl animate-pulse drop-shadow-[0_0_10px_#facc15]">
+              Only @ {packageDetails.price}
+            </p>
           </div>
 
-          <p className="text-gray-300 mb-6">{packageDetails.description}</p>
+
+
 
           <form className="flex flex-col gap-4">
             <div>
@@ -123,6 +140,19 @@ const BookPackage = () => {
           </form>
         </div>
       </div>
+
+      {/* Package Description Section */}
+      <div className="w-full max-w-6xl mt-12">
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 border border-gray-700">
+          <h3 className="text-xl sm:text-1xl font-semibold text-gray-400 mb-4 text-center sm:text-left">
+            Description
+          </h3>
+          <p className="text-gray-300 leading-relaxed text-sm sm:text-base md:text-lg text-center sm:text-left">
+            {packageDetails.description}
+          </p>
+        </div>
+      </div>
+
     </div>
   );
 };
