@@ -7,6 +7,8 @@ import ImageGallery from "./components/ImageGallery";
 import About from "./components/About";
 import BookPackage from "./components/BookPackage";
 import AdminPage from "./pages/AdminPage";
+import BookingManagement from "./pages/BookingManagement";
+import GalleryManagement from "./pages/GalleryManagement";
 
 function App() {
   return (
@@ -15,10 +17,14 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/admin" element={<AdminPage />} />
           <Route path="/gallery" element={<ImageGallery />} />
           <Route path="/about" element={<About />} />
           <Route path="/book-package" element={<BookPackage />} />
+
+          //admin panel routes
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/booking-management" element={<BookingManagement />} />
+          <Route path="/admin/gallery-management" element={<GalleryManagement />} />
         </Routes>
         <Footer />
       </div>

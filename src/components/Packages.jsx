@@ -48,7 +48,7 @@ const Packages = () => {
   if (error) return <p className="text-center text-red-500 py-12">{error}</p>;
 
   return (
-    <div className="py-12 ">
+    <div className="md:py-12 sm:py-8">
       <h2 className="text-2xl font-bold text-yellow-400 text-center mb-8">
         Popular Tour Packages
       </h2>
