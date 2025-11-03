@@ -67,7 +67,7 @@ const Packages = () => {
             <div className="p-4 flex flex-col justify-between h-48">
               <div>
                 <h3 className="text-lg font-semibold mb-2">{tour.title}</h3>
-                <p className="text-white text-sm mb-3">{tour.description}</p>
+                <p className="text-white text-sm mb-3 line-clamp-1">{tour.description}</p>
                 <p className="text-yellow-300 font-semibold">{tour.price}</p>
               </div>
               <Link to="/book-package" state={{ package: tour }}>
