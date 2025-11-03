@@ -8,7 +8,7 @@ const galleryController = require('../controllers/galleryController');
 router.post('/upload-image', upload.single('image'), uploadImage);
 router.get('/fetchApprovedImage', galleryController.fetchAllApproved);
 router.get('/fetchAllImages', galleryController.fetchAll);
-router.get('/updateImage', galleryController.updateImage);
+router.post('/updateImage', galleryController.updateImage);
 router.post('/deleteImage', galleryController.deleteImage);
 
 module.exports = router;
