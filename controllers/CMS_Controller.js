@@ -45,7 +45,7 @@ exports.uploadBanners = async (req, res) => {
 exports.getAllBanners = async (req, res) => {
   try {
     // Fetch all banners from DB
-    const banners = await Banner.find({}, "title banners"); // only select title and banners array
+    const banners = await Banner.find({}, "banners"); // only select title and banners array
 
     if (!banners || banners.length === 0) {
       return res.status(404).json({ message: "No banners found." });
