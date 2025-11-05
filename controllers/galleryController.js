@@ -85,7 +85,7 @@ exports.uploadImage = async (req, res) => {
       imgId,
       author: author || 'Anonymous',
       url: uploadResult.secure_url,
-      public_id: result.public_id,
+      public_id: uploadResult.public_id,
       isApproved: false,
     });
 
