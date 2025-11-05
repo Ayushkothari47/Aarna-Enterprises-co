@@ -4,6 +4,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const packageRoutes = require('./routes/packageRoutes')
 const cmsRoutes = require('./routes/cmsRoutes')
+const bookingRoutes = require('./routes/bookingRoutes')
 
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -20,6 +21,7 @@ app.use('/gallery', galleryRoutes);
 app.use('/package', packageRoutes)
 app.use('/admin', adminRoutes);
 app.use('/CMS', cmsRoutes);
+app.use('/booking', bookingRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
