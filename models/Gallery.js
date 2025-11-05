@@ -4,6 +4,7 @@ const uploadSchema = new mongoose.Schema({
   imgId: String,
   url: String,
   author: { type: String, default: 'Anonymous' },
+  public_id: String,
   isApproved: {
     type: Boolean,
     default: false

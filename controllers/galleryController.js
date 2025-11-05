@@ -85,6 +85,7 @@ exports.uploadImage = async (req, res) => {
       imgId,
       author: author || 'Anonymous',
       url: uploadResult.secure_url,
+      public_id: result.public_id,
       isApproved: false,
     });
 
@@ -115,7 +116,11 @@ exports.deleteImage = async (req, res) => {
     }
 
     // Delete from Cloudinary
-    await cloudinary.uploader.destroy(id);
+    if (image.public_id) {
+      await cloudinary.uploader.destroy(image.public_id);
+    } else {
+      console.warn(`⚠️ No public_id found for image ${imgId}, skipping Cloudinary delete`);
+    }
 
     // Delete from MongoDB
     await Image.findOneAndDelete({ imgId: id });
