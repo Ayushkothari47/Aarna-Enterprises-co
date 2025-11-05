@@ -120,12 +120,13 @@ exports.deleteImage = async (req, res) => {
       await cloudinary.uploader.destroy(image.public_id);
     } else {
       console.warn(`⚠️ No public_id found for image ${imgId}, skipping Cloudinary delete`);
+      res.status(400).json({ message: "unable to delete from cloud" });
     }
 
     // Delete from MongoDB
     await Image.findOneAndDelete({imgId});
 
-    res.json({ message: "✅ Image deleted successfully" });
+    res.status(200).json({ message: "✅ Image deleted successfully" });
   } catch (error) {
     console.error("Error deleting image:", error);
     res.status(500).json({ message: "Failed to delete image", error: error.message });
