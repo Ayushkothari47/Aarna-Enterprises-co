@@ -123,7 +123,7 @@ exports.deleteImage = async (req, res) => {
     }
 
     // Delete from MongoDB
-    await Image.findOneAndDelete({ imgId: id });
+    await Image.findOneAndDelete({ imgId });
 
     res.json({ message: "✅ Image deleted successfully" });
   } catch (error) {
