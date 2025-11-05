@@ -15,6 +15,7 @@ function GalleryManagement() {
         const data = await response.json();
         if (response.ok) {
           setImages(data.data || []);
+
         }
       } catch (err) {
         console.error("Error fetching images:", err);
@@ -28,7 +29,7 @@ function GalleryManagement() {
 
   // Handle toggle approval status
   const handleToggleStatus = async (imgId, currentStatus) => {
-    // Optimistic UI: update immediately
+    // Optimistic UI update
     setImages((prev) =>
       prev.map((img) =>
         img.imgId === imgId ? { ...img, isApproved: !currentStatus } : img
@@ -39,7 +40,7 @@ function GalleryManagement() {
       const response = await fetch(
         "https://aarna-enterprises-co.onrender.com/gallery/updateImage",
         {
-          method: "POST", // backend expects POST
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ imgId, isApproved: !currentStatus }),
         }
@@ -67,6 +68,43 @@ function GalleryManagement() {
     }
   };
 
+  // Handle image delete
+  const handleDelete = async (imgId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this image?");
+    if (!confirmDelete) return;
+
+    // Optimistic UI update
+    const previousImages = [...images];
+    setImages((prev) => prev.filter((img) => img.imgId !== imgId));
+
+    try {
+      const response = await fetch(
+        "https://aarna-enterprises-co.onrender.com/gallery/deleteImage",
+        {
+          method: "POST", // assuming backend expects POST
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imgId }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log(data)
+
+      if (!response.ok) {
+        console.error("Failed to delete image:", data.message || data);
+        // Rollback on failure
+        setImages(previousImages);
+        alert("Failed to delete image. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error deleting image:", err);
+      // Rollback on error
+      setImages(previousImages);
+      alert("Error deleting image. Please try again.");
+    }
+  };
+
   if (loading)
     return (
       <div className="bg-black text-yellow-400 min-h-screen flex justify-center items-center text-xl">
@@ -86,6 +124,7 @@ function GalleryManagement() {
             <tr className="bg-zinc-800 text-yellow-400 text-left">
               <th className="py-3 px-4 border-b border-gray-700">Image</th>
               <th className="py-3 px-4 border-b border-gray-700">Author</th>
+              <th className="py-3 px-4 border-b border-gray-700">Date</th>
               <th className="py-3 px-4 border-b border-gray-700">Status</th>
               <th className="py-3 px-4 border-b border-gray-700">Action</th>
             </tr>
@@ -109,14 +148,22 @@ function GalleryManagement() {
                   </div>
                 </td>
                 <td className="py-3 px-4">{img.author}</td>
+
+                <td className="py-3 px-4">
+                  {new Date(img.createdAt).toLocaleDateString()}
+                </td>
+
+
+
+
                 <td
-                  className={`py-3 px-4 font-semibold ${
-                    img.isApproved ? "text-yellow-400" : "text-gray-400"
-                  }`}
+                  className={`py-3 px-4 font-semibold ${img.isApproved ? "text-yellow-400" : "text-gray-400"
+                    }`}
                 >
                   {img.isApproved ? "Show" : "Hide"}
                 </td>
-                <td className="py-3 px-4">
+                <td className="py-3 px-4 flex items-center gap-3">
+                  {/* Toggle Switch */}
                   <label className="relative inline-block w-12 h-6">
                     <input
                       type="checkbox"
@@ -129,6 +176,14 @@ function GalleryManagement() {
                     <span className="absolute inset-0 bg-gray-600 rounded-full transition peer-checked:bg-yellow-400"></span>
                     <span className="absolute left-1 bottom-1 bg-black w-4 h-4 rounded-full transition-all peer-checked:translate-x-6"></span>
                   </label>
+
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDelete(img.imgId)}
+                    className="bg-red-900 hover:bg-red-700 text-white text-sm font-semibold px-3 py-2 rounded-md transition"
+                  >
+                    DELETE
+                  </button>
                 </td>
               </tr>
             ))}
