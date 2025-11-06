@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 
+
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const fetchAllImages = `${SERVER_URL}/gallery/fetchAllImages`;
+const updateImage = `${SERVER_URL}/gallery/updateImage`;
+const deleteImage = `${SERVER_URL}/gallery/deleteImage`;
+
+
 function GalleryManagement() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,9 +17,7 @@ function GalleryManagement() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch(
-          "https://aarna-enterprises-co.onrender.com/gallery/fetchAllImages"
-        );
+        const response = await fetch(fetchAllImages);
         const data = await response.json();
         if (response.ok) {
           setImages(data.data || []);
@@ -38,7 +44,7 @@ function GalleryManagement() {
 
     try {
       const response = await fetch(
-        "https://aarna-enterprises-co.onrender.com/gallery/updateImage",
+        updateImage,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -79,7 +85,7 @@ function GalleryManagement() {
 
     try {
       const response = await fetch(
-        "https://aarna-enterprises-co.onrender.com/gallery/deleteImage",
+        deleteImage,
         {
           method: "POST", // assuming backend expects POST
           headers: { "Content-Type": "application/json" },
