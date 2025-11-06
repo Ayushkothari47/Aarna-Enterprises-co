@@ -107,7 +107,10 @@ exports.uploadImage = async (req, res) => {
 
 exports.deleteImage = async (req, res) => {
   try {
+
     const { imgId } = req.body;
+
+    console.log("IMG ID IS : ",imgId);
 
     // Find image in DB
     const image = await Image.findOne({ imgId });
