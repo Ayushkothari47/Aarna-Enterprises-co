@@ -123,6 +123,8 @@ exports.deleteImage = async (req, res) => {
       res.status(400).json({ message: "unable to delete from cloud" });
     }
 
+    console.log("DELETED FROM CLOUDINARY....")
+
     // Delete from MongoDB
     await Image.findOneAndDelete({imgId});
 
