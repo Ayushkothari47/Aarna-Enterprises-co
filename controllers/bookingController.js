@@ -60,9 +60,6 @@ exports.makePackageBooking = async (req, res) => {
 };
 
 
-
-
-// Helper function to generate 10-character random alphanumeric uppercase ID
 const generateBookingId = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let id = '';
@@ -71,6 +68,7 @@ const generateBookingId = () => {
   }
   return id;
 };
+
 
 exports.makeRideBooking = async (req, res) => {
   try {
@@ -133,5 +131,49 @@ exports.makeRideBooking = async (req, res) => {
   } catch (error) {
     console.error('Error creating ride booking:', error);
     res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
+
+exports.getAllRides = async (req, res) => {
+  try {
+    
+    const rides = await Booking.find({ bookingId: { $not: /^PKG_/ } }).sort({ createdAt: -1 });
+
+    if (!rides.length) {
+      return res.status(404).json({ message: "No Rides found." });
+    }
+
+    res.status(200).json({
+      message: "✅ Rides fetched successfully",
+      count: rides.length,
+      data: rides,
+    });
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+    res.status(500).json({ message: "Failed to fetch packages", error: error.message });
+  }
+};
+
+
+exports.getAllPackages = async (req, res) => {
+  try {
+    // Fetch only documents where bookingId starts with "PKG_"
+    const packages = await Booking.find({ bookingId: { $regex: /^PKG_/ } }).sort({ createdAt: -1 });
+
+    if (!packages.length) {
+      return res.status(404).json({ message: "No Packages found." });
+    }
+
+    res.status(200).json({
+      message: "✅ Packages fetched successfully",
+      count: packages.length,
+      data: packages,
+    });
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+    res.status(500).json({ message: "Failed to fetch packages", error: error.message });
   }
 };
