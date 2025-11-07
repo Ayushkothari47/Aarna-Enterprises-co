@@ -4,7 +4,7 @@ const Booking = require('../models/Booking');
 exports.makePackageBooking = async (req, res) => {
   try {
     const {
-      bookingId,        // This will also serve as bookingId
+      bookingId,    
       pickup,
       date,
       time,
@@ -19,8 +19,10 @@ exports.makePackageBooking = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
+    let packageId = bookingId;
+
     // Fetch package data
-    const selectedPackage = await Package.findById(bookingId);
+    const selectedPackage = await Package.findById(packageId);
     if (!selectedPackage) {
       return res.status(404).json({ message: 'Package not found' });
     }
