@@ -4,7 +4,7 @@ const Booking = require('../models/Booking');
 exports.makePackageBooking = async (req, res) => {
   try {
     const {
-      bookingId,    
+      bookingId,
       pickup,
       date,
       time,
@@ -19,24 +19,21 @@ exports.makePackageBooking = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    let packageId = bookingId;
-
     // Fetch package data
-    const selectedPackage = await Package.findOne({packageId});
+    const selectedPackage = await Package.findOne({ packageId: bookingId });
     if (!selectedPackage) {
       return res.status(404).json({ message: 'Package not found' });
     }
 
-    // Extract booking name from package
-    const bookingName = selectedPackage.name; // assuming 'name' field exists in Package model
+    // Use the package's name as the booking name
+    const bookingName = selectedPackage.name;
 
     // Create booking record
     const newBooking = new Booking({
-      bookingId: bookingId,         // bookingId same as bookingId
-      bookingType: 'Package',
-      bookingName,
+      bookingId,
+      bookingName,         // 'Package Book' or actual package name
       pickup,
-      destination: 'NA',            // package already defines its destination internally
+      destination: 'NA',   // since package defines its route
       date,
       time,
       totalPassengers,
@@ -57,6 +54,83 @@ exports.makePackageBooking = async (req, res) => {
 
   } catch (error) {
     console.error('Error creating package booking:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
+
+// Helper function to generate 10-character random alphanumeric uppercase ID
+const generateBookingId = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let id = '';
+  for (let i = 0; i < 10; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
+};
+
+exports.makeRideBooking = async (req, res) => {
+  try {
+    const {
+      pickup,
+      destination,
+      date,
+      time,
+      totalPassengers,
+      tripType,
+      carType,
+      userName,
+      userEmail,
+      userContact
+    } = req.body;
+
+    // ✅ Validate required fields
+    if (
+      !pickup ||
+      !destination ||
+      !date ||
+      !time ||
+      !tripType ||
+      !carType ||
+      !userName ||
+      !userEmail ||
+      !userContact
+    ) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // ✅ Generate a unique 10-character booking ID
+    const bookingId = generateBookingId();
+
+    // ✅ Create a new booking document
+    const newBooking = new Booking({
+      bookingId,
+      bookingName: 'Ride Booking',
+      pickup,
+      destination,
+      date,
+      time,
+      totalPassengers,
+      tripType,
+      carType,
+      status: 'Pending',
+      userName,
+      userEmail,
+      userContact
+    });
+
+    await newBooking.save();
+
+    // ✅ Send response
+    res.status(201).json({
+      message: 'Ride booked successfully',
+      booking: newBooking
+    });
+
+  } catch (error) {
+    console.error('Error creating ride booking:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
