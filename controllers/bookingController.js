@@ -136,7 +136,6 @@ exports.makeRideBooking = async (req, res) => {
 
 
 
-
 exports.getAllRides = async (req, res) => {
   try {
     
@@ -175,5 +174,98 @@ exports.getAllPackages = async (req, res) => {
   } catch (error) {
     console.error("Error fetching packages:", error);
     res.status(500).json({ message: "Failed to fetch packages", error: error.message });
+  }
+};
+
+
+// PUT /api/bookings/:bookingId
+exports.updateRideBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params; // from URL params
+    const updateData = req.body; // fields to update
+
+    // Validate if bookingId is provided
+    if (!bookingId) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking ID is required."
+      });
+    }
+
+    // Find and update booking
+    const updatedBooking = await Booking.findOneAndUpdate(
+      { bookingId },              // find booking by bookingId field
+      { $set: updateData },       // apply updates
+      { new: true, runValidators: true } // return updated doc
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found."
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Ride booking updated successfully.",
+      data: updatedBooking
+    });
+  } catch (error) {
+    console.error("Error updating booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating booking.",
+      error: error.message
+    });
+  }
+};
+
+
+
+// PUT /api/package-bookings/:bookingId
+exports.updatePackageBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    let updateData = { ...req.body }; // clone body
+
+    // Validate if bookingId is provided
+    if (!bookingId) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking ID is required."
+      });
+    }
+
+    // Remove fields that cannot be updated
+    delete updateData.bookingId;
+    delete updateData.bookingName;
+
+    // Find and update booking
+    const updatedBooking = await Booking.findOneAndUpdate(
+      { bookingId },
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: "Package booking not found."
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Package booking updated successfully.",
+      data: updatedBooking
+    });
+  } catch (error) {
+    console.error("Error updating package booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating package booking.",
+      error: error.message
+    });
   }
 };
