@@ -9,8 +9,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Utility: Generate random package ID
-const generatePackageId = () => `PKG_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 
 // ✅ Add a new package
 exports.addPackage = async (req, res) => {
