@@ -26,7 +26,8 @@ exports.makePackageBooking = async (req, res) => {
     }
 
     // Use the package's name as the booking name
-    const bookingName = selectedPackage.name;
+    const bookingName = selectedPackage.packageName;
+
 
     // Create booking record
     const newBooking = new Booking({
