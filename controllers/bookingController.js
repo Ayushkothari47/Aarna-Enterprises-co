@@ -22,7 +22,7 @@ exports.makePackageBooking = async (req, res) => {
     let packageId = bookingId;
 
     // Fetch package data
-    const selectedPackage = await Package.findOne(packageId);
+    const selectedPackage = await Package.findOne({packageId});
     if (!selectedPackage) {
       return res.status(404).json({ message: 'Package not found' });
     }
