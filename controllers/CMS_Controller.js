@@ -360,3 +360,57 @@ exports.deletePackage = async (req, res) => {
     });
   }
 };
+
+
+exports.addPackage = async (req, res) => {
+  try {
+    const { packageName, packageDescription, price } = req.body;
+    const files = req.files;
+
+    console.log("📦 Package Data:", req.body);
+    console.log("🖼️ Uploaded Files:", Object.keys(files || {}));
+
+    if (!packageName || !price) {
+      return res.status(400).json({ message: "Package name and price are required." });
+    }
+
+    const packageId = `PKG_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+    const uploadedImages = {};
+
+    // Upload files from disk path
+    const uploadFromDisk = async (filePath) => {
+      return await cloudinary.uploader.upload(filePath, { folder: "travel_packages" });
+    };
+
+    if (files) {
+      for (const key of Object.keys(files)) {
+        const file = files[key][0];
+        const result = await uploadFromDisk(file.path); // use file.path
+        uploadedImages[key] = result.secure_url;
+      }
+    }
+
+    uploadedImages.img1 = uploadedImages.thumbnail_url
+
+    const newPackage = new Package({
+      packageId,
+      packageName,
+      packageDescription,
+      price,
+      ...uploadedImages, // merge uploaded URLs
+    });
+
+    await newPackage.save();
+
+    res.status(201).json({
+      message: "✅ Package added successfully!",
+      data: newPackage,
+    });
+  } catch (error) {
+    console.error("❌ Error adding package:", error);
+    res.status(500).json({
+      message: "Failed to add package",
+      error: error.message,
+    });
+  }
+};
