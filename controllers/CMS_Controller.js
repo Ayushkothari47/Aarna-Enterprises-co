@@ -1,4 +1,5 @@
 const Banner = require("../models/Banner");
+const Package = require("../models/Package");
 const cloudinary = require("cloudinary").v2;
 
 // Configure Cloudinary
@@ -195,5 +196,26 @@ exports.addBanner = async (req, res) => {
       message: "Failed to upload banner",
       error: error.message,
     });
+  }
+};
+
+
+//GET   
+exports.fetchPackages = async (req, res) => {
+  try {
+    const packages = await Package.find().sort({ createdAt: -1 });
+
+    if (!packages.length) {
+      return res.status(404).json({ message: "No packages found." });
+    }
+
+    res.status(200).json({
+      message: "✅ Packages fetched successfully",
+      count: packages.length,
+      data: packages,
+    });
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+    res.status(500).json({ message: "Failed to fetch packages", error: error.message });
   }
 };
