@@ -19,7 +19,7 @@ router.post(
     { name: 'img2', maxCount: 1 },
     { name: 'img3', maxCount: 1 },
   ]),
-  packageController.addPackage
+  CMS_Controller.addPackage
 );
 router.get('/fetchAllPackages', CMS_Controller.fetchAllPackages);
 router.post(
