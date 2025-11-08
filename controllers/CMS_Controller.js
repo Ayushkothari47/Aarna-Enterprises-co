@@ -139,3 +139,33 @@ exports.updateBannerVisibility = async (req, res) => {
   }
 };
 
+
+// POST /CMS/addBanner
+exports.addBanner = async (req, res) => {
+  try {
+    const { bannerUrl } = req.body;
+
+    // Validate input
+    if (!bannerUrl) {
+      return res.status(400).json({ message: "❌ bannerUrl is required." });
+    }
+
+    // Update (append) banner to the array in the existing document
+    const updated = await Banner.findOneAndUpdate(
+      {}, // No filter → updates the first banner document
+      { $push: { banners: bannerUrl } },
+      { new: true, upsert: true } // upsert ensures it creates doc if none exists
+    );
+
+    res.status(200).json({
+      message: "✅ Banner added successfully!",
+      data: updated,
+    });
+  } catch (error) {
+    console.error("❌ Error adding banner:", error);
+    res.status(500).json({
+      message: "Failed to add banner",
+      error: error.message,
+    });
+  }
+};
