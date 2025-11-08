@@ -8,5 +8,6 @@ router.post("/addBanner", upload.single("banner"), CMS_Controller.addBanner);
 router.get('/fetchAllBanner', CMS_Controller.getAllBanners);
 router.delete('/deleteBanner', CMS_Controller.deleteBanner)
 router.put('/updateBannerVisibility', CMS_Controller.updateBannerVisibility)
+router.get('/fetchAllPackages', CMS_Controller.fetchAllPackages);
 
 module.exports = router;
