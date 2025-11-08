@@ -12,7 +12,7 @@ function AdminPage() {
     { img: Gallery, title: "Gallery Management", link: "/admin/gallery-management" },
     { img: Email, title: "Email Management" },
     { img: Account, title: "Account Management" },
-    { img: Content, title: "Content Management" },
+    { img: Content, title: "Content Management", link: "/admin/CMS" },
   ];
 
   return (
