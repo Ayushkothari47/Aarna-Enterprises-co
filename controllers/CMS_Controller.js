@@ -66,3 +66,76 @@ exports.getAllBanners = async (req, res) => {
     });
   }
 };
+
+
+// DELETE /CMS/deleteBanner
+exports.deleteBanner = async (req, res) => {
+  try {
+    const { bannerUrl } = req.body;
+
+    if (!bannerUrl) {
+      return res.status(400).json({ message: "Banner URL is required." });
+    }
+
+    // Find and update document by pulling out banner URL
+    const updated = await Banner.findOneAndUpdate(
+      {},
+      { $pull: { banners: bannerUrl } },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "No banner found to delete." });
+    }
+
+    res.status(200).json({
+      message: "🗑 Banner deleted successfully",
+      data: updated,
+    });
+  } catch (error) {
+    console.error("❌ Error deleting banner:", error);
+    res.status(500).json({
+      message: "Failed to delete banner",
+      error: error.message,
+    });
+  }
+};
+
+
+// PUT /CMS/updateBannerVisibility
+exports.updateBannerVisibility = async (req, res) => {
+  try {
+    const { isVisible } = req.body;
+
+    if (typeof isVisible !== "boolean") {
+      return res.status(400).json({
+        message: "❌ isVisible (boolean) is required in request body.",
+      });
+    }
+
+    // Update the visibility flag in the single Banner document
+    const updated = await Banner.findOneAndUpdate(
+      {}, // No filter → updates the first (or only) banner doc
+      { isVisible },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({
+        message: "⚠️ No banner document found to update.",
+      });
+    }
+
+    res.status(200).json({
+      message: `✅ Banner visibility updated to ${isVisible ? "Visible" : "Hidden"}`,
+      data: updated,
+    });
+  } catch (error) {
+    console.error("❌ Error updating banner visibility:", error);
+    res.status(500).json({
+      message: "Failed to update banner visibility",
+      error: error.message,
+    });
+  }
+};
+
