@@ -316,3 +316,47 @@ exports.updatePackage = async (req, res) => {
     });
   }
 };
+
+
+// Delete Package
+exports.deletePackage = async (req, res) => {
+  try {
+    const { packageId } = req.body;
+
+    if (!packageId) {
+      return res.status(400).json({ message: "❌ packageId is required." });
+    }
+
+    const existingPackage = await Package.findOne({ packageId });
+    if (!existingPackage) {
+      return res.status(404).json({ message: "❌ Package not found." });
+    }
+
+    // Optional: delete images from Cloudinary
+    const imagesToDelete = [
+      existingPackage.thumbnail_url,
+      existingPackage.img1,
+      existingPackage.img2,
+      existingPackage.img3,
+    ].filter(Boolean); // remove null/undefined
+
+    for (const url of imagesToDelete) {
+      // Extract public_id from URL
+      const publicId = url.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(`travel_packages/${publicId}`);
+    }
+
+    await existingPackage.deleteOne();
+
+    res.status(200).json({
+      message: "✅ Package deleted successfully",
+      packageId,
+    });
+  } catch (error) {
+    console.error("❌ Error deleting package:", error);
+    res.status(500).json({
+      message: "Failed to delete package",
+      error: error.message,
+    });
+  }
+};
