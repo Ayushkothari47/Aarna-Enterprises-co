@@ -155,7 +155,7 @@ const ImageGallery = () => {
                 {/* 👇 Spinner overlay when uploading */}
                 {uploading && (
                   <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center z-[100]">
-                    <div className="loader border-t-4 border-blue-500 rounded-full w-16 h-16 animate-spin mb-6"></div>
+                    <div className="loader border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-6"></div>
                     <p className="text-white text-xl font-semibold tracking-wide">
                       Uploading...
                     </p>

@@ -22,38 +22,38 @@ const CMSPage = () => {
 
 
   const handleToggleVisibility = async () => {
-  try {
-    const res = await axios.put(`${SERVER_URL}/CMS/updateBannerVisibility`, {
-      isVisible: !isVisible,
-    });
+    try {
+      const res = await axios.put(`${SERVER_URL}/CMS/updateBannerVisibility`, {
+        isVisible: !isVisible,
+      });
 
-    const updatedVisibility = res.data?.data?.isVisible;
-    setIsVisible(updatedVisibility ?? false); // fallback false
-  } catch (err) {
-    console.error("Error updating banner visibility:", err);
-  }
-};
+      const updatedVisibility = res.data?.data?.isVisible;
+      setIsVisible(updatedVisibility ?? false); // fallback false
+    } catch (err) {
+      console.error("Error updating banner visibility:", err);
+    }
+  };
 
 
 
 
   const fetchBanners = async () => {
-  try {
-    const res = await axios.get(fetchAllImages);
-    const bannerData = res.data?.data?.[0]?.banners || [];
-    setBanners(bannerData);
+    try {
+      const res = await axios.get(fetchAllImages);
+      const bannerData = res.data?.data?.[0]?.banners || [];
+      setBanners(bannerData);
 
-    // fetch visibility from the same response if available
-    const visibility = res.data?.data?.[0]?.isVisible ?? false; // default false
-    if (visibility !== undefined) {
-      setIsVisible(res.data?.data?.[0]?.isVisible ?? false);
+      // fetch visibility from the same response if available
+      const visibility = res.data?.data?.[0]?.isVisible ?? false; // default false
+      if (visibility !== undefined) {
+        setIsVisible(res.data?.data?.[0]?.isVisible ?? false);
+      }
+    } catch (err) {
+      console.error("Error fetching banners:", err);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Error fetching banners:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   // Delete handlers
@@ -98,31 +98,40 @@ const CMSPage = () => {
   return (
     <div className="min-h-screen bg-black text-white p-10 font-poppins">
       <h1 className="text-3xl text-yellow-400 text-center font-bold mb-10">
-         Content Management
+        Content Management
       </h1>
 
       <div className="bg-neutral-900 border border-yellow-400 rounded-lg p-6">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-700 pb-3 mb-4">
-  <h2 className="text-xl font-semibold">Banners Management</h2>
+          <h2 className="text-xl font-semibold">Banners Management</h2>
 
-  {/* Toggle Button */}
-  <div className="flex items-center gap-2">
-    <span className="text-sm text-gray-300">Visible</span>
-    <button
-      onClick={handleToggleVisibility}
-      className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${
-        isVisible ? "bg-yellow-400" : "bg-gray-600"
-      }`}
-    >
-      <div
-        className={`bg-black w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
-          isVisible ? "translate-x-6" : "translate-x-0"
-        }`}
-      ></div>
-    </button>
-  </div>
-</div>
+          {/* Toggle Button */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-300">Visible</span>
+            <button
+              onClick={handleToggleVisibility}
+              className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${isVisible ? "bg-yellow-400" : "bg-gray-600"
+                }`}
+            >
+              <div
+                className={`bg-black w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${isVisible ? "translate-x-6" : "translate-x-0"
+                  }`}
+              ></div>
+            </button>
+          </div>
+        </div>
+
+
+        {/* Uploading overlay */}
+    {uploading && (
+      <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center z-[100]">
+        <div className="border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-6"></div>
+        <p className="text-white text-xl font-semibold tracking-wide">
+          Uploading...
+        </p>
+      </div>
+    )}
 
 
         {/* Preview Section */}
