@@ -241,3 +241,78 @@ exports.fetchAllPackages = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch packages", error: error.message });
   }
 };
+
+
+// ✅ Update an existing package
+exports.updatePackage = async (req, res) => {
+  try {
+    const { packageId, packageName, packageDescription, price } = req.body;
+    const files = req.files;
+
+    console.log("🛠️ Updating Package:", packageId);
+    console.log("📦 Updated Data:", req.body);
+    console.log("🖼️ New Files:", Object.keys(files || {}));
+
+    if (!packageId) {
+      return res.status(400).json({ message: "❌ packageId is required." });
+    }
+
+    // Find the existing package
+    const existingPackage = await Package.findOne({ packageId });
+    if (!existingPackage) {
+      return res.status(404).json({ message: "❌ Package not found." });
+    }
+
+    // Upload helper (same as in addPackage)
+    const uploadFromDisk = async (filePath) => {
+      return await cloudinary.uploader.upload(filePath, { folder: "travel_packages" });
+    };
+
+    const updatedImages = {};
+
+    // Upload any new images
+    if (files) {
+      for (const key of Object.keys(files)) {
+        const file = files[key][0];
+        const result = await uploadFromDisk(file.path);
+        updatedImages[key] = result.secure_url;
+      }
+    }
+
+    // Keep existing images if not replaced
+    const finalImages = {
+      thumbnail_url: updatedImages.thumbnail_url || existingPackage.thumbnail_url,
+      img1: updatedImages.img1 || existingPackage.img1 || existingPackage.thumbnail_url,
+      img2: updatedImages.img2 || existingPackage.img2,
+      img3: updatedImages.img3 || existingPackage.img3,
+    };
+
+    // Ensure thumbnail is always present
+    if (!finalImages.thumbnail_url) {
+      return res.status(400).json({ message: "❌ Thumbnail image is required." });
+    }
+
+    // Update the package document
+    existingPackage.packageName = packageName || existingPackage.packageName;
+    existingPackage.packageDescription = packageDescription || existingPackage.packageDescription;
+    existingPackage.price = price || existingPackage.price;
+    existingPackage.thumbnail_url = finalImages.thumbnail_url;
+    existingPackage.img1 = finalImages.img1;
+    existingPackage.img2 = finalImages.img2;
+    existingPackage.img3 = finalImages.img3;
+
+    await existingPackage.save();
+
+    res.status(200).json({
+      message: "✅ Package updated successfully!",
+      data: existingPackage,
+    });
+
+  } catch (error) {
+    console.error("❌ Error updating package:", error);
+    res.status(500).json({
+      message: "Failed to update package",
+      error: error.message,
+    });
+  }
+};
