@@ -42,7 +42,7 @@ function HeroBanner() {
   }, [banners]);
 
   const Spinner = () => (
-    <div className="loader border-t-4 border-blue-500 rounded-full w-16 h-16 animate-spin mb-4"></div>
+    <div className="loader border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-4"></div>
   );
 
   const bannerHeight = "h-[40vh] sm:h-[45vh] md:h-[55vh] lg:h-[60vh]";
