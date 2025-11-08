@@ -104,7 +104,7 @@ const CMSPage = () => {
       <div className="bg-neutral-900 border border-yellow-400 rounded-lg p-6">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-700 pb-3 mb-4">
-          <h2 className="text-xl font-semibold">Banners Management</h2>
+          <h2 className="text-xl font-semibold">Banners</h2>
 
           {/* Toggle Button */}
           <div className="flex items-center gap-2">
@@ -136,9 +136,9 @@ const CMSPage = () => {
 
         {/* Preview Section */}
         <div>
-          <h3 className="text-lg font-medium mb-3 text-yellow-300">
+          {/* <h3 className="text-lg font-medium mb-3 text-yellow-300">
             Preview: Current Banners
-          </h3>
+          </h3> */}
 
           {loading ? (
             <p className="text-gray-400">Loading banners...</p>
@@ -159,7 +159,7 @@ const CMSPage = () => {
               {banners.map((bannerUrl, idx) => (
                 <div
                   key={idx}
-                  className="relative border-2 border-yellow-400 rounded-md overflow-hidden bg-neutral-800 group"
+                  className="relative border-2 border-none rounded-md overflow-hidden bg-neutral-800 group"
                 >
                   {/* Delete Icon */}
                   <button
