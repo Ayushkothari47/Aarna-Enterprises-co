@@ -143,28 +143,30 @@ exports.updateBannerVisibility = async (req, res) => {
 // POST /CMS/addBanner
 exports.addBanner = async (req, res) => {
   try {
-    const { bannerUrl } = req.body;
+    const file = req.file; // single file (use multer.single("banner"))
 
-    // Validate input
-    if (!bannerUrl) {
-      return res.status(400).json({ message: "❌ bannerUrl is required." });
+    if (!file) {
+      return res.status(400).json({ message: "❌ Banner file is required." });
     }
 
-    // Update (append) banner to the array in the existing document
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(file.path, { folder: "banners" });
+
+    // Append the Cloudinary URL to the existing banner document
     const updated = await Banner.findOneAndUpdate(
-      {}, // No filter → updates the first banner document
-      { $push: { banners: bannerUrl } },
-      { new: true, upsert: true } // upsert ensures it creates doc if none exists
+      {},
+      { $push: { banners: result.secure_url } },
+      { new: true, upsert: true }
     );
 
     res.status(200).json({
-      message: "✅ Banner added successfully!",
+      message: "✅ Banner uploaded and added successfully!",
       data: updated,
     });
   } catch (error) {
-    console.error("❌ Error adding banner:", error);
+    console.error("❌ Error uploading banner:", error);
     res.status(500).json({
-      message: "Failed to add banner",
+      message: "Failed to upload banner",
       error: error.message,
     });
   }
