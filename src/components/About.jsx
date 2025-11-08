@@ -75,11 +75,12 @@ const About = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4 sm:p-6">
       {/* Card */}
-      <div className="bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-2xl text-center max-w-4xl w-full">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-yellow-400">
+      <div className="bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl w-full">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-center text-yellow-400">
           About Us
         </h1>
-        <p className="text-base sm:text-lg mb-8 text-gray-300">
+        <p className="text-base sm:text-lg mb-8 text-gray-300 text-justify">
+
           Welcome to Aarna Tour & Travels, your reliable partner for all-India taxi services. We specialize in providing comfortable, efficient, and safe travel solutions for various needs, from spiritual pilgrimages to city transfers. Our Services All-India Taxi Service: Travel anywhere in India with our extensive network and well-maintained fleet, ensuring a smooth journey from bustling cities to serene landscapes. Uttarakhand Char Dham Yatra: Embark on a spiritual journey to the sacred Char Dhams (Yamunotri, Gangotri, Kedarnath, Badrinath) with our dedicated, comfortable, and safe taxi services. City Transfers: Rishikesh to Delhi cab Dehradun to Delhi, Dehradun to Delhi airport
         </p>
 
