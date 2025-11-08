@@ -11,6 +11,16 @@ router.put('/updateBannerVisibility', CMS_Controller.updateBannerVisibility)
 router.delete('/deleteBanner', CMS_Controller.deleteBanner)
 
 //For Packages
+router.post(
+  '/addPackage',
+  upload.fields([
+    { name: 'thumbnail_url', maxCount: 1 },
+    { name: 'img1', maxCount: 1 },
+    { name: 'img2', maxCount: 1 },
+    { name: 'img3', maxCount: 1 },
+  ]),
+  packageController.addPackage
+);
 router.get('/fetchAllPackages', CMS_Controller.fetchAllPackages);
 router.post(
     '/updatePackage',
