@@ -41,11 +41,11 @@ exports.uploadBanners = async (req, res) => {
 };
 
 
-// GET /api/banners - Fetch all banner URLs
+// GET /api/banners - Fetch all banner URLs     - FOR ADMINS
 exports.getAllBanners = async (req, res) => {
   try {
     // Fetch all banners from DB
-    const banners = await Banner.find({}, "banners"); // only select title and banners array
+    const banners = await Banner.find({});
 
     if (!banners || banners.length === 0) {
       return res.status(404).json({ message: "No banners found." });
@@ -67,6 +67,32 @@ exports.getAllBanners = async (req, res) => {
   }
 };
 
+
+// GET /api/banners - Fetch all visible banner URLs   -  FOR USERS
+exports.getBanners = async (req, res) => {
+  try {
+    // Fetch only banners where isVisible is true
+    const banners = await Banner.find({ isVisible: true });
+
+    if (!banners || banners.length === 0) {
+      return res.status(404).json({ message: "No visible banners found." });
+    }
+
+    // Optionally, flatten into a simple array of URLs if needed
+    // const allBannerUrls = banners.flatMap(b => b.banners);
+
+    res.status(200).json({
+      message: "✅ Visible banners fetched successfully",
+      data: banners,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching banners:", error);
+    res.status(500).json({
+      message: "Failed to fetch banners",
+      error: error.message,
+    });
+  }
+};
 
 // DELETE /CMS/deleteBanner
 exports.deleteBanner = async (req, res) => {
