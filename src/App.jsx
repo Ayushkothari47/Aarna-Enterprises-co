@@ -9,6 +9,7 @@ import BookPackage from "./components/BookPackage";
 import AdminPage from "./pages/AdminPage";
 import BookingManagement from "./pages/BookingManagement";
 import GalleryManagement from "./pages/GalleryManagement";
+import CMS from "./pages/CMS";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/booking-management" element={<BookingManagement />} />
           <Route path="/admin/gallery-management" element={<GalleryManagement />} />
+          <Route path="/admin/CMS" element={<CMS />} />
         </Routes>
         <Footer />
       </div>

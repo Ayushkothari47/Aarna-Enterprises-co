@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from "react";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const getBanners = `${SERVER_URL}/CMS/fetchAllBanner`;
+const getBanners = `${SERVER_URL}/siteContent/fetchAllBanner`;
 
 function HeroBanner() {
   const [banners, setBanners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true); // Loading state
+  const [hideBanner, setHideBanner] = useState(false); // New state to hide banner section
 
-  // Fetch banners from API
   useEffect(() => {
     const fetchBanners = async () => {
       try {
         const response = await fetch(getBanners);
         const result = await response.json();
 
-        if (result.data && result.data.length > 0) {
+        // If API says "No visible banners found", hide the banner section
+        if (result.message === "No visible banners found.") {
+          setHideBanner(true);
+        } else if (result.data && result.data.length > 0) {
           setBanners(result.data[0].banners);
         }
       } catch (error) {
         console.error("Error fetching banners:", error);
       } finally {
-        setLoading(false); // Stop loading after fetch attempt
+        setLoading(false);
       }
     };
 
     fetchBanners();
   }, []);
 
-  // Auto-slide every 4 seconds
   useEffect(() => {
     if (banners.length === 0) return;
 
@@ -39,12 +41,10 @@ function HeroBanner() {
     return () => clearInterval(interval);
   }, [banners]);
 
-  // Spinner component
   const Spinner = () => (
     <div className="loader border-t-4 border-blue-500 rounded-full w-16 h-16 animate-spin mb-4"></div>
   );
 
-  // Banner container height
   const bannerHeight = "h-[40vh] sm:h-[45vh] md:h-[55vh] lg:h-[60vh]";
 
   if (loading) {
@@ -58,12 +58,9 @@ function HeroBanner() {
     );
   }
 
-  if (banners.length === 0) {
-    return (
-      <div className={`w-full ${bannerHeight} flex items-center justify-center text-gray-700`}>
-        No banners available
-      </div>
-    );
+  // Hide banner section completely if API says no banners
+  if (hideBanner || banners.length === 0) {
+    return null;
   }
 
   return (
