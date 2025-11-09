@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 import { MdEmail, MdPhone } from "react-icons/md";
 
 const Footer = () => {
@@ -67,19 +67,19 @@ const Footer = () => {
           <h3 className="text-lg font-semibold text-yellow-300 mb-2">Quick Links</h3>
           <ul className="space-y-1 text-gray-300">
             <li>
-              <a href="/cabBooking" className="hover:text-yellow-400 transition-colors">Book a Cab</a>
+              <a href="/cabBooking" className="text-gray-400 hover:text-yellow-400 transition-colors">Book a Cab</a>
             </li>
             <li>
-              <a href="/airportBooking" className="hover:text-yellow-400 transition-colors">Airport Service</a>
+              <a href="/airportBooking" className="text-gray-400 hover:text-yellow-400 transition-colors">Airport Service</a>
             </li>
             <li>
-              <a href="/stationBooking" className="hover:text-yellow-400 transition-colors">Station Service</a>
+              <a href="/stationBooking" className="text-gray-400 hover:text-yellow-400 transition-colors">Station Service</a>
             </li>
             <li>
-              <a href="/about" className="hover:text-yellow-400 transition-colors">About Us</a>
+              <a href="/about" className="text-gray-400 hover:text-yellow-400 transition-colors">About Us</a>
             </li>
             <li>
-              <a href="/gallery" className="hover:text-yellow-400 transition-colors">Gallery</a>
+              <a href="/gallery" className="text-gray-400 hover:text-yellow-400 transition-colors">Gallery</a>
             </li>
           </ul>
         </div>
@@ -94,6 +94,8 @@ const Footer = () => {
             <a href="https://www.facebook.com/profile.php?id=61561679429891&mibextid=ZbWKwL" className="hover:text-yellow-400" aria-label="Facebook" target="_blank"><FaFacebookF /></a>
             <a href="#" className="hover:text-yellow-400" aria-label="Twitter"><FaTwitter /></a>
             <a href="#" className="hover:text-yellow-400" aria-label="Instagram"><FaInstagram /></a>
+            <a href="#" className="hover:text-yellow-400" aria-label="LinkedIn"><FaLinkedin /></a>
+            <a href="#" className="hover:text-yellow-400" aria-label="Youtube"><FaYoutube /></a>
           </div>
         </div>
 
@@ -103,9 +105,9 @@ const Footer = () => {
         {/* Google Rating */}
         <div className="flex-1 flex flex-col justify-start text-center md:text-left">
           <h3 className="text-lg font-semibold text-yellow-300 mb-2">Google Rating</h3>
-          <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-400 text-xl">
+          <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-400 text-lg">
             {renderStars(googleRating)}
-            <span className="text-white ml-2">{googleRating}.0</span>
+            <span className="text-gray-400 sm">{googleRating}.0</span>
           </div>
         </div>
 
