@@ -4,6 +4,7 @@ const CMS_Controller = require('../controllers/CMS_Controller');
 
 router.get('/fetchAllBanner', CMS_Controller.getBanners);
 router.get('/fetchPackages', CMS_Controller.fetchPackages);
+router.get('/get-all-reviews',CMS_Controller.getAllReviews);
 
 
 module.exports = router;

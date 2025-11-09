@@ -1,5 +1,6 @@
 const Banner = require("../models/Banner");
 const Package = require("../models/Package");
+const Testimonial = require('../models/Testimonial');
 const cloudinary = require("cloudinary").v2;
 
 // Configure Cloudinary
@@ -410,6 +411,162 @@ exports.addPackage = async (req, res) => {
     console.error("❌ Error adding package:", error);
     res.status(500).json({
       message: "Failed to add package",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+// Add testimonial with image upload
+exports.addReview = async (req, res) => {
+  try {
+    const { person_name, rating, review, isVisible } = req.body;
+
+    // Auto-generate testimonial ID
+    const testimonial_Id = () => `post_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+
+    // Validate required fields
+    if (!person_name || !rating || !review) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Check if image exists
+    if (!req.file) {
+      return res.status(400).json({ message: 'No profile picture provided.' });
+    }
+
+    // Upload image to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      public_id: testimonial_Id,
+      folder: 'testimonial_profiles',
+      overwrite: true,
+    });
+
+    // Save testimonial to MongoDB
+    const newTestimonial = new Testimonial({
+      testimonial_Id,
+      profile_pic_url: uploadResult.secure_url,          // <— image URL
+      profile_pic_public_id: uploadResult.public_id,     // <— Cloudinary ID (used for deletion)
+      person_name,
+      rating,
+      review,
+      isVisible: isVisible !== undefined ? isVisible : true,
+    });
+
+    const savedTestimonial = await newTestimonial.save();
+
+    res.status(201).json({
+      message: 'Testimonial added successfully!',
+      data: savedTestimonial,
+    });
+  } catch (error) {
+    console.error('Error adding testimonial:', error);
+    res.status(500).json({
+      message: 'Error adding testimonial',
+      error: error.message,
+    });
+  }
+};
+
+
+
+exports.updateVisibility = async (req, res) => {
+  try {
+    const { testimonial_Id } = req.params; // testimonial ID from route
+    const { isVisible } = req.body;        // new visibility value (true/false)
+
+    // Validate inputs
+    if (typeof isVisible === 'undefined') {
+      return res.status(400).json({ message: 'isVisible value is required' });
+    }
+
+    // Update testimonial visibility
+    const updatedTestimonial = await Testimonial.findOneAndUpdate(
+      { testimonial_Id },
+      { isVisible },
+      { new: true }
+    );
+
+    if (!updatedTestimonial) {
+      return res.status(404).json({ message: 'Testimonial not found' });
+    }
+
+    res.status(200).json({
+      message: 'Visibility updated successfully',
+      data: updatedTestimonial,
+    });
+  } catch (error) {
+    console.error('Error updating visibility:', error);
+    res.status(500).json({
+      message: 'Failed to update visibility',
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+exports.deleteReview = async (req, res) => {
+  try {
+    const { testimonial_Id } = req.params;
+
+    // Find the testimonial first
+    const testimonial = await Testimonial.findOne({ testimonial_Id });
+    if (!testimonial) {
+      return res.status(404).json({ message: 'Testimonial not found' });
+    }
+
+    // Delete image from Cloudinary if it exists
+    if (testimonial.profile_pic_public_id) {
+      try {
+        await cloudinary.uploader.destroy(testimonial.profile_pic_public_id);
+      } catch (cloudErr) {
+        console.error('Cloudinary deletion failed:', cloudErr.message);
+      }
+    }
+
+    // Delete testimonial from MongoDB
+    await Testimonial.deleteOne({ testimonial_Id });
+
+    res.status(200).json({
+      message: 'Testimonial and associated image deleted successfully',
+      testimonial_Id,
+    });
+  } catch (error) {
+    console.error('Error deleting testimonial:', error);
+    res.status(500).json({
+      message: 'Failed to delete testimonial',
+      error: error.message,
+    });
+  }
+};
+
+
+
+exports.getAllReviews = async (req, res) => {
+  try {
+    // Optional query param ?visible=true or ?visible=false
+    const { visible } = req.query;
+    let filter = {};
+
+    if (visible === 'true') filter.isVisible = true;
+    else if (visible === 'false') filter.isVisible = false;
+
+    // Fetch testimonials from MongoDB (sorted by newest first)
+    const testimonials = await Testimonial.find(filter).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: 'Testimonials fetched successfully',
+      count: testimonials.length,
+      data: testimonials,
+    });
+  } catch (error) {
+    console.error('Error fetching testimonials:', error);
+    res.status(500).json({
+      message: 'Failed to fetch testimonials',
       error: error.message,
     });
   }

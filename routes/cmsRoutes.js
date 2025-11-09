@@ -35,6 +35,12 @@ router.post(
 router.delete('/deletePackage', CMS_Controller.deletePackage)
 
 
+//For Testimonial
+router.post('/add-review', upload.single('profile_pic'), CMS_Controller.addReview);
+router.patch('/update-visibility/:testimonial_Id', CMS_Controller.updateVisibility);
+router.delete('/delete-review/:testimonial_Id', CMS_Controller.deleteReview);
+
+
 
 
 module.exports = router;
