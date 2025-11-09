@@ -13,13 +13,13 @@ require('dotenv').config();
 const cors = require('cors');
 const app = express();
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Connect Database
 connectDB();
 
 // Middleware
-app.use(bodyParser.json());
+
 app.use('/gallery', galleryRoutes);
 app.use('/package', packageRoutes)
 app.use('/admin', adminRoutes);
