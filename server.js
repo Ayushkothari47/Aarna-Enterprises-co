@@ -6,6 +6,7 @@ const packageRoutes = require('./routes/packageRoutes');
 const cmsRoutes = require('./routes/cmsRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const publicContentRoutes = require('./routes/publicContentRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -24,6 +25,7 @@ app.use('/admin', adminRoutes);
 app.use('/CMS', cmsRoutes);
 app.use('/booking', bookingRoutes);
 app.use('/siteContent', publicContentRoutes);
+app.use('/email', emailRoutes);
 
 
 const PORT = 3000;
