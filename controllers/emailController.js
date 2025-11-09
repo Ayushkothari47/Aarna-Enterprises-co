@@ -13,6 +13,8 @@ exports.sendEmail = async (req, res) => {
 
   console.log("Body: ",req.body)
 
+  console.log("API KEY: ",process.env.BREVO_API_KEY)
+
   // Check if 'to' is provided
   if (!to) {
     return res.status(400).json({ message: "Recipient email ('to') is required" });
