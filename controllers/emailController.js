@@ -5,7 +5,7 @@ dotenv.config();  // Load environment variables from .env file
 
 // Set up Brevo API client
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY; // Use the API key from your .env
+SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = "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"; // Use the API key from your .env
 
 exports.sendEmail = async (req, res) => {
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
