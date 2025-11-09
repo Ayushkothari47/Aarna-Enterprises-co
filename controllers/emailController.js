@@ -29,7 +29,14 @@ exports.sendEmail = async (req, res) => {
   try {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
     res.status(200).json({ message: 'Email sent successfully!', data });
-  } catch (error) {
-    res.status(500).json({ message: 'Error sending email', error: error.message });
-  }
+  } 
+  
+  catch (error) {
+  console.error("Full error:", error.response ? error.response.body : error);
+  res.status(500).json({
+    message: "Error sending email",
+    error: error.response ? error.response.body : error.message
+  });
+}
+
 };
