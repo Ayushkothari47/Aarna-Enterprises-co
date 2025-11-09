@@ -425,7 +425,8 @@ exports.addReview = async (req, res) => {
     const { person_name, rating, review, isVisible } = req.body;
 
     // Auto-generate testimonial ID
-    const testimonial_Id = () => `post_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+    const testimonial_Id = `post_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+
 
     // Validate required fields
     if (!person_name || !rating || !review) {
