@@ -4,8 +4,8 @@ const dotenv = require('dotenv');
 dotenv.config();  // Load environment variables from .env file
 
 // Set up Brevo API client
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY; 
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 exports.sendEmail = async (req, res) => {
   // Destructure variables from req.body
