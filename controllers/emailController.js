@@ -8,11 +8,21 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY; 
 
 exports.sendEmail = async (req, res) => {
+  // Destructure variables from req.body
+  const { to, subject = 'Test Email from Brevo', htmlContent = '<html><body><h1>This is a test email</h1></body></html>' } = req.body;
+
+  console.log("Body: ",req.body)
+
+  // Check if 'to' is provided
+  if (!to) {
+    return res.status(400).json({ message: "Recipient email ('to') is required" });
+  }
+
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-  sendSmtpEmail.sender = { email: 'ayushkothari610@gmail.com' }; // Your sender email
-  sendSmtpEmail.to = [{ email: req.body.to }]; // Recipient email from request
-  sendSmtpEmail.subject = req.body.subject || 'Test Email from Brevo';
-  sendSmtpEmail.htmlContent = req.body.htmlContent || '<html><body><h1>This is a test email</h1></body></html>';
+  sendSmtpEmail.sender = { email: 'ayushkothari610@gmail.com' }; // Sender email
+  sendSmtpEmail.to = [{ email: to }]; // Recipient email
+  sendSmtpEmail.subject = subject;     // Subject
+  sendSmtpEmail.htmlContent = htmlContent; // HTML content
 
   try {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
