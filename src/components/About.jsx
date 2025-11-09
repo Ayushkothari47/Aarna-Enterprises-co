@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import Team from "../Icons/team.jpg";
 import Ayush from "../Icons/ak.jpg";
@@ -10,6 +10,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const testimonials_api = `${SERVER_URL}/siteContent/get-all-reviews?visible=true`;
 
 
 const developers = [
@@ -27,51 +29,46 @@ const developers = [
     img: Anup,
     github: "https://github.com/mondalanup868",
     linkedin: "https://www.linkedin.com/in/anup-mondal-8762b9236/",
-    instagram: "https://www.instagram.com/mr_pro_ducer?utm_source=qr&igsh=MTE1ejgydWR2bmt3Mg==",
-  },
-];
-
-
-// Dummy data for testimonials
-const testimonials = [
-  {
-    name: "Sachin Prajapati",
-    role: "Business Owner",
-    profilePic: "https://lh3.googleusercontent.com/a-/ALV-UjXqy3ziyjBFPJd6CeYvsdZ6pPXbD-PoZoBIb34tBQmiqz_maXmXhg=w108-h108-p-rp-mo-br100",
-    rating: 5,
-    review: "I booked a taxi for my wife and kids from Rishikesh to Kotdwar. It was a safe and comfortable travel experience. Prices are also very genuine.",
-  },
-  {
-    name: "Arjun Singh",
-    role: "Freelancer",
-    profilePic: "https://lh3.googleusercontent.com/a-/ALV-UjVuifgy8yQIrItX71T-B9amkPQo3wedt73FuPUX-DIBKZ6eubew=w108-h108-p-rp-mo-br100",
-    rating: 4,
-    review: "They provide very good taxi service with their best drivers. Overall it was a good experience with their travel company , I will highly recommend !!!!",
-  },
-  {
-    name: "Manish Bisht",
-    role: "Engineer",
-    profilePic: "https://lh3.googleusercontent.com/a-/ALV-UjUABvrQPOlz1tv38jy4WWTCgevKsAllDz9ql2HoHiwYZbYTgw3Y=w108-h108-p-rp-mo-br100",
-    rating: 5,
-    review: "I love it , super service in uttrakhand,driver are ossam , all are new cars .thanks Ashish ji for giving us a great service. Har har mahadev",
-  },
-  {
-    name: "MRITYUNJAY KUMAR",
-    role: "Teacher",
-    profilePic: "https://lh3.googleusercontent.com/a-/ALV-UjWOZMFxI3og0PPPVWtCVrYgnHFBrTRzEwUEUayX2cF21qe0TioO=w108-h108-p-rp-mo-br100",
-    rating: 3,
-    review: "Amazing service! Both driver and cab quality are awesome. They have conducted many tours for our company.",
-  },
-  {
-    name: "David Clark",
-    role: "Photographer",
-    profilePic: "https://randomuser.me/api/portraits/men/3.jpg",
-    rating: 5,
-    review: "Absolutely fantastic! Great service, clean vehicles, and extremely courteous drivers. Would recommend it to anyone traveling in India.",
+    instagram:
+      "https://www.instagram.com/mr_pro_ducer?utm_source=qr&igsh=MTE1ejgydWR2bmt3Mg==",
   },
 ];
 
 const About = () => {
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+
+  // Fetch testimonials from backend
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch(testimonials_api);
+        const data = await res.json();
+
+        if (res.ok) {
+          setTestimonials(data.data); // adjust based on backend response
+        } else {
+          console.error("Error fetching testimonials:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  const handleTestimonialClick = (testimonial) => {
+    setSelectedTestimonial(testimonial);
+  };
+
+  const handleCloseDetailView = () => {
+    setSelectedTestimonial(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4 sm:p-6">
       {/* Card */}
@@ -80,8 +77,17 @@ const About = () => {
           About Us
         </h1>
         <p className="text-base sm:text-lg mb-8 text-gray-300 text-justify">
-
-          Welcome to Aarna Tour & Travels, your reliable partner for all-India taxi services. We specialize in providing comfortable, efficient, and safe travel solutions for various needs, from spiritual pilgrimages to city transfers. Our Services All-India Taxi Service: Travel anywhere in India with our extensive network and well-maintained fleet, ensuring a smooth journey from bustling cities to serene landscapes. Uttarakhand Char Dham Yatra: Embark on a spiritual journey to the sacred Char Dhams (Yamunotri, Gangotri, Kedarnath, Badrinath) with our dedicated, comfortable, and safe taxi services. City Transfers: Rishikesh to Delhi cab Dehradun to Delhi, Dehradun to Delhi airport
+          Welcome to Aarna Tour & Travels, your reliable partner for all-India
+          taxi services. We specialize in providing comfortable, efficient, and
+          safe travel solutions for various needs, from spiritual pilgrimages
+          to city transfers. Our Services All-India Taxi Service: Travel
+          anywhere in India with our extensive network and well-maintained
+          fleet, ensuring a smooth journey from bustling cities to serene
+          landscapes. Uttarakhand Char Dham Yatra: Embark on a spiritual
+          journey to the sacred Char Dhams (Yamunotri, Gangotri, Kedarnath,
+          Badrinath) with our dedicated, comfortable, and safe taxi services.
+          City Transfers: Rishikesh to Delhi cab Dehradun to Delhi, Dehradun to
+          Delhi airport
         </p>
 
         {/* Owner Section */}
@@ -98,97 +104,87 @@ const About = () => {
 
         {/* Custom Swiper Styles */}
         <style>{`
-  /* Pagination (dots) */
-  .swiper-pagination-bullet {
-    background: #9ca3af !important; /* gray default */
-    opacity: 0.6;
-    
-  }
+          .swiper-pagination-bullet {
+            background: #9ca3af !important;
+            opacity: 0.6;
+          }
+          .swiper-pagination-bullet-active {
+            background: #facc15 !important;
+            opacity: 1;
+          }
+          .swiper-button-next,
+          .swiper-button-prev {
+            color: #facc15 !important;
+            transition: color 0.3s ease;
+          }
+          .swiper-button-next:hover,
+          .swiper-button-prev:hover {
+            color: #fde68a !important;
+          }
+          .swiper-pagination {
+            margin-top: 16px !important;
+            position: relative;
+          }
+        `}</style>
 
-  .swiper-pagination-bullet-active {
-    background: #facc15 !important; /* yellow-400 */
-    opacity: 1;
-  }
-
-  /* Navigation arrows */
-  .swiper-button-next,
-  .swiper-button-prev {
-    color: #facc15 !important; /* yellow-400 */
-    transition: color 0.3s ease;
-  }
-
-  .swiper-button-next:hover,
-  .swiper-button-prev:hover {
-    color: #fde68a !important; /* lighter yellow on hover */
-  }
-
-    /* Add top margin to the whole pagination area */
-  .swiper-pagination {
-    margin-top: 16px !important; /* 👈 Adjust this value as needed */
-    position: relative;
-  }
-
-  
-`}</style>
-
-
-        {/* 🌟 Testimonial Section */}
+        {/* Testimonials */}
         <div className="bg-gray-700 p-6 rounded-xl shadow-lg mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 text-center">
             What Our Clients Say
           </h2>
 
-          {/* Swiper Carousel */}
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            spaceBetween={30}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            breakpoints={{
-              640: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            }}
-            className="pb-10"
-          >
-            {testimonials.map((t, index) => (
-              <SwiperSlide key={index}>
-                <div className="bg-gray-800 p-5 rounded-xl flex flex-col items-center shadow-md hover:shadow-yellow-400/30 transition-shadow duration-300 h-full">
-                  <img
-                    src={t.profilePic}
-                    alt={t.name}
-                    className="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover mb-4"
-                  />
-                  <h3 className="text-lg font-semibold text-yellow-300 mb-1">
-                    {t.name}
-                  </h3>
-                  <p className="text-sm text-gray-400 mb-3">{t.role}</p>
-
-                  {/* Star Rating */}
-                  <div className="flex justify-center mb-3">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <span
-                        key={i}
-                        className={`text-xl ${i < t.rating ? "text-yellow-400" : "text-gray-600"
-                          }`}
-                      >
-                        ★
-                      </span>
-                    ))}
+          {loading ? (
+            <p className="text-center text-gray-400">Loading testimonials...</p>
+          ) : testimonials.length === 0 ? (
+            <p className="text-center text-gray-400">No testimonials available.</p>
+          ) : (
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay]}
+              spaceBetween={30}
+              slidesPerView={1}
+              navigation
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              className="pb-10"
+            >
+              {testimonials.map((t, index) => (
+                
+                <SwiperSlide key={index}>
+                  <div className="bg-gray-800 p-5 rounded-xl flex flex-col items-center shadow-md hover:shadow-yellow-400/30 transition-shadow duration-300 h-full" onClick={() => handleTestimonialClick(t)}>
+                    <img
+                      src={t.profile_pic_url}
+                      alt={t.person_name}
+                      className="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover mb-4"
+                    />
+                    <h3 className="text-lg font-semibold text-yellow-300 mb-1">
+                      {t.person_name}
+                    </h3>
+                    <div className="flex justify-center mb-3">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <span
+                          key={i}
+                          className={`text-xl ${i < t.rating ? "text-yellow-400" : "text-gray-600"
+                            }`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-gray-300 text-sm text-center italic truncate w-full max-w-xs">
+                      “{t.review}”
+                    </p>
                   </div>
+                </SwiperSlide>
 
-                  {/* Review */}
-                  <p className="text-gray-300 text-sm text-center italic">
-                    “{t.review}”
-                  </p>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+              ))}
+            </Swiper>
+          )}
         </div>
-
 
         {/* Developers Section */}
         <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6">
@@ -240,9 +236,47 @@ const About = () => {
         </div>
       </div>
 
+
+       {/* Testimonial Detail View */}
+      {selectedTestimonial && (
+  <div className="fixed inset-0 bg-transparent bg-opacity-75 flex items-center justify-center z-50 backdrop-blur-md">
+    <div className="bg-gray-900 p-8 rounded-xl max-w-lg w-full relative">
+      <button
+        onClick={handleCloseDetailView}
+        className="text-yellow-400 text-2xl absolute top-4 right-4"
+      >
+        &times;
+      </button>
+      <img
+        src={selectedTestimonial.profile_pic_url}
+        alt={selectedTestimonial.person_name}
+        className="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover mb-4 mx-auto"
+      />
+      <h3 className="text-xl font-semibold text-yellow-300 text-center mb-4">
+        {selectedTestimonial.person_name}
+      </h3>
+      <div className="flex justify-center mb-3">
+        {Array.from({ length: 5 }, (_, i) => (
+          <span
+            key={i}
+            className={`text-xl ${i < selectedTestimonial.rating ? "text-yellow-400" : "text-gray-600"
+              }`}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+      <p className="text-gray-300 text-sm italic text-center">
+        “{selectedTestimonial.review}”
+      </p>
+    </div>
+  </div>
+)}
+
+
       {/* Footer */}
       <footer className="mt-12 text-sm sm:text-base text-gray-400 text-center">
-        <p>Made By Ayush & Anup</p>
+        {/* <p>Made By Ayush & Anup</p> */}
       </footer>
     </div>
   );

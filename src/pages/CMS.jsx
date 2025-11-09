@@ -4,6 +4,7 @@ import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 import BannerSection from "./CMS/BannersSection";
 import PackagesSection from "./CMS/PackagesSection";
+import TestimonialSection from "./CMS/TestimonialSection";
 
 
 const CMSPage = () => {
@@ -18,6 +19,9 @@ const CMSPage = () => {
 
       {/* Package Section */}
       <PackagesSection />
+
+      {/* Testimonial Section */}
+      <TestimonialSection />
     </div>
   );
 };

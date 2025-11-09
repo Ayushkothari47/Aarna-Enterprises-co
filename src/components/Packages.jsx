@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import BookPackage from "./BookPackage";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const allPackages = `${SERVER_URL}/package/fetchAllPackages`;
+const allPackages = `${SERVER_URL}/siteContent/fetchPackages`;
 
 const Packages = () => {
   const [tourData, setTourData] = useState([]);
