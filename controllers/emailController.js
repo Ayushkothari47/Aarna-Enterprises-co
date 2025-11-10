@@ -191,3 +191,92 @@ exports.addEmailTemplate = async (req, res) => {
     });
   }
 };
+
+
+
+exports.fetchEmailTemplate = async (req, res) => {
+    try {
+        // Fetch the latest email template
+        const template = await Email.findOne().sort({ createdAt: -1 }).lean();
+
+        if (!template) {
+            return res.status(404).json({ message: 'No email template found' });
+        }
+
+        // Send all fields as JSON
+        return res.status(200).json({
+            _id: template._id,
+            bulk_email_subject: template.bulk_email_subject,
+            bulk_email_description: template.bulk_email_description,
+            enq_success_subject: template.enq_success_subject,
+            enq_fail_subject: template.enq_fail_subject,
+            enq_success_desc: template.enq_success_desc,
+            enq_fail_desc: template.enq_fail_desc,
+            enq_auto_status: template.enq_auto_status,
+            enq_submit_subject: template.enq_submit_subject,
+            enq_submit_desc: template.enq_submit_desc,
+            enq_submit_auto_status: template.enq_submit_auto_status,
+            createdAt: template.createdAt,
+            updatedAt: template.updatedAt,
+            __v: template.__v
+        });
+    } catch (error) {
+        console.error('Error fetching email template:', error);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+};
+
+
+
+exports.updateEmailTemplate = async (req, res) => {
+    try {
+        const { id } = req.params; // Template _id from URL
+        const updateData = req.body; // Fields to update
+
+        // Find template by ID and update it
+        const updatedTemplate = await Email.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).lean();
+
+        if (!updatedTemplate) {
+            return res.status(404).json({ message: 'Email template not found' });
+        }
+
+        return res.status(200).json({
+            message: 'Email template updated successfully',
+            template: updatedTemplate
+        });
+    } catch (error) {
+        console.error('Error updating email template:', error);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+};
+
+
+
+exports.updateEmailTemplate = async (req, res) => {
+    try {
+        const updateData = req.body; // Fields to update
+
+        // Find the latest template and update it
+        const updatedTemplate = await Email.findOneAndUpdate(
+            {},                  // empty filter: matches first document
+            { $set: updateData }, 
+            { new: true, runValidators: true } // return updated doc and validate
+        ).lean();
+
+        if (!updatedTemplate) {
+            return res.status(404).json({ message: 'No email template found to update' });
+        }
+
+        return res.status(200).json({
+            message: 'Email template updated successfully',
+            template: updatedTemplate
+        });
+    } catch (error) {
+        console.error('Error updating email template:', error);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+};

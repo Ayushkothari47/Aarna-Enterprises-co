@@ -8,5 +8,8 @@ router.post('/send-email', emailController.sendEmail);
 router.get('/fetch-emails', emailController.fetchEmails);
 router.post('/send-bulk', emailController.sendBulkEmail);
 router.post('/add-email-template', emailController.addEmailTemplate);
+router.get('/get-email-template', emailController.fetchEmailTemplate);
+router.put('/update-email-template', emailController.updateEmailTemplate);
+
 
 module.exports = router; 
