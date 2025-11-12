@@ -21,6 +21,15 @@ const EmailManagement = () => {
         fetchEmailTemplate();
     }, []);
 
+    useEffect(() => {
+    if (emailTemplate) {
+        setBulkSubject(emailTemplate.bulk_email_subject || "");
+        setBulkContent(emailTemplate.bulk_email_description || "");
+    }
+}, [emailTemplate]);
+
+
+
     const fetchEmails = async () => {
         try {
             const response = await axios.get(fetchEmails_api);
@@ -30,6 +39,7 @@ const EmailManagement = () => {
             console.error("Error fetching emails:", error);
         }
     };
+
 
     const fetchEmailTemplate = async () => {
         try {
@@ -72,9 +82,9 @@ const EmailManagement = () => {
 
         try {
             await axios.post(sendBulk_api, {
-                emails: selectedEmails,
+                toList: selectedEmails,
                 subject: bulkSubject,
-                content: bulkContent,
+                htmlContent: bulkContent,
             });
             alert("Bulk email sent!");
             setSelectedEmails([]);
@@ -136,22 +146,23 @@ const EmailManagement = () => {
                         <input
                             type="text"
                             placeholder="Subject"
-                            className="w-full p-2 md:p-3 border border-yellow-400 bg-black text-yellow-400 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                            value={bulkSubject}
+                            className="w-full p-2 md:p-3 border border-yellow-400 bg-black text-white rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                            value={bulkSubject || emailTemplate?.bulk_email_subject || ""}
                             onChange={(e) => setBulkSubject(e.target.value)}
                         />
+
                         <textarea
                             placeholder="Email Content"
-                            className="w-full p-2 md:p-3 border border-yellow-400 bg-black text-yellow-400 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                            className="w-full p-2 md:p-3 border border-yellow-400 bg-black text-white rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
                             rows={5}
-                            value={bulkContent}
+                            value={bulkContent || emailTemplate?.bulk_email_description || ""}
                             onChange={(e) => setBulkContent(e.target.value)}
                         />
                     </div>
 
                     {/* Responsive Table */}
                     <div className="overflow-x-auto">
-                        <table className="w-full border border-yellow-400 min-w-[300px]"> {/* Reduce min width */}
+                        <table className="w-full border border-yellow-400 min-w-[300px]">
                             <thead>
                                 <tr className="bg-yellow-500 text-black">
                                     <th className="border border-yellow-400 p-2">
