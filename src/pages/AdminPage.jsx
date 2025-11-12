@@ -10,7 +10,7 @@ function AdminPage() {
   const cards = [
     { img: Car, title: "Booking Management", link: "/admin/booking-management" },
     { img: Gallery, title: "Gallery Management", link: "/admin/gallery-management" },
-    { img: Email, title: "Email Management" },
+    { img: Email, title: "Email Management", link: "/admin/email-management" },
     { img: Account, title: "Account Management" },
     { img: Content, title: "Content Management", link: "/admin/CMS" },
   ];

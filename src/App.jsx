@@ -10,6 +10,7 @@ import AdminPage from "./pages/AdminPage";
 import BookingManagement from "./pages/BookingManagement";
 import GalleryManagement from "./pages/GalleryManagement";
 import CMS from "./pages/CMS";
+import EmailManagement from './pages/EmailManagement'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/admin/booking-management" element={<BookingManagement />} />
           <Route path="/admin/gallery-management" element={<GalleryManagement />} />
           <Route path="/admin/CMS" element={<CMS />} />
+          <Route path="/admin/email-management" element={<EmailManagement />} />
         </Routes>
         <Footer />
       </div>
