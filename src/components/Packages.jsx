@@ -20,7 +20,7 @@ const Packages = () => {
 
         // Format API response
         const formattedData = data.data.map((pkg, index) => ({
-          id: index + 1,
+          packageId: pkg.packageId,
           title: pkg.packageName.replace(/"/g, ""),
           description: pkg.packageDescription.replace(/"/g, ""),
           price: `₹${pkg.price.toLocaleString()} / person`,
