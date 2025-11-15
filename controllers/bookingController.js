@@ -280,6 +280,8 @@ exports.updateRideBooking = async (req, res) => {
     const { bookingId } = req.params; 
     const { status } = req.body;  // Only extract status
 
+    console.log("req to updated status: ",status)
+
     if (!bookingId) {
       return res.status(400).json({ success: false, message: "Booking ID is required." });
     }
