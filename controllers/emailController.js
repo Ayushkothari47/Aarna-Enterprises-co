@@ -95,17 +95,18 @@ exports.sendBulkEmail = async (req, res) => {
 
     // Clean HTML content: remove newlines & carriage returns
     const cleanedHtml = htmlContent.replace(/[\n\r]/g, '').trim();
+    console.log("Cleaned content ",cleanedHtml)
 
     // Map recipients
     const recipients = toList.map(email => ({ email }));
 
     // Build the email object
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail({
-      sender: { email: 'ayushkothari610@gmail.com', name: 'Aarna Enterprises' }, // verified sender
-      to: recipients,
-      subject: subject,
-      htmlContent: cleanedHtml
-    });
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sendSmtpEmail.sender = { email: 'ayushkothari610@gmail.com' }; // Change to your verified sender
+    sendSmtpEmail.to = recipients;
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.htmlContent = cleanedHtml;
+
 
     // Send email
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
