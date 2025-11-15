@@ -76,38 +76,42 @@ exports.fetchEmails = async (req, res) => {
 
 
 exports.sendBulkEmail = async (req, res) => {
-  const { toList, subject, htmlContent } = req.body;
-
-  // Validate request
-  if (!toList || !Array.isArray(toList) || toList.length === 0) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "'toList' (array of emails) is required" 
-    });
-  }
-
-  if (!subject || !htmlContent) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "'subject' and 'htmlContent' are required" 
-    });
-  }
-
   try {
-    // Map the email list into the format Brevo expects
+    const { toList, subject, htmlContent } = req.body;
+
+    // Validate request
+    if (!toList || !Array.isArray(toList) || toList.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "'toList' (array of emails) is required" 
+      });
+    }
+    if (!subject || !htmlContent) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "'subject' and 'htmlContent' are required" 
+      });
+    }
+
+    // Clean HTML content: remove newlines & carriage returns
+    const cleanedHtml = htmlContent.replace(/[\n\r]/g, '').trim();
+
+    // Map recipients
     const recipients = toList.map(email => ({ email }));
 
     // Build the email object
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.sender = { email: 'ayushkothari610@gmail.com' }; // Change to your verified sender
-    sendSmtpEmail.to = recipients;
-    sendSmtpEmail.subject = subject;
-    sendSmtpEmail.htmlContent = htmlContent;
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail({
+      sender: { email: 'ayushkothari610@gmail.com', name: 'Aarna Enterprises' }, // verified sender
+      to: recipients,
+      subject: subject,
+      htmlContent: cleanedHtml
+    });
 
-    // Send the transactional email
+    // Send email
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
 
-    // Respond with success
+    console.log("Emails sent response:", data); // debug info
+
     return res.status(200).json({
       success: true,
       message: `Emails sent successfully to ${toList.length} recipients`,
@@ -115,15 +119,14 @@ exports.sendBulkEmail = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error sending bulk emails:", error.response ? error.response.body : error);
+    console.error("Error sending bulk emails:", error.response?.body || error);
     return res.status(500).json({
       success: false,
       message: "Error sending bulk emails",
-      error: error.response ? error.response.body : error.message
+      error: error.response?.body || error.message
     });
   }
 };
-
 
 
 exports.addEmailTemplate = async (req, res) => {
