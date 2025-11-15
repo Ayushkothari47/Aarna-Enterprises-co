@@ -317,11 +317,11 @@ exports.updateRideBooking = async (req, res) => {
         let htmlTemplate = '';
         let subject = '';
         if (updatedBooking.status === "Approved") {
-          htmlTemplate = emailTemplates.approved_template || '<p>Your booking {{bookingId}} has been approved!</p>';
-          subject = emailTemplates.approved_subject || 'Booking Approved';
+          htmlTemplate = emailTemplates.enq_success_desc;
+          subject = emailTemplates.enq_success_subject;
         } else if (updatedBooking.status === "Rejected") {
-          htmlTemplate = emailTemplates.rejected_template || '<p>Your booking {{bookingId}} has been rejected.</p>';
-          subject = emailTemplates.rejected_subject || 'Booking Rejected';
+          htmlTemplate = emailTemplates.enq_fail_desc;
+          subject = emailTemplates.enq_fail_subject;
         }
 
         const finalSubject = fillPlaceholders(subject, placeholders);
