@@ -178,6 +178,46 @@ exports.makeRideBooking = async (req, res) => {
 
     await newBooking.save();
 
+    // --- SEND EMAIL AFTER BOOKING ---
+    const emailTemplates = await Email.findOne(); // fetch your templates
+    if (emailTemplates && emailTemplates.enq_submit_auto_status) {
+      try {
+        // Prepare all placeholders used in your template
+        const placeholders = {
+          userName,
+          userEmail,       // added
+          userContact,     // added
+          date,
+          time,
+          totalPassengers,
+          bookingId: `Your Booking ID is: ${bookingId}`
+        };
+
+        // Replace placeholders in subject and HTML content
+        const subject = fillPlaceholders(
+          emailTemplates.enq_submit_subject || 'Booking Received',
+          placeholders
+        );
+
+        const htmlContent = fillPlaceholders(
+          emailTemplates.enq_submit_desc || emailTemplates.enq_submit_desc, // full HTML template
+          placeholders
+        );
+
+        // Send email
+        await sendEmailInternal({
+          to: userEmail,
+          subject,
+          htmlContent
+        });
+
+        console.log('Booking confirmation email sent to', userEmail);
+      } catch (emailErr) {
+        console.error('Error sending booking email:', emailErr);
+      }
+    }
+
+
     // ✅ Send response
     res.status(201).json({
       message: 'Ride booked successfully',
@@ -237,45 +277,76 @@ exports.getAllPackages = async (req, res) => {
 // PUT /api/bookings/:bookingId
 exports.updateRideBooking = async (req, res) => {
   try {
-    const { bookingId } = req.params; // from URL params
-    const updateData = req.body; // fields to update
+    const { bookingId } = req.params; 
+    const updateData = req.body;
 
-    // Validate if bookingId is provided
     if (!bookingId) {
-      return res.status(400).json({
-        success: false,
-        message: "Booking ID is required."
-      });
+      return res.status(400).json({ success: false, message: "Booking ID is required." });
     }
 
     // Find and update booking
     const updatedBooking = await Booking.findOneAndUpdate(
-      { bookingId },              // find booking by bookingId field
-      { $set: updateData },       // apply updates
-      { new: true, runValidators: true } // return updated doc
+      { bookingId },
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
 
     if (!updatedBooking) {
-      return res.status(404).json({
-        success: false,
-        message: "Booking not found."
-      });
+      return res.status(404).json({ success: false, message: "Booking not found." });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Ride booking updated successfully.",
-      data: updatedBooking
-    });
+    // --- SEND EMAIL IF STATUS CHANGED ---
+    if (updateData.status && ["Approved", "Rejected"].includes(updateData.status)) {
+      const emailTemplates = await Email.findOne();
+      if (emailTemplates) {
+        const placeholders = {
+          userName: updatedBooking.userName,
+          userEmail: updatedBooking.userEmail,
+          userContact: updatedBooking.userContact,
+          bookingId: `Your Booking ID is: ${updatedBooking.bookingId}`,
+          bookingName: updatedBooking.bookingName,
+          pickup: updatedBooking.pickup,
+          destination: updatedBooking.destination,
+          date: updatedBooking.date,
+          time: updatedBooking.time,
+          totalPassengers: updatedBooking.totalPassengers,
+          status: updatedBooking.status
+        };
+
+        // Choose template based on status
+        let htmlTemplate = '';
+        let subject = '';
+        if (updatedBooking.status === "Approved") {
+          htmlTemplate = emailTemplates.approved_template || '<p>Your booking {{bookingId}} has been approved!</p>';
+          subject = emailTemplates.approved_subject || 'Booking Approved';
+        } else if (updatedBooking.status === "Rejected") {
+          htmlTemplate = emailTemplates.rejected_template || '<p>Your booking {{bookingId}} has been rejected.</p>';
+          subject = emailTemplates.rejected_subject || 'Booking Rejected';
+        }
+
+        const finalSubject = fillPlaceholders(subject, placeholders);
+        const finalHtml = fillPlaceholders(htmlTemplate, placeholders);
+
+        try {
+          await sendEmailInternal({
+            to: updatedBooking.userEmail,
+            subject: finalSubject,
+            htmlContent: finalHtml
+          });
+          console.log('Booking status email sent to', updatedBooking.userEmail);
+        } catch (emailErr) {
+          console.error('Error sending booking status email:', emailErr);
+        }
+      }
+    }
+
+    res.status(200).json({ success: true, message: "Ride booking updated successfully.", data: updatedBooking });
   } catch (error) {
     console.error("Error updating booking:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while updating booking.",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: "Server error while updating booking.", error: error.message });
   }
 };
+
 
 
 
@@ -285,7 +356,6 @@ exports.updatePackageBooking = async (req, res) => {
     const { bookingId } = req.params;
     let updateData = { ...req.body }; // clone body
 
-    // Validate if bookingId is provided
     if (!bookingId) {
       return res.status(400).json({
         success: false,
@@ -309,6 +379,49 @@ exports.updatePackageBooking = async (req, res) => {
         success: false,
         message: "Package booking not found."
       });
+    }
+
+    // --- SEND EMAIL IF STATUS CHANGED ---
+    if (updateData.status && ["Approved", "Rejected"].includes(updateData.status)) {
+      try {
+        const emailTemplates = await Email.findOne(); // fetch templates
+        if (emailTemplates && emailTemplates.enq_submit_auto_status) {
+          const placeholders = {
+            userName: updatedBooking.userName,
+            userEmail: updatedBooking.userEmail,
+            userContact: updatedBooking.userContact,
+            bookingName: updatedBooking.bookingName,
+            bookingId: updatedBooking.bookingId,
+            pickup: updatedBooking.pickup,
+            destination: updatedBooking.destination || "AS PER PACKAGE",
+            date: updatedBooking.date,
+            time: updatedBooking.time,
+            totalPassengers: updatedBooking.totalPassengers,
+            status: updatedBooking.status
+          };
+
+          const subject = fillPlaceholders(
+            emailTemplates.enq_submit_subject || 'Booking Update',
+            placeholders
+          );
+
+          // Use the updated booking email template or default
+          const htmlContent = fillPlaceholders(
+            emailTemplates.enq_submit_desc || '<p>Your booking status has been updated.</p>',
+            placeholders
+          );
+
+          await sendEmailInternal({
+            to: updatedBooking.userEmail,
+            subject,
+            htmlContent
+          });
+
+          console.log(`Booking status email (${updatedBooking.status}) sent to`, updatedBooking.userEmail);
+        }
+      } catch (emailErr) {
+        console.error('Error sending booking status email:', emailErr);
+      }
     }
 
     res.status(200).json({
