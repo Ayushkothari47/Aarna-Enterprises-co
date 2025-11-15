@@ -277,7 +277,7 @@ exports.getAllPackages = async (req, res) => {
 // PUT /api/bookings/:bookingId
 exports.updateRideBooking = async (req, res) => {
   try {
-    const { bookingId } = req.params; 
+    const { bookingId } = req.params;
     const { status } = req.body;  // Only extract status
 
 
@@ -377,7 +377,7 @@ exports.updatePackageBooking = async (req, res) => {
     const { bookingId } = req.params;
     const { status } = req.body; // Only accept status
 
-    console.log("Package Status updated req :  ",status)
+    console.log("Package Status updated req :  ", status)
 
     if (!bookingId) {
       return res.status(400).json({
@@ -436,16 +436,32 @@ exports.updatePackageBooking = async (req, res) => {
             status: updatedBooking.status
           };
 
-          // Subject + Email Body
-          const subject = fillPlaceholders(
-            emailTemplates.enq_success_subject || "Package Booking Update",
-            placeholders
-          );
+          let subject = "";
+          let htmlContent = "";
 
-          const htmlContent = fillPlaceholders(
-            emailTemplates.enq_success_desc || "<p>Your package booking status has been updated.</p>",
-            placeholders
-          );
+          // SELECT TEMPLATE BASED ON STATUS
+          if (status === "Approved") {
+            subject = fillPlaceholders(
+              emailTemplates.enq_success_subject || "Package Booking Approved",
+              placeholders
+            );
+
+            htmlContent = fillPlaceholders(
+              emailTemplates.enq_success_desc || "<p>Your package booking has been approved.</p>",
+              placeholders
+            );
+
+          } else if (status === "Rejected") {
+            subject = fillPlaceholders(
+              emailTemplates.enq_fail_subject || "Package Booking Rejected",
+              placeholders
+            );
+
+            htmlContent = fillPlaceholders(
+              emailTemplates.enq_fail_desc || "<p>Your package booking has been rejected.</p>",
+              placeholders
+            );
+          }
 
           // Send email
           await sendEmailInternal({
@@ -454,7 +470,7 @@ exports.updatePackageBooking = async (req, res) => {
             htmlContent
           });
 
-          console.log(`Package booking status email (${updatedBooking.status}) sent to`, updatedBooking.userEmail);
+          console.log(`Package booking ${status} email sent to`, updatedBooking.userEmail);
         }
       } catch (emailErr) {
         console.error("Error sending package booking email:", emailErr);
