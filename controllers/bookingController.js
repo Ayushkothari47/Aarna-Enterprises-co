@@ -3,6 +3,17 @@ const Booking = require('../models/Booking');
 const Email = require('../models/Email');
 const { sendEmailInternal } = require('../services/emailService');
 
+// Helper to replace placeholders
+function fillPlaceholders(template, data) {
+  let result = template;
+  for (const key in data) {
+    const regex = new RegExp(`{{${key}}}`, 'g');
+    result = result.replace(regex, data[key]);
+  }
+  return result;
+}
+
+
 exports.makePackageBooking = async (req, res) => {
   try {
     const {
@@ -52,16 +63,31 @@ exports.makePackageBooking = async (req, res) => {
     const emailTemplates = await Email.findOne(); // fetch your templates
     if (emailTemplates && emailTemplates.enq_submit_auto_status) {
       try {
+        const placeholders = {
+          userName,
+          bookingName,
+          pickup,
+          destination: 'AS PER PACKAGE',
+          date,
+          time,
+          totalPassengers
+        };
+
+        const subject = fillPlaceholders(emailTemplates.enq_submit_subject || 'Booking Received', placeholders);
+        const htmlContent = fillPlaceholders(emailTemplates.enq_submit_desc || '<p>We received your booking!</p>', placeholders);
+
         await sendEmailInternal({
           to: userEmail,
-          subject: emailTemplates.enq_submit_subject || 'Booking Received',
-          htmlContent: emailTemplates.enq_submit_desc || '<p>We received your booking!</p>'
+          subject,
+          htmlContent
         });
+
         console.log('Booking confirmation email sent to', userEmail);
       } catch (emailErr) {
         console.error('Error sending booking email:', emailErr);
       }
     }
+
 
     await newBooking.save();
 
@@ -155,7 +181,7 @@ exports.makeRideBooking = async (req, res) => {
 
 exports.getAllRides = async (req, res) => {
   try {
-    
+
     const rides = await Booking.find({ bookingId: { $not: /^PKG_/ } }).sort({ createdAt: -1 });
 
     if (!rides.length) {
