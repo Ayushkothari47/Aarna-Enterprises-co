@@ -229,7 +229,7 @@ const BookPackage = () => {
   {/* Package Description */}
   <div className="w-full max-w-7xl mx-auto mt-12">
     <div className="bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 border border-gray-700">
-      <h3 className="text-xl sm:text-1xl font-semibold text-gray-400 mb-4 text-center sm:text-left">
+      <h3 className="text-xl sm:text-1xl font-semibold text-yellow-400 mb-4 text-center sm:text-left">
         Description
       </h3>
       <p className="text-gray-300 leading-relaxed text-sm sm:text-base md:text-lg text-center sm:text-left">
