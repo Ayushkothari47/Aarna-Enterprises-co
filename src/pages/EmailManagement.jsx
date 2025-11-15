@@ -22,11 +22,11 @@ const EmailManagement = () => {
     }, []);
 
     useEffect(() => {
-    if (emailTemplate) {
-        setBulkSubject(emailTemplate.bulk_email_subject || "");
-        setBulkContent(emailTemplate.bulk_email_description || "");
-    }
-}, [emailTemplate]);
+        if (emailTemplate) {
+            setBulkSubject(emailTemplate.bulk_email_subject || "");
+            setBulkContent(emailTemplate.bulk_email_description || "");
+        }
+    }, [emailTemplate]);
 
 
 
@@ -85,7 +85,10 @@ const EmailManagement = () => {
                 toList: selectedEmails,
                 subject: bulkSubject,
                 htmlContent: bulkContent,
-            });
+            },{
+                headers: {
+                'Content-Type': 'application/json'
+            }});
             alert("Bulk email sent!");
             setSelectedEmails([]);
             setBulkSubject("");
