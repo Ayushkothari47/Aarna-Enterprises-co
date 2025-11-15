@@ -16,9 +16,6 @@ exports.sendEmail = async (req, res) => {
   // Destructure variables from req.body
   const { to, subject, htmlContent} = req.body;
 
-  console.log("Body: ", req.body)
-
-  console.log("API KEY: ", process.env.BREVO_API_KEY)
 
   // Check if 'to' is provided
   if (!to) {
@@ -95,7 +92,7 @@ exports.sendBulkEmail = async (req, res) => {
 
     // Clean HTML content: remove newlines & carriage returns
     const cleanedHtml = htmlContent.replace(/[\n\r]/g, '').trim();
-    console.log("Cleaned content ",cleanedHtml)
+  
 
     // Map recipients
     const recipients = toList.map(email => ({ email }));

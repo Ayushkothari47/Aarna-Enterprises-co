@@ -1,5 +1,7 @@
 const Package = require('../models/Package');
 const Booking = require('../models/Booking');
+const Email = require('../models/Email');
+const { sendEmailInternal } = require('../services/emailService');
 
 exports.makePackageBooking = async (req, res) => {
   try {
@@ -45,6 +47,21 @@ exports.makePackageBooking = async (req, res) => {
       userEmail,
       userContact
     });
+
+    // --- SEND EMAIL AFTER BOOKING ---
+    const emailTemplates = await Email.findOne(); // fetch your templates
+    if (emailTemplates && emailTemplates.enq_submit_auto_status) {
+      try {
+        await sendEmailInternal({
+          to: userEmail,
+          subject: emailTemplates.enq_submit_subject || 'Booking Received',
+          htmlContent: emailTemplates.enq_submit_desc || '<p>We received your booking!</p>'
+        });
+        console.log('Booking confirmation email sent to', userEmail);
+      } catch (emailErr) {
+        console.error('Error sending booking email:', emailErr);
+      }
+    }
 
     await newBooking.save();
 
