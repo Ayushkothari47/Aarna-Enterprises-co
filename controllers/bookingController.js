@@ -63,19 +63,29 @@ exports.makePackageBooking = async (req, res) => {
     const emailTemplates = await Email.findOne(); // fetch your templates
     if (emailTemplates && emailTemplates.enq_submit_auto_status) {
       try {
+        // Prepare all placeholders used in your template
         const placeholders = {
           userName,
           bookingName,
           pickup,
-          destination: 'AS PER PACKAGE',
+          destination: 'AS PER PACKAGE', // or you can dynamically get from package
           date,
           time,
           totalPassengers
         };
 
-        const subject = fillPlaceholders(emailTemplates.enq_submit_subject || 'Booking Received', placeholders);
-        const htmlContent = fillPlaceholders(emailTemplates.enq_submit_desc || '<p>We received your booking!</p>', placeholders);
+        // Replace placeholders in subject and HTML content
+        const subject = fillPlaceholders(
+          emailTemplates.enq_submit_subject || 'Booking Received',
+          placeholders
+        );
 
+        const htmlContent = fillPlaceholders(
+          emailTemplates.enq_submit_desc || emailTemplates.enq_submit_desc, // full HTML template
+          placeholders
+        );
+
+        // Send email
         await sendEmailInternal({
           to: userEmail,
           subject,
@@ -87,6 +97,7 @@ exports.makePackageBooking = async (req, res) => {
         console.error('Error sending booking email:', emailErr);
       }
     }
+
 
 
     await newBooking.save();
