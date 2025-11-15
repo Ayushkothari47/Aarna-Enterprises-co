@@ -59,6 +59,7 @@ exports.makePackageBooking = async (req, res) => {
       userContact
     });
 
+
     // --- SEND EMAIL AFTER BOOKING ---
     const emailTemplates = await Email.findOne(); // fetch your templates
     if (emailTemplates && emailTemplates.enq_submit_auto_status) {
@@ -66,12 +67,16 @@ exports.makePackageBooking = async (req, res) => {
         // Prepare all placeholders used in your template
         const placeholders = {
           userName,
+          userEmail,       // added
+          userContact,     // added
+          bookingId,       // added
           bookingName,
           pickup,
-          destination: 'AS PER PACKAGE', // or you can dynamically get from package
+          destination: 'AS PER PACKAGE', // or get dynamically from package
           date,
           time,
-          totalPassengers
+          totalPassengers,
+          enquiryMessage: 'N/A' // you can pass actual message if available
         };
 
         // Replace placeholders in subject and HTML content
@@ -97,6 +102,7 @@ exports.makePackageBooking = async (req, res) => {
         console.error('Error sending booking email:', emailErr);
       }
     }
+
 
 
 
