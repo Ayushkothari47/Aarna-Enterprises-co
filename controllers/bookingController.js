@@ -433,12 +433,12 @@ exports.updatePackageBooking = async (req, res) => {
 
           // Subject + Email Body
           const subject = fillPlaceholders(
-            emailTemplates.enq_submit_subject || "Package Booking Update",
+            emailTemplates.enq_success_subject || "Package Booking Update",
             placeholders
           );
 
           const htmlContent = fillPlaceholders(
-            emailTemplates.enq_submit_desc || "<p>Your package booking status has been updated.</p>",
+            emailTemplates.enq_success_desc || "<p>Your package booking status has been updated.</p>",
             placeholders
           );
 
