@@ -4,6 +4,8 @@ import axios from "axios";
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const fetchAllPackageBookings = `${SERVER_URL}/booking/getAllPackageBookings`;
 const fetchAllRideBookings = `${SERVER_URL}/booking/getAllRideBookings`;
+const rideUpdateAPI = `${SERVER_URL}/booking/updateRideBookings`;
+const packageUpdateAPI = `${SERVER_URL}/booking/updatePackageBookings`;
 
 function BookingManagement() {
   const [activeTab, setActiveTab] = useState("package");
@@ -107,28 +109,32 @@ function BookingManagement() {
   };
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
-    try {
-      const res = await axios.put(
-        `https://aarna-enterprises-co-production.up.railway.app/booking/updatePackageBookings/${bookingId}`,
-        { status: newStatus }
-      );
+  try {
+    // Decide correct API endpoint
+    const updateURL =
+      activeTab === "package"
+        ? `${packageUpdateAPI}/${bookingId}`
+        : `${rideUpdateAPI}/${bookingId}`;
 
-      if (res.status === 200) {
-        alert(`Booking ${newStatus} successfully!`);
-        setSelectedBooking(null);
+    const res = await axios.put(updateURL, { status: newStatus });
 
-        // Refresh bookings
-        if (activeTab === "package") {
-          await fetchPackageBookings();
-        } else {
-          await fetchRideBookings();
-        }
+    if (res.status === 200) {
+      alert(`Booking ${newStatus} successfully!`);
+      setSelectedBooking(null);
+
+      // Refresh updated list
+      if (activeTab === "package") {
+        await fetchPackageBookings();
+      } else {
+        await fetchRideBookings();
       }
-    } catch (err) {
-      console.error("Error updating booking status", err);
-      alert("Failed to update status. Try again later.");
     }
-  };
+  } catch (err) {
+    console.error("Error updating booking status", err);
+    alert("Failed to update status. Try again later.");
+  }
+};
+
 
 
   return (
