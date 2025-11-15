@@ -280,7 +280,6 @@ exports.updateRideBooking = async (req, res) => {
     const { bookingId } = req.params; 
     const { status } = req.body;  // Only extract status
 
-    console.log("req to updated status: ",status)
 
     if (!bookingId) {
       return res.status(400).json({ success: false, message: "Booking ID is required." });
@@ -329,9 +328,11 @@ exports.updateRideBooking = async (req, res) => {
         let subject = "";
 
         if (status === "Approved") {
+          console.log("Approved mail sent")
           htmlTemplate = emailTemplates.enq_success_desc;
           subject = emailTemplates.enq_success_subject;
         } else if (status === "Rejected") {
+          console.log("Rejected mail sent")
           htmlTemplate = emailTemplates.enq_fail_desc;
           subject = emailTemplates.enq_fail_subject;
         }
@@ -375,6 +376,8 @@ exports.updatePackageBooking = async (req, res) => {
   try {
     const { bookingId } = req.params;
     const { status } = req.body; // Only accept status
+
+    console.log("Package Status updated req :  ",status)
 
     if (!bookingId) {
       return res.status(400).json({
