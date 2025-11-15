@@ -4,9 +4,30 @@ import planeIcon from "../assets/plane.png";
 import trainIcon from "../assets/train.png";
 import taxiIcon from "../assets/taxi.png";
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const submitBooking = `${SERVER_URL}/booking/bookRide`;
+
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState(""); // default hidden
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    pickup: "",
+    destination: "",
+    date: "",
+    time: "",
+    totalPassengers: 1,
+    tripType: "",
+    carType: "",
+    userName: "",
+    userEmail: "",
+    userContact: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -26,85 +47,192 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+
   // Reusable Booking Form
-  const BookingForm = ({ title, color }) => (
-    <form className="bg-black p-6 rounded-xl shadow-2xl w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
-      <h3 className="text-xl font-bold text-yellow-400 text-center mb-2">
-        {title}
-      </h3>
+  const BookingForm = ({ title, color }) => {
+    const [formData, setFormData] = useState({
+      pickup: "",
+      destination: "",
+      date: "",
+      time: "",
+      totalPassengers: "",
+      tripType: "",
+      carType: "",
+      userName: "",
+      userEmail: "",
+      userContact: "",
+    });
 
-      {/* Ride Details */}
-      <input
-        type="text"
-        placeholder="Pickup Location"
-        className="w-full border p-2 rounded border-white text-white  "
-      />
-      <input
-        type="text"
-        placeholder="Destination"
-        className="w-full border p-2 rounded border-white text-white  "
-      />
+    const handleInput = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
-      <div className="flex space-x-2">
-        <input
-          type="date"
-          className="w-1/2 border p-2 rounded text-gray-600  [filter:invert(1)] [cursor:pointer]"
-        />
-        <input
-          type="time"
-          className="w-1/2 border p-2 rounded text-gray-600  [filter:invert(1)] [cursor:pointer]"
-        />
-      </div>
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      setActiveTab("")
+      setSuccessMessage("");
+      setErrorMessage("");
 
-      <div className="flex space-x-2">
-        <input
-          type="number"
-          placeholder="Total Passengers"
-          className="w-1/2 border p-2 rounded border-white text-white  "
-          min="1"
-        />
-        <select className="w-1/2 border p-2 rounded border-white text-gray-400  ">
-          <option value="">Trip Type</option>
-          <option value="one-way">One Way</option>
-          <option value="round">Round Trip</option>
-        </select>
-      </div>
 
-      <select className="w-full border p-2 rounded border-white text-gray-400 ">
-        <option value="">Select Car Type</option>
-        <option value="sedan">Sedan</option>
-        <option value="suv">SUV</option>
-        <option value="hatchback">Hatchback</option>
-        <option value="luxury">Luxury</option>
-      </select>
+      try {
+        const res = await fetch(submitBooking, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
 
-      {/* User Details */}
-      <input
-        type="text"
-        placeholder="Full Name"
-        className="w-full border p-2 rounded border-white text-white  "
-      />
-      <input
-        type="email"
-        placeholder="Email Address"
-        className="w-full border p-2 rounded border-white text-white  "
-      />
-      <input
-        type="tel"
-        placeholder="Contact Number"
-        className="w-full border p-2 rounded border-white text-white  "
-      />
 
-      <button
-        type="submit"
-        className={`w-full ${color} text-black font-bold py-2 rounded hover:opacity-90 transition`}
+        if (!res.ok) {
+          throw new Error("Failed to submit booking");
+        }
+
+
+
+        setFormData({
+          pickup: "",
+          destination: "",
+          date: "",
+          time: "",
+          totalPassengers: 1,
+          tripType: "",
+          carType: "",
+          userName: "",
+          userEmail: "",
+          userContact: "",
+        });
+
+      } catch (error) {
+        setErrorMessage(error.message || "Something went wrong");
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className="bg-black p-6 rounded-xl shadow-2xl w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto"
       >
-        Submit Booking
-      </button>
-    </form>
-  );
+        <h3 className="text-xl font-bold text-yellow-400 text-center mb-2">{title}</h3>
 
-  // Different forms for each tab
+        <input
+          type="text"
+          name="pickup"
+          value={formData.pickup}
+          onChange={handleInput}
+          placeholder="Pickup Location"
+          className="w-full border p-2 rounded border-white text-white"
+          autoComplete="off"
+        />
+        <input
+          type="text"
+          name="destination"
+          value={formData.destination}
+          onChange={handleInput}
+          placeholder="Destination"
+          className="w-full border p-2 rounded border-white text-white"
+          autoComplete="off"
+        />
+        <div className="flex space-x-2">
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleInput}
+            className="w-1/2 border p-2 rounded text-gray-600 [filter:invert(1)] [cursor:pointer]"
+          />
+          <input
+            type="time"
+            name="time"
+            value={formData.time}
+            onChange={handleInput}
+            className="w-1/2 border p-2 rounded text-gray-600 [filter:invert(1)] [cursor:pointer]"
+          />
+        </div>
+
+        <div className="flex space-x-2">
+          <input
+            type="number"
+            name="totalPassengers"
+            min="1"
+            value={formData.totalPassengers}
+            onChange={handleInput}
+            placeholder="Total Passengers"
+            className="w-1/2 border p-2 rounded border-white text-white"
+          />
+          <select
+            name="tripType"
+            value={formData.tripType}
+            onChange={handleInput}
+            className="w-1/2 border p-2 rounded border-white text-gray-400"
+          >
+            <option value="">Trip Type</option>
+            <option value="one-way">One Way</option>
+            <option value="round">Round Trip</option>
+          </select>
+        </div>
+
+        <select
+          name="carType"
+          value={formData.carType}
+          onChange={handleInput}
+          className="w-full border p-2 rounded border-white text-gray-400"
+        >
+          <option value="">Select Car Type</option>
+          <option value="sedan">Sedan</option>
+          <option value="suv">SUV</option>
+          <option value="hatchback">Hatchback</option>
+          <option value="luxury">Luxury</option>
+        </select>
+
+        <input
+          type="text"
+          name="userName"
+          value={formData.userName}
+          onChange={handleInput}
+          placeholder="Full Name"
+          className="w-full border p-2 rounded border-white text-white"
+          autoComplete="name"
+        />
+        <input
+          type="email"
+          name="userEmail"
+          value={formData.userEmail}
+          onChange={handleInput}
+          placeholder="Email Address"
+          className="w-full border p-2 rounded border-white text-white"
+          autoComplete="email"
+        />
+        <input
+          type="tel"
+          name="userContact"
+          value={formData.userContact}
+          onChange={handleInput}
+          placeholder="Contact Number"
+          className="w-full border p-2 rounded border-white text-white"
+          autoComplete="tel"
+        />
+
+        <button
+          type="submit"
+          className={`w-full ${color} text-black font-bold py-2 rounded hover:opacity-90 transition`}
+        >
+          Submit Booking
+        </button>
+      </form>
+    );
+  };
+
+
   const renderForm = () => {
     switch (activeTab) {
       case "taxi":
@@ -118,10 +246,9 @@ const Navbar = () => {
     }
   };
 
-  // Close modal when clicking outside
   const handleCloseModal = (e) => {
     if (e.target.id === "modalOverlay") {
-      setActiveTab("");
+      // setActiveTab("");
     }
   };
 
@@ -154,11 +281,10 @@ const Navbar = () => {
               >
                 <img src={tab.icon} alt={tab.label} className="w-6 h-6" />
                 <span
-                  className={`ml-2 whitespace-nowrap transition-all duration-300 ${
-                    activeTab === tab.name
-                      ? "text-yellow-300 opacity-100 max-w-[100px]"
-                      : "opacity-0 max-w-0 overflow-hidden group-hover:opacity-100 group-hover:max-w-[100px]"
-                  }`}
+                  className={`ml-2 whitespace-nowrap transition-all duration-300 ${activeTab === tab.name
+                    ? "text-yellow-300 opacity-100 max-w-[100px]"
+                    : "opacity-0 max-w-0 overflow-hidden group-hover:opacity-100 group-hover:max-w-[100px]"
+                    }`}
                 >
                   | {tab.label}
                 </span>
@@ -208,12 +334,13 @@ const Navbar = () => {
           </button>
         </div>
 
+
+
         {/* Mobile Menu */}
         <div
           ref={menuRef}
-          className={`md:hidden bg-gray-900 bg-opacity-95 w-full overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? "max-h-screen py-4" : "max-h-0"
-          }`}
+          className={`md:hidden bg-gray-900 bg-opacity-95 w-full overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-screen py-4" : "max-h-0"
+            }`}
         >
           <div className="flex flex-col space-y-4 px-4">
             {[
@@ -226,19 +353,24 @@ const Navbar = () => {
                 onClick={() =>
                   setActiveTab(activeTab === tab.name ? "" : tab.name)
                 }
-                className={`flex items-center text-white text-sm transition-all duration-300 group ${
-                  activeTab === tab.name ? "text-yellow-300" : ""
-                }`}
+                className={`flex items-center text-white text-sm transition-all duration-300 group ${activeTab === tab.name ? "text-yellow-300" : ""
+                  }`}
               >
                 <img src={tab.icon} alt={tab.label} className="w-6 h-6" />
                 <span className="ml-2">| {tab.label}</span>
               </button>
             ))}
 
-            <Link to="/gallery" className="text-white py-2 hover:text-yellow-300">
+            <Link
+              to="/gallery"
+              className="text-white py-2 hover:text-yellow-300"
+            >
               Gallery
             </Link>
-            <Link to="/about" className="text-white py-2 hover:text-yellow-300">
+            <Link
+              to="/about"
+              className="text-white py-2 hover:text-yellow-300"
+            >
               About Us
             </Link>
           </div>
@@ -248,6 +380,16 @@ const Navbar = () => {
       {/* Padding below header */}
       <div className="h-16 md:h-20" />
 
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center z-[100]">
+          <div className="loader border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-6"></div>
+          <p className="text-white text-xl font-semibold tracking-wide">
+            Submitting...
+          </p>
+        </div>
+      )}
+
+
       {/* ===== Popup Modal ===== */}
       {activeTab && (
         <div
@@ -256,7 +398,6 @@ const Navbar = () => {
           className="fixed inset-0 z-[100] bg-black/30 backdrop-blur-sm flex justify-center items-start overflow-y-auto p-4 pt-24 transition-all duration-300"
         >
           <div className="relative w-full max-w-md mx-auto animate-[slideDown_0.3s_ease]">
-            {/* Close Button */}
             <button
               onClick={() => setActiveTab("")}
               className="absolute top-2 right-2 text-white hover:text-yellow-400 text-2xl font-bold"
@@ -264,10 +405,21 @@ const Navbar = () => {
               ×
             </button>
 
-            {renderForm()}
+            {/* Mount BookingForm once and control title/color dynamically */}
+            <BookingForm
+              title={
+                activeTab === "taxi"
+                  ? "Book a Taxi"
+                  : activeTab === "airport"
+                    ? "Book Airport Ride"
+                    : "Book Station Ride"
+              }
+              color="bg-yellow-400"
+            />
           </div>
         </div>
       )}
+
 
       {/* Slide down animation */}
       <style>{`
