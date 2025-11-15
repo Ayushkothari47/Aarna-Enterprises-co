@@ -69,14 +69,10 @@ exports.makePackageBooking = async (req, res) => {
           userName,
           userEmail,       // added
           userContact,     // added
-          bookingId,       // added
-          bookingName,
-          pickup,
-          destination: 'AS PER PACKAGE', // or get dynamically from package
           date,
           time,
           totalPassengers,
-          enquiryMessage: 'N/A' // you can pass actual message if available
+          bookingId: `Your Booking ID is: ${bookingId}`
         };
 
         // Replace placeholders in subject and HTML content
