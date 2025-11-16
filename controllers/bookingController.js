@@ -50,7 +50,7 @@ exports.makePackageBooking = async (req, res) => {
     // Use the package's name as the booking name
     const bookingName = selectedPackage.packageName;
 
-    const generatedBookingId = generateBookingId();
+    const generatedBookingId = 'PKG_'+generateBookingId();
 
 
     // Create booking record
