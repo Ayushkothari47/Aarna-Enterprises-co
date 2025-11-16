@@ -14,6 +14,24 @@ function BookingManagement() {
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
+  const [filters, setFilters] = useState({
+    bookingName: "",
+    pickup: "",
+    destination: "",
+    date: "",
+    time: "",
+    totalPassengers: "",
+    status: "",
+  });
+
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => ({ ...prev, [field]: value.toLowerCase() }));
+  };
+
+
+  
+
+
   const fetchPackageBookings = async () => {
     try {
       const res = await axios.get(fetchAllPackageBookings);
@@ -47,93 +65,132 @@ function BookingManagement() {
   };
 
   const renderTable = (bookings) => {
-    if (bookings.length === 0)
-      return <p className="text-white mt-4">No bookings found.</p>;
+  if (bookings.length === 0)
+    return <p className="text-white mt-4">No bookings found.</p>;
 
+  // 🔥 Apply filters HERE
+  const filteredBookings = bookings.filter(b => {
     return (
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-gray-900 rounded-lg shadow-lg">
-          <thead className="bg-yellow-500 text-black uppercase text-sm tracking-wider text-left">
-            <tr>
-              {/* <th className="px-4 py-2 md:px-6 md:py-3">Booking ID</th> */}
-              <th className="px-4 py-2 md:px-6 md:py-3">Name       </th>
-              <th className="px-4 py-2 md:px-6 md:py-3">Pickup</th>
-              <th className="px-4 py-2 md:px-6 md:py-3">Destination</th>
-              <th className="px-4 py-2 md:px-6 md:py-3">Date</th>
-              <th className="px-4 py-2 md:px-6 md:py-3">Time</th>
-              <th className="px-4 py-2 md:px-6 md:py-3">Passengers</th>
-              <th className="px-4 py-2 md:px-6 md:py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking, idx) => (
-              <tr
-                key={booking._id}
-                onClick={() => handleRowClick(booking)}
-                className={`cursor-pointer ${booking.status === "Pending"
-                  ? "bg-none text-white"
-                  : idx % 2 === 0
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-700 text-white"
-                  } hover:bg-gray-800 hover:text-white transition-colors duration-200`}
-              >
-                {/* <td className="px-2 py-1 md:px-6 md:py-4">{booking.bookingId}</td> */}
-                <td className="px-2 py-1 md:px-6 md:py-4">{booking.bookingName}</td>
-                <td className="px-2 py-1 md:px-6 md:py-4">{booking.pickup}</td>
-                <td className="px-2 py-1 md:px-6 md:py-4">{booking.destination}</td>
-                <td className="px-2 py-1 md:px-6 md:py-4">{booking.date}</td>
-                <td className="px-2 py-1 md:px-6 md:py-4">{booking.time}</td>
-                <td className="px-2 py-1 md:px-6 md:py-4">{booking.totalPassengers}</td>
-                <td className="px-2 py-1 md:px-6 md:py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${booking.status === "Approved"
-                        ? "bg-lime-500/20 text-lime-400 border border-lime-500/50"
-                        : booking.status === "Rejected"
-                          ? "bg-red-500/20 text-red-400 border border-red-500/50"
-                          : booking.status === "Pending"
-                            ? "bg-yellow-400/20 text-yellow-400 border border-yellow-400/50"
-                            : "bg-gray-700 text-white"
-                      }`}
-                  >
-                    {booking.status}
-                  </span>
-                </td>
-
-
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      b.bookingName.toLowerCase().includes(filters.bookingName) &&
+      b.pickup.toLowerCase().includes(filters.pickup) &&
+      b.destination.toLowerCase().includes(filters.destination) &&
+      b.date.toLowerCase().includes(filters.date) &&
+      b.time.toLowerCase().includes(filters.time) &&
+      String(b.totalPassengers).includes(filters.totalPassengers) &&
+      b.status.toLowerCase().includes(filters.status)
     );
-  };
+  });
+
+  return (
+    <div className="overflow-x-auto">
+  <table className="min-w-full bg-gray-900 rounded-xl shadow-2xl overflow-hidden">
+    
+    {/* Header */}
+    <thead className="text-left text-sm uppercase tracking-wider">
+      <tr className="bg-yellow-500 text-black">
+        <th className="px-4 py-3">Name</th>
+        <th className="px-4 py-3">Pickup</th>
+        <th className="px-4 py-3">Destination</th>
+        <th className="px-4 py-3">Date</th>
+        <th className="px-4 py-3">Time</th>
+        <th className="px-4 py-3">Passengers</th>
+        <th className="px-4 py-3">Status</th>
+      </tr>
+
+      {/* Filter Inputs Row */}
+      <tr className="bg-gray-800">
+        {[
+          { key: "bookingName", placeholder: "Search name" },
+          { key: "pickup", placeholder: "Search pickup" },
+          { key: "destination", placeholder: "Search destination" },
+          { key: "date", placeholder: "Search date" },
+          { key: "time", placeholder: "Search time" },
+          { key: "totalPassengers", placeholder: "Passengers" },
+          { key: "status", placeholder: "Status" }
+        ].map((col) => (
+          <th key={col.key} className="px-2 py-2">
+            <input
+              className="w-full bg-gray-700 text-white px-3 py-2 rounded-md placeholder-gray-400 
+                        border border-gray-600 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 
+                        transition-all text-sm"
+              placeholder={col.placeholder}
+              onChange={(e) => handleFilterChange(col.key, e.target.value)}
+            />
+          </th>
+        ))}
+      </tr>
+    </thead>
+
+    {/* Table Body */}
+    <tbody>
+      {filteredBookings.map((booking, idx) => (
+        <tr
+          key={booking._id}
+          onClick={() => handleRowClick(booking)}
+          className={`
+            cursor-pointer transition-all
+            ${idx % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
+            hover:bg-gray-600
+          `}
+        >
+          <td className="px-4 py-3">{booking.bookingName}</td>
+          <td className="px-4 py-3">{booking.pickup}</td>
+          <td className="px-4 py-3">{booking.destination}</td>
+          <td className="px-4 py-3">{booking.date}</td>
+          <td className="px-4 py-3">{booking.time}</td>
+          <td className="px-4 py-3">{booking.totalPassengers}</td>
+
+          <td className="px-4 py-3">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold border 
+                ${
+                  booking.status === "Approved"
+                    ? "bg-green-500/20 text-green-400 border-green-500/50"
+                    : booking.status === "Rejected"
+                      ? "bg-red-500/20 text-red-400 border-red-500/50"
+                      : "bg-yellow-400/20 text-yellow-400 border-yellow-400/50"
+                }
+              `}
+            >
+              {booking.status}
+            </span>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+  );
+};
+
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
-  try {
-    // Decide correct API endpoint
-    const updateURL =
-      activeTab === "package"
-        ? `${packageUpdateAPI}/${bookingId}`
-        : `${rideUpdateAPI}/${bookingId}`;
+    try {
+      // Decide correct API endpoint
+      const updateURL =
+        activeTab === "package"
+          ? `${packageUpdateAPI}/${bookingId}`
+          : `${rideUpdateAPI}/${bookingId}`;
 
-    const res = await axios.put(updateURL, { status: newStatus });
+      const res = await axios.put(updateURL, { status: newStatus });
 
-    if (res.status === 200) {
-      alert(`Booking ${newStatus} successfully!`);
-      setSelectedBooking(null);
+      if (res.status === 200) {
+        alert(`Booking ${newStatus} successfully!`);
+        setSelectedBooking(null);
 
-      // Refresh updated list
-      if (activeTab === "package") {
-        await fetchPackageBookings();
-      } else {
-        await fetchRideBookings();
+        // Refresh updated list
+        if (activeTab === "package") {
+          await fetchPackageBookings();
+        } else {
+          await fetchRideBookings();
+        }
       }
+    } catch (err) {
+      console.error("Error updating booking status", err);
+      alert("Failed to update status. Try again later.");
     }
-  } catch (err) {
-    console.error("Error updating booking status", err);
-    alert("Failed to update status. Try again later.");
-  }
-};
+  };
 
 
 
