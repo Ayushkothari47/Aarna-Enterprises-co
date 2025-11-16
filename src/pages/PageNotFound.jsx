@@ -5,7 +5,7 @@ function PageNotFound() {
     <div className="bg-black flex flex-col justify-center items-center h-screen space-y-8">
       <div className=" flex justify-center items-center  text-9xl font-bold">
         <div className="text-yellow-400">4</div>
-        <div className="text-white">0</div>
+        <div className="text-white">0</div> 
         <div className="text-yellow-400">4</div>
       </div>
       <div>
