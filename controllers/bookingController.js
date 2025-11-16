@@ -14,6 +14,15 @@ function fillPlaceholders(template, data) {
 }
 
 
+const generateBookingId = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let id = '';
+  for (let i = 0; i < 10; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
+};
+
 exports.makePackageBooking = async (req, res) => {
   try {
     const {
@@ -41,18 +50,20 @@ exports.makePackageBooking = async (req, res) => {
     // Use the package's name as the booking name
     const bookingName = selectedPackage.packageName;
 
+    const generatedBookingId = generateBookingId();
+
 
     // Create booking record
     const newBooking = new Booking({
-      bookingId,
+      bookingId: generatedBookingId ,
       bookingName,         // 'Package Book' or actual package name
       pickup,
-      destination: 'NA',   // since package defines its route
+      destination: 'PACKAGE BASED',   // since package defines its route
       date,
       time,
       totalPassengers,
-      tripType: 'NA',
-      carType: 'NA',
+      tripType: 'PACKAGE BASED',
+      carType: 'PACKAGE BASED',
       status: 'Pending',
       userName,
       userEmail,
@@ -116,14 +127,6 @@ exports.makePackageBooking = async (req, res) => {
 };
 
 
-const generateBookingId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let id = '';
-  for (let i = 0; i < 10; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
-};
 
 
 exports.makeRideBooking = async (req, res) => {
