@@ -1,4 +1,9 @@
 const Admin = require('../models/Admin');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+
+const SECRET_KEY = process.env.JWT_SECRET; // use env in production
 
 // Admin methods
 exports.registerAdmin = async (req, res) => {
@@ -17,8 +22,7 @@ exports.registerAdmin = async (req, res) => {
     admin = new Admin({ adminId, adminName, email, contact, password });
 
     await admin.save();
-
-
+    res.status(200).json({ msg: 'Registered Successfully' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -37,10 +41,28 @@ exports.loginAdmin = async (req, res) => {
       return res.status(401).json({ msg: 'Invalid Email' });
     }
 
-    if (password!=admin.password)
-    {
-        return res.status(401).json({ msg: 'Invalid Password' });
+    if (password != admin.password) {
+      return res.status(401).json({ msg: 'Invalid Password' });
     }
+
+    // Create JWT payload
+    const payload = {
+      admin: {
+        id: admin._id,
+        role: 'admin'
+      }
+    };
+
+    // Sign JWT
+    jwt.sign(
+      payload,
+      SECRET_KEY,
+      { expiresIn: '1h' }, // token expires in 1 hour
+      (err, token) => {
+        if (err) throw err;
+        res.status(200).json({ token });
+      }
+    );
 
   } catch (err) {
     console.error(err.message);
@@ -50,9 +72,9 @@ exports.loginAdmin = async (req, res) => {
 
 
 exports.updateAdmin = async (req, res) => {
-  const {adminId, adminName, email, contact, password } = req.body;
+  const { adminId, adminName, email, contact, password } = req.body;
 
-  const updateFields = {adminId, adminName, email, contact, password };
+  const updateFields = { adminId, adminName, email, contact, password };
 
   try {
     let admin = await Admin.findById(req.params.id);
