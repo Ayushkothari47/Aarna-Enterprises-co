@@ -13,6 +13,10 @@ function BookingManagement() {
   const [rideBookings, setRideBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const allBookings = [...packageBookings, ...rideBookings];
+  const [mobileSearch, setMobileSearch] = useState("");
+
+
 
   const [filters, setFilters] = useState({
     bookingName: "",
@@ -29,7 +33,7 @@ function BookingManagement() {
   };
 
 
-  
+
 
 
   const fetchPackageBookings = async () => {
@@ -65,12 +69,131 @@ function BookingManagement() {
   };
 
   const renderTable = (bookings) => {
+    if (bookings.length === 0)
+      return <p className="text-white mt-4">No bookings found.</p>;
+
+    // 🔥 Apply filters HERE
+    const filteredBookings = bookings.filter(b => {
+  const search = mobileSearch; // use local mobile search
+  return (
+    b.bookingName.toLowerCase().includes(filters.bookingName) &&
+    b.pickup.toLowerCase().includes(filters.pickup) &&
+    b.destination.toLowerCase().includes(filters.destination) &&
+    b.date.toLowerCase().includes(filters.date) &&
+    b.time.toLowerCase().includes(filters.time) &&
+    String(b.totalPassengers).includes(filters.totalPassengers) &&
+    b.status.toLowerCase().includes(filters.status) &&
+
+    // 🔥 Mobile Search (name, package, contact, date)
+    (
+      b.bookingName.toLowerCase().includes(search) ||
+      b.userName?.toLowerCase().includes(search) ||
+      b.userContact?.toLowerCase().includes(search) ||
+      b.date.toLowerCase().includes(search)
+    )
+  );
+});
+
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-gray-900 rounded-xl shadow-2xl overflow-hidden">
+
+          {/* Header */}
+          <thead className="text-left text-sm uppercase tracking-wider">
+            <tr className="bg-yellow-500 text-black">
+              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Pickup</th>
+              <th className="px-4 py-3">Destination</th>
+              <th className="px-4 py-3">Date</th>
+              <th className="px-4 py-3">Time</th>
+              <th className="px-4 py-3">Passengers</th>
+              <th className="px-4 py-3">Status</th>
+            </tr>
+
+            {/* Filter Inputs Row */}
+            <tr className="bg-gray-800">
+              {[
+                { key: "bookingName", placeholder: "Search name" },
+                { key: "pickup", placeholder: "Search pickup" },
+                { key: "destination", placeholder: "Search destination" },
+                { key: "date", placeholder: "Search date" },
+                { key: "time", placeholder: "Search time" },
+                { key: "totalPassengers", placeholder: "Passengers" },
+                { key: "status", placeholder: "Status" }
+              ].map((col) => (
+                <th key={col.key} className="px-2 py-2">
+                  <input
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-md placeholder-gray-400 
+                        border border-gray-600 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 
+                        transition-all text-sm"
+                    placeholder={col.placeholder}
+                    onChange={(e) => handleFilterChange(col.key, e.target.value)}
+                  />
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          {/* Table Body */}
+          <tbody>
+            {filteredBookings.map((booking, idx) => (
+              <tr
+                key={booking._id}
+                onClick={() => handleRowClick(booking)}
+                className={`
+            cursor-pointer transition-all
+            ${idx % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
+            hover:bg-gray-600
+          `}
+              >
+                <td className="px-4 py-3">{booking.bookingName}</td>
+                <td className="px-4 py-3">{booking.pickup}</td>
+                <td className="px-4 py-3">{booking.destination}</td>
+                <td className="px-4 py-3">{booking.date}</td>
+                <td className="px-4 py-3">{booking.time}</td>
+                <td className="px-4 py-3">{booking.totalPassengers}</td>
+
+                <td className="px-4 py-3">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold border 
+                ${booking.status === "Approved"
+                        ? "bg-green-500/20 text-green-400 border-green-500/50"
+                        : booking.status === "Rejected"
+                          ? "bg-red-500/20 text-red-400 border-red-500/50"
+                          : "bg-yellow-400/20 text-yellow-400 border-yellow-400/50"
+                      }
+              `}
+                  >
+                    {booking.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+    );
+  };
+
+  
+  const renderMobileCards = (bookings) => {
   if (bookings.length === 0)
     return <p className="text-white mt-4">No bookings found.</p>;
 
-  // 🔥 Apply filters HERE
-  const filteredBookings = bookings.filter(b => {
+  // 🔍 MOBILE SEARCH FILTER
+  const filteredBookings = bookings.filter((b) => {
+    const s = mobileSearch.toLowerCase();
+
     return (
+      // MOBILE SEARCH CONDITIONS
+      (b.bookingName?.toLowerCase().includes(s) ||
+        b.userName?.toLowerCase().includes(s) ||
+        b.userContact?.toLowerCase().includes(s) ||
+        b.date?.toLowerCase().includes(s)) &&
+      
+      // DESKTOP FILTERS SHOULD NOT AFFECT MOBILE (OPTIONAL)
       b.bookingName.toLowerCase().includes(filters.bookingName) &&
       b.pickup.toLowerCase().includes(filters.pickup) &&
       b.destination.toLowerCase().includes(filters.destination) &&
@@ -82,87 +205,26 @@ function BookingManagement() {
   });
 
   return (
-    <div className="overflow-x-auto">
-  <table className="min-w-full bg-gray-900 rounded-xl shadow-2xl overflow-hidden">
-    
-    {/* Header */}
-    <thead className="text-left text-sm uppercase tracking-wider">
-      <tr className="bg-yellow-500 text-black">
-        <th className="px-4 py-3">Name</th>
-        <th className="px-4 py-3">Pickup</th>
-        <th className="px-4 py-3">Destination</th>
-        <th className="px-4 py-3">Date</th>
-        <th className="px-4 py-3">Time</th>
-        <th className="px-4 py-3">Passengers</th>
-        <th className="px-4 py-3">Status</th>
-      </tr>
-
-      {/* Filter Inputs Row */}
-      <tr className="bg-gray-800">
-        {[
-          { key: "bookingName", placeholder: "Search name" },
-          { key: "pickup", placeholder: "Search pickup" },
-          { key: "destination", placeholder: "Search destination" },
-          { key: "date", placeholder: "Search date" },
-          { key: "time", placeholder: "Search time" },
-          { key: "totalPassengers", placeholder: "Passengers" },
-          { key: "status", placeholder: "Status" }
-        ].map((col) => (
-          <th key={col.key} className="px-2 py-2">
-            <input
-              className="w-full bg-gray-700 text-white px-3 py-2 rounded-md placeholder-gray-400 
-                        border border-gray-600 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 
-                        transition-all text-sm"
-              placeholder={col.placeholder}
-              onChange={(e) => handleFilterChange(col.key, e.target.value)}
-            />
-          </th>
-        ))}
-      </tr>
-    </thead>
-
-    {/* Table Body */}
-    <tbody>
-      {filteredBookings.map((booking, idx) => (
-        <tr
+    <div className="space-y-4">
+      {filteredBookings.map((booking) => (
+        <div
           key={booking._id}
           onClick={() => handleRowClick(booking)}
-          className={`
-            cursor-pointer transition-all
-            ${idx % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
-            hover:bg-gray-600
-          `}
+          className="bg-gray-800 rounded-xl p-4 shadow-md border border-gray-700 
+                     hover:bg-gray-700 transition cursor-pointer"
         >
-          <td className="px-4 py-3">{booking.bookingName}</td>
-          <td className="px-4 py-3">{booking.pickup}</td>
-          <td className="px-4 py-3">{booking.destination}</td>
-          <td className="px-4 py-3">{booking.date}</td>
-          <td className="px-4 py-3">{booking.time}</td>
-          <td className="px-4 py-3">{booking.totalPassengers}</td>
-
-          <td className="px-4 py-3">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold border 
-                ${
-                  booking.status === "Approved"
-                    ? "bg-green-500/20 text-green-400 border-green-500/50"
-                    : booking.status === "Rejected"
-                      ? "bg-red-500/20 text-red-400 border-red-500/50"
-                      : "bg-yellow-400/20 text-yellow-400 border-yellow-400/50"
-                }
-              `}
-            >
-              {booking.status}
-            </span>
-          </td>
-        </tr>
+          <p><span className="text-gray-400">User:</span> {booking.userName}</p>
+          <p><span className="text-gray-400">Contact:</span> {booking.userContact}</p>
+          <p><span className="text-gray-400">Package:</span> {booking.bookingName}</p>
+          <p><span className="text-gray-400">Persons:</span> {booking.totalPassengers}</p>
+          <p><span className="text-gray-400">Date:</span> {booking.date}</p>
+        </div>
       ))}
-    </tbody>
-  </table>
-</div>
-
+    </div>
   );
 };
+
+
 
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
@@ -196,50 +258,77 @@ function BookingManagement() {
 
   return (
     <div className="bg-black min-h-screen p-4 md:p-8 text-white font-sans">
-      <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8">
+      <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 text-yellow-400 text-center">
         Booking Management
       </h1>
 
       {/* Tabs */}
-      <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 mb-6 md:mb-8">
-        <button
-          onClick={() => setActiveTab("package")}
-          className={`relative px-4 py-2 md:px-6 md:py-3 font-semibold rounded-full transition-colors duration-300 ${activeTab === "package"
-            ? "bg-yellow-500 text-black shadow-lg"
-            : hasPending(packageBookings)
-              ? "bg-none text-white shadow-md"
-              : "bg-gray-800 text-white hover:bg-yellow-500 hover:text-black"
-            }`}
-        >
-          Package Bookings
-          {hasPending(packageBookings) && (
-            <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab("ride")}
-          className={`relative px-4 py-2 md:px-6 md:py-3 font-semibold rounded-full transition-colors duration-300 ${activeTab === "ride"
-            ? "bg-yellow-500 text-black shadow-lg"
-            : hasPending(rideBookings)
-              ? "bg-none text-white shadow-md"
-              : "bg-gray-800 text-white hover:bg-yellow-500 hover:text-black"
-            }`}
-        >
-          Ride Bookings
-          {hasPending(rideBookings) && (
-            <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-          )}
-        </button>
+      {/* Tabs (Glassmorphism) */}
+      <div className="flex space-x-3 mb-6 backdrop-blur-lg">
+        {[
+          { key: "all", label: "All" },
+          { key: "package", label: "Package Bookings" },
+          { key: "ride", label: "Ride Bookings" },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all border 
+        ${activeTab === tab.key
+                ? "bg-white/20 text-yellow-400 border-yellow-400 shadow-lg"
+                : "bg-white/10 text-gray-300 border-gray-600 hover:bg-white/20"
+              }
+      `}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
+
+
 
       {/* Table */}
       {loading ? (
         <p>Loading...</p>
-      ) : activeTab === "package" ? (
-        renderTable(packageBookings)
       ) : (
-        renderTable(rideBookings)
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block">
+            {activeTab === "package"
+              ? renderTable(packageBookings)
+              : activeTab === "ride"
+                ? renderTable(rideBookings)
+                : renderTable(allBookings)}
+          </div>
+
+          {/* Mobile Cards */}
+          {/* Mobile Cards */}
+          <div className="block md:hidden space-y-4">
+
+            {/* 🔍 Mobile Search Bar */}
+            <input
+              type="text"
+              value={mobileSearch}
+              onChange={(e) => setMobileSearch(e.target.value.toLowerCase())}
+              placeholder="Search bookings..."
+              className="w-full bg-gray-800 text-yellow-400 px-4 py-3 rounded-xl 
+               border border-gray-700 focus:border-yellow-400 
+               focus:ring-1 focus:ring-yellow-400 outline-none 
+               placeholder-yellow-400"
+            />
+
+            {/* Mobile Cards render */}
+            {activeTab === "package"
+              ? renderMobileCards(packageBookings)
+              : activeTab === "ride"
+                ? renderMobileCards(rideBookings)
+                : renderMobileCards(allBookings)}
+          </div>
+
+        </>
       )}
+
+
 
       {/* Booking Details Modal */}
       {/* Booking Details Modal */}
