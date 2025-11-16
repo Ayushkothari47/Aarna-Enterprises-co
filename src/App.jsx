@@ -16,6 +16,7 @@ import EmailManagement from "./pages/EmailManagement";
 import ContactUs from "./components/ContactUs";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import PageNotFound from "./pages/PageNotFound";
 
 function Layout() {
   const location = useLocation();
@@ -37,6 +38,7 @@ function Layout() {
 
         {/* Login route */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<PageNotFound />} />
 
         {/* Admin routes */}
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
