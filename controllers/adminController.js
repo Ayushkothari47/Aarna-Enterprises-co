@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 
-const SECRET_KEY = process.env.JWT_SECRET; // use env in production
+const SECRET_KEY = "12cae28ed0c46e6fbfaff7eda7bde316fcc95158f34d32497e448504d8b383f7351e102fa3c2b723ecff2e23dc3dbede3bc1132f0e885119a06e92640011afa4"; // use env in production
 
 // Admin methods
 exports.registerAdmin = async (req, res) => {
