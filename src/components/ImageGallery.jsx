@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const getImgAPI = `${SERVER_URL}/gallery/fetchApprovedImage`;
-const uploadImg = `${SERVER_URL}/gallery/upload-image`;
-
-
+import api from '../api/api';
 
 
 const ImageGallery = () => {
@@ -21,7 +16,7 @@ const ImageGallery = () => {
   // Fetch approved images
   const fetchApprovedImages = async () => {
     try {
-      const res = await axios.get(getImgAPI);
+      const res = await api.get("/gallery/fetchApprovedImage");
       setImages(res.data.data || []);
     } catch (error) {
       console.error("Error fetching images:", error);
@@ -58,7 +53,7 @@ const ImageGallery = () => {
 
     try {
       setUploading(true); // start uploading
-      await axios.post(uploadImg, formData, {
+      await api.post("/gallery/upload-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("Image uploaded successfully! Wait for admin Approval");

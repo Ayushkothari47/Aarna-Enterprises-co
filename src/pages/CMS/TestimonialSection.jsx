@@ -1,13 +1,9 @@
 // 📁 src/components/CMS/TestimonialSection.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fetchAllTestimonialsAPI = `${SERVER_URL}/siteContent/get-all-reviews`;
-const addTestimonialAPI = `${SERVER_URL}/CMS/add-review`;
-const deleteTestimonialAPI = (id) => `${SERVER_URL}/CMS/delete-review/${id}`;
-const updateVisibilityAPI = (id) => `${SERVER_URL}/CMS/update-visibility/${id}`;
+import api from '../../api/api';
+
 
 const TestimonialSection = () => {
     const [testimonials, setTestimonials] = useState([]);
@@ -35,7 +31,7 @@ const TestimonialSection = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const res = await axios.get(fetchAllTestimonialsAPI);
+            const res = await api.get("/siteContent/get-all-reviews");
             setTestimonials(res.data?.data || []);
         } catch (err) {
             console.error("Error fetching testimonials:", err);
@@ -59,7 +55,7 @@ const TestimonialSection = () => {
 
         try {
             setUploading(true);
-            const res = await axios.post(addTestimonialAPI, data, {
+            const res = await api.post("/CMS/add-review", data, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setTestimonials([res.data.data, ...testimonials]);
@@ -80,7 +76,7 @@ const TestimonialSection = () => {
     const confirmDelete = async () => {
         try {
             setDeleting(true); // start loading
-            await axios.delete(deleteTestimonialAPI(selectedTestimonial.testimonial_Id));
+            await api.delete(`/CMS/delete-review/${selectedTestimonial.testimonial_Id}`);
             setTestimonials(testimonials.filter(t => t.testimonial_Id !== selectedTestimonial.testimonial_Id));
             setShowDeleteModal(false);
             setSelectedTestimonial(null);
@@ -103,7 +99,7 @@ const TestimonialSection = () => {
         );
 
         try {
-            await axios.patch(updateVisibilityAPI(testimonial.testimonial_Id), {
+            await api.patch(`/CMS/update-visibility/${testimonial.testimonial_Id}`, {
                 isVisible: !testimonial.isVisible,
             });
         } catch (err) {

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fetchAllImages = `${SERVER_URL}/gallery/fetchAllImages`;
-const updateImage = `${SERVER_URL}/gallery/updateImage`;
-const deleteImage = `${SERVER_URL}/gallery/deleteImage`;
+import api from '../api/api';
 
 
 function GalleryManagement() {
@@ -17,11 +11,10 @@ function GalleryManagement() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch(fetchAllImages);
-        const data = await response.json();
-        if (response.ok) {
-          setImages(data.data || []);
+        const res = await api.get("/gallery/fetchAllImages");
 
+        if (res.status === 200) {
+          setImages(res.data.data || []);
         }
       } catch (err) {
         console.error("Error fetching images:", err);
@@ -29,6 +22,7 @@ function GalleryManagement() {
         setLoading(false);
       }
     };
+
 
     fetchImages();
   }, []);
@@ -43,19 +37,15 @@ function GalleryManagement() {
     );
 
     try {
-      const response = await fetch(
-        updateImage,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imgId, isApproved: !currentStatus }),
-        }
-      );
+      const res = await api.post("/gallery/updateImage", {
+        imgId,
+        isApproved: !currentStatus,
+      });
 
-      const data = await response.json();
+      // Check response for failure
+      if (res.status !== 200) {
+        console.error("Failed to update status:", res.data.message || res.data);
 
-      if (!response.ok) {
-        console.error("Failed to update status:", data.message || data);
         // Rollback state on failure
         setImages((prev) =>
           prev.map((img) =>
@@ -65,7 +55,8 @@ function GalleryManagement() {
       }
     } catch (err) {
       console.error("Error updating status:", err);
-      // Rollback on error
+
+      // Rollback state on error
       setImages((prev) =>
         prev.map((img) =>
           img.imgId === imgId ? { ...img, isApproved: currentStatus } : img
@@ -74,9 +65,12 @@ function GalleryManagement() {
     }
   };
 
+
   // Handle image delete
   const handleDelete = async (imgId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this image?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this image?"
+    );
     if (!confirmDelete) return;
 
     // Optimistic UI update
@@ -84,21 +78,10 @@ function GalleryManagement() {
     setImages((prev) => prev.filter((img) => img.imgId !== imgId));
 
     try {
-      const response = await fetch(
-        deleteImage,
-        {
-          method: "POST", // assuming backend expects POST
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imgId }),
-        }
-      );
+      const res = await api.post("/gallery/deleteImage", { imgId });
 
-      const data = await response.json();
-
-      console.log(data)
-
-      if (!response.ok) {
-        console.error("Failed to delete image:", data.message || data);
+      if (res.status !== 200) {
+        console.error("Failed to delete image:", res.data.message || res.data);
         // Rollback on failure
         setImages(previousImages);
         alert("Failed to delete image. Please try again.");
@@ -110,6 +93,7 @@ function GalleryManagement() {
       alert("Error deleting image. Please try again.");
     }
   };
+
 
   if (loading)
     return (

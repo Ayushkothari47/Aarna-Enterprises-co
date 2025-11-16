@@ -1,35 +1,37 @@
 import React, { useState } from "react";
+import api from "../api/api"; // adjust path if needed
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login data:", formData);
+    try {
+      const res = await api.post("/admin/admin-login", formData);
+      // Save token in localStorage
+      localStorage.setItem("token", res.data.token);
+      // Navigate to dashboard or protected page
+      navigate("/admin");
+    } catch (err) {
+      console.error(err.response?.data?.msg || "Login failed");
+      alert(err.response?.data?.msg || "Login failed");
+    }
   };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-950">
-      <div className="w-full sm:max-w-md sm:rounded-2xl bg-gray-900 text-white shadow-lg p-6 sm:p- flex flex-col justify-center sm:h-auto h-screen">
-        {/* Header */}
+      <div className="w-full sm:max-w-md sm:rounded-2xl bg-gray-900 text-white shadow-lg p-6 flex flex-col justify-center sm:h-auto h-screen">
         <h1 className="text-3xl font-bold text-center mb-8 sm:mb-4 text-yellow-400">
           Admin Login
         </h1>
-
-        {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
-          {/* Email Field */}
           <div>
             <label
               htmlFor="email"
@@ -47,8 +49,6 @@ function LoginPage() {
               className="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:border-yellow-400 focus:outline-none"
             />
           </div>
-
-          {/* Password Field with Toggle */}
           <div className="relative">
             <label
               htmlFor="password"
@@ -73,8 +73,6 @@ function LoginPage() {
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
-
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-yellow-400 text-gray-950 font-semibold py-3 rounded-lg hover:bg-yellow-300 transition duration-300"

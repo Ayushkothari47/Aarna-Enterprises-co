@@ -1,32 +1,34 @@
 import React, { useState, useEffect } from "react";
+import api from '../api/api';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const getBanners = `${SERVER_URL}/siteContent/fetchAllBanner`;
+
 
 function HeroBanner() {
   const [banners, setBanners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [hideBanner, setHideBanner] = useState(false); // New state to hide banner section
+  const [loading, setLoading] = useState(true); 
+  const [hideBanner, setHideBanner] = useState(false); 
 
   useEffect(() => {
+    
     const fetchBanners = async () => {
-      try {
-        const response = await fetch(getBanners);
-        const result = await response.json();
+  try {
+    const response = await api.get("/siteContent/fetchAllBanner");
+    const result = response.data;
 
-        // If API says "No visible banners found", hide the banner section
-        if (result.message === "No visible banners found.") {
-          setHideBanner(true);
-        } else if (result.data && result.data.length > 0) {
-          setBanners(result.data[0].banners);
-        }
-      } catch (error) {
-        console.error("Error fetching banners:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    
+    if (result.message === "No visible banners found.") {
+      setHideBanner(true);
+    } else if (result.data && result.data.length > 0) {
+      setBanners(result.data[0].banners);
+    }
+  } catch (error) {
+    console.error("Error fetching banners:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     fetchBanners();
   }, []);

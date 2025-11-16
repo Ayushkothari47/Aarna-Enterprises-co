@@ -4,8 +4,8 @@ import planeIcon from "../assets/plane.png";
 import trainIcon from "../assets/train.png";
 import taxiIcon from "../assets/taxi.png";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const submitBooking = `${SERVER_URL}/booking/bookRide`;
+import api from '../api/api';
+
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState(""); // default hidden
@@ -77,25 +77,27 @@ const Navbar = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       setIsSubmitting(true);
-      setActiveTab("")
+      setActiveTab("");
       setSuccessMessage("");
       setErrorMessage("");
 
-
       try {
-        const res = await fetch(submitBooking, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+        const res = await api.post(
+          "/booking/bookRide",
+          formData, // data sent directly
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-
-        if (!res.ok) {
-          throw new Error("Failed to submit booking");
+        // Check response status (optional)
+        if (res.status !== 200) {
+          throw new Error(res.data.message || "Failed to submit booking");
         }
 
-
-
+        // Clear form
         setFormData({
           pickup: "",
           destination: "",
@@ -109,12 +111,21 @@ const Navbar = () => {
           userContact: "",
         });
 
+        setSuccessMessage("Booking submitted successfully!");
+
       } catch (error) {
-        setErrorMessage(error.message || "Something went wrong");
+        console.error("Error submitting booking:", error);
+
+        if (error.response) {
+          setErrorMessage(error.response.data.message || "Something went wrong");
+        } else {
+          setErrorMessage(error.message || "Something went wrong");
+        }
       } finally {
         setIsSubmitting(false);
       }
     };
+
 
 
     return (

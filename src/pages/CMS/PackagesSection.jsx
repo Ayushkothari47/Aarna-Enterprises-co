@@ -3,11 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { TrashIcon, PlusIcon, XMarkIcon, PencilIcon } from "@heroicons/react/24/solid";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fetchPackagesAPI = `${SERVER_URL}/CMS/fetchAllPackages`;
-const deletePackageAPI = `${SERVER_URL}/CMS/deletePackage`;
-const addPackageAPI = `${SERVER_URL}/CMS/addPackage`;
-const updatePackageAPI = `${SERVER_URL}/CMS/updatePackage`; // <— new API endpoint
+import api from '../../api/api';
+
 
 const PackagesSection = () => {
     const [packages, setPackages] = useState([]);
@@ -38,7 +35,7 @@ const PackagesSection = () => {
 
     const fetchPackages = async () => {
         try {
-            const res = await axios.get(fetchPackagesAPI);
+            const res = await api.get("/CMS/fetchAllPackages");
             setPackages(res.data?.data ?? []);
         } catch (err) {
             console.error("Error fetching packages:", err);
@@ -72,7 +69,7 @@ const PackagesSection = () => {
 
             setShowAddModal(false);
 
-            const res = await axios.post(addPackageAPI, formData, {
+            const res = await api.post("/CMS/addPackage", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
@@ -112,7 +109,7 @@ const PackagesSection = () => {
     const confirmDelete = async () => {
     try {
         setDeleting(true);
-        await axios.delete(deletePackageAPI, { data: { packageId: selectedPackage } });
+        await api.delete("/CMS/deletePackage", { data: { packageId: selectedPackage } });
         setPackages((prev) => prev.filter((p) => p.packageId !== selectedPackage));
         setShowDeleteModal(false);
     } catch (err) {
@@ -165,7 +162,7 @@ const PackagesSection = () => {
             });
 
 
-            const res = await axios.post(updatePackageAPI, formData, {
+            const res = await api.post("/CMS/updatePackage", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 

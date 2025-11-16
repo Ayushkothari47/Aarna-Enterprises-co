@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
+import api from '../api/api';
+import axios from "axios";
 
 const BookPackage = () => {
   const location = useLocation();
@@ -47,38 +49,50 @@ const BookPackage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const payload = {
-      bookingId: packageData.packageId, // assuming packageData has _id
-      ...formData,
-    };
-
-    try {
-      const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-      const response = await fetch(`${SERVER_URL}/booking/bookPackage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
 
 
-      setIsSubmitting(false);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-      const result = await response.json();
-      if (response.ok) {
-        alert("Booking successful!");
-        console.log(result);
-      } else {
-        alert(result.message || "Booking failed.");
+  const payload = {
+    bookingId: packageData.packageId, // assuming packageData has _id
+    ...formData,
+  };
+
+  try {
+    const response = await api.post(
+      "/booking/bookPackage", // URL
+      payload,               // data to send
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      console.error("Error submitting booking:", error);
+    );
+
+    setIsSubmitting(false);
+
+    // Axios automatically parses JSON
+    if (response.status === 200) {
+      alert("Booking successful!");
+      console.log(response.data);
+    } else {
+      alert(response.data.message || "Booking failed.");
+    }
+  } catch (error) {
+    setIsSubmitting(false);
+    console.error("Error submitting booking:", error);
+
+    // Better error handling
+    if (error.response) {
+      alert(error.response.data.message || "Booking failed.");
+    } else {
       alert("Error submitting booking. Try again later.");
     }
-  };
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-white py-10 px-4">

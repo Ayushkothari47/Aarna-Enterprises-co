@@ -3,6 +3,8 @@ import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import Team from "../Icons/team.jpg";
 import Ayush from "../Icons/ak.jpg";
 import Anup from "../Icons/Anup.jpeg";
+import api from '../api/api';
+import axios from "axios";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -10,8 +12,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const testimonials_api = `${SERVER_URL}/siteContent/get-all-reviews?visible=true`;
+
 
 
 const developers = [
@@ -41,22 +42,30 @@ const About = () => {
 
   // Fetch testimonials from backend
   useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const res = await fetch(testimonials_api);
-        const data = await res.json();
+    
+  
 
-        if (res.ok) {
-          setTestimonials(data.data); // adjust based on backend response
-        } else {
-          console.error("Error fetching testimonials:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching testimonials:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+const fetchTestimonials = async () => {
+  try {
+    const res = await api.get('/siteContent/get-all-reviews?visible=true'); 
+    setTestimonials(res.data.data); 
+  } catch (error) {
+ 
+    if (error.response) {
+      
+      console.error("Error fetching testimonials:", error.response.data.message);
+    } else if (error.request) {
+     
+      console.error("No response from server:", error.request);
+    } else {
+ 
+      console.error("Error fetching testimonials:", error.message);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     fetchTestimonials();
   }, []);

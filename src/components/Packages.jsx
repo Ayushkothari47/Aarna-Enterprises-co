@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import api from '../api/api';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const allPackages = `${SERVER_URL}/siteContent/fetchPackages`;
+
 
 const Packages = () => {
   const [tourData, setTourData] = useState([]);
@@ -12,14 +12,13 @@ const Packages = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await fetch(allPackages);
-        if (!response.ok) {
-          throw new Error("Failed to fetch packages, Unable to reach server");
-        }
-        const data = await response.json();
+        const response = await api.get("/siteContent/fetchPackages");
+
+        // Axios automatically throws for non-200 statuses, so no need for res.ok check
+        const data = response.data;
 
         // Format API response
-        const formattedData = data.data.map((pkg, index) => ({
+        const formattedData = data.data.map((pkg) => ({
           packageId: pkg.packageId,
           title: pkg.packageName.replace(/"/g, ""),
           description: pkg.packageDescription.replace(/"/g, ""),
@@ -33,9 +32,17 @@ const Packages = () => {
 
         setTourData(formattedData);
         setLoading(false);
+
       } catch (err) {
-        console.error(err);
-        setError(err.message);
+        console.error("Error fetching packages:", err);
+
+        // Axios error handling
+        if (err.response) {
+          setError(err.response.data.message || "Failed to fetch packages");
+        } else {
+          setError("Unable to reach server");
+        }
+
         setLoading(false);
       }
     };

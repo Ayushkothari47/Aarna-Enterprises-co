@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from '../api/api';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fetchAllPackageBookings = `${SERVER_URL}/booking/getAllPackageBookings`;
-const fetchAllRideBookings = `${SERVER_URL}/booking/getAllRideBookings`;
-const rideUpdateAPI = `${SERVER_URL}/booking/updateRideBookings`;
-const packageUpdateAPI = `${SERVER_URL}/booking/updatePackageBookings`;
+
+const rideUpdateAPI = "/booking/updateRideBookings";
+const packageUpdateAPI = "/booking/updatePackageBookings";
+
 
 function BookingManagement() {
   const [activeTab, setActiveTab] = useState("package");
@@ -38,7 +37,7 @@ function BookingManagement() {
 
   const fetchPackageBookings = async () => {
     try {
-      const res = await axios.get(fetchAllPackageBookings);
+      const res = await api.get("/booking/getAllPackageBookings");
       setPackageBookings(res.data.data);
     } catch (err) {
       console.error("Error fetching package bookings", err);
@@ -47,7 +46,7 @@ function BookingManagement() {
 
   const fetchRideBookings = async () => {
     try {
-      const res = await axios.get(fetchAllRideBookings);
+      const res = await api.get("/booking/getAllRideBookings");
       setRideBookings(res.data.data);
     } catch (err) {
       console.error("Error fetching ride bookings", err);
@@ -235,7 +234,7 @@ function BookingManagement() {
           ? `${packageUpdateAPI}/${bookingId}`
           : `${rideUpdateAPI}/${bookingId}`;
 
-      const res = await axios.put(updateURL, { status: newStatus });
+      const res = await api.put(updateURL, { status: newStatus });
 
       if (res.status === 200) {
         alert(`Booking ${newStatus} successfully!`);

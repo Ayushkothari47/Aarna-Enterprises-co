@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import React from "react";
 
+
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -14,6 +15,7 @@ import CMS from "./pages/CMS";
 import EmailManagement from "./pages/EmailManagement";
 import ContactUs from "./components/ContactUs";
 import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 function Layout() {
   const location = useLocation();
@@ -37,11 +39,11 @@ function Layout() {
         <Route path="/login" element={<LoginPage />} />
 
         {/* Admin routes */}
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/admin/booking-management" element={<BookingManagement />} />
-        <Route path="/admin/gallery-management" element={<GalleryManagement />} />
-        <Route path="/admin/CMS" element={<CMS />} />
-        <Route path="/admin/email-management" element={<EmailManagement />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/admin/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
+        <Route path="/admin/gallery-management" element={<ProtectedRoute><GalleryManagement /></ProtectedRoute>} />
+        <Route path="/admin/CMS" element={<ProtectedRoute><CMS /></ProtectedRoute>} />
+        <Route path="/admin/email-management" element={<ProtectedRoute><EmailManagement /></ProtectedRoute>} />
       </Routes>
 
       {/* Hide floating contact on admin/login too */}

@@ -1,12 +1,8 @@
 // 📁 src/components/CMS/BannerSection.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fetchAllImages = `${SERVER_URL}/CMS/fetchAllBanner`;
-const deleteBannerAPI = `${SERVER_URL}/CMS/deleteBanner`;
-const addBannerAPI = `${SERVER_URL}/CMS/addBanner`;
+import api from '../../api/api';
 
 const BannerSection = () => {
   const [banners, setBanners] = useState([]);
@@ -25,7 +21,7 @@ const BannerSection = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await axios.get(fetchAllImages);
+      const res = await api.get("/CMS/fetchAllBanner");
       const bannerData = res.data?.data?.[0]?.banners || [];
       setBanners(bannerData);
       const visibility = res.data?.data?.[0]?.isVisible ?? false;
@@ -39,7 +35,7 @@ const BannerSection = () => {
 
   const handleToggleVisibility = async () => {
     try {
-      const res = await axios.put(`${SERVER_URL}/CMS/updateBannerVisibility`, {
+      const res = await api.put("/CMS/updateBannerVisibility", {
         isVisible: !isVisible,
       });
       const updatedVisibility = res.data?.data?.isVisible;
@@ -58,7 +54,7 @@ const BannerSection = () => {
 
     try {
       setUploading(true);
-      const res = await axios.post(addBannerAPI, formData, {
+      const res = await api.post("/CMS/addBanner", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setBanners(res.data.data.banners);
@@ -78,7 +74,7 @@ const BannerSection = () => {
   const confirmDelete = async () => {
     try {
       setDeleting(true);  // Set deleting to true when the delete process starts
-      await axios.delete(deleteBannerAPI, { data: { bannerUrl: selectedBanner } });
+      await api.delete("/CMS/deleteBanner", { data: { bannerUrl: selectedBanner } });
       setBanners(banners.filter((b) => b !== selectedBanner));
       setShowDeleteModal(false);
       setSelectedBanner(null);

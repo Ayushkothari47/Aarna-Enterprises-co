@@ -1,12 +1,7 @@
 // EmailManagement.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from '../api/api';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fetchEmails_api = `${SERVER_URL}/email/fetch-emails`;
-const email_template_api = `${SERVER_URL}/email/get-email-template`;
-const sendBulk_api = `${SERVER_URL}/email/send-bulk`;
-const update_email_template_api = `${SERVER_URL}/email/update-email-template`;
 
 const EmailManagement = () => {
     const [activeTab, setActiveTab] = useState("bulk");
@@ -32,7 +27,7 @@ const EmailManagement = () => {
 
     const fetchEmails = async () => {
         try {
-            const response = await axios.get(fetchEmails_api);
+            const response = await api.get("/email/fetch-emails");
             const data = Array.isArray(response.data.data) ? response.data.data : [];
             setEmails(data);
         } catch (error) {
@@ -43,7 +38,7 @@ const EmailManagement = () => {
 
     const fetchEmailTemplate = async () => {
         try {
-            const response = await axios.get(email_template_api);
+            const response = await api.get("/email/get-email-template");
             setEmailTemplate(response.data);
         } catch (error) {
             console.error("Error fetching template:", error);
@@ -81,7 +76,7 @@ const EmailManagement = () => {
         }
 
         try {
-            await axios.post(sendBulk_api, {
+            await api.post("/email/send-bulk", {
                 toList: selectedEmails,
                 subject: bulkSubject,
                 htmlContent: bulkContent,
@@ -107,7 +102,7 @@ const EmailManagement = () => {
         }
 
         try {
-            await axios.put(update_email_template_api, updatedTemplate);
+            await api.put("/email/update-email-template", updatedTemplate);
             alert("Template updated!");
             fetchEmailTemplate();
         } catch (error) {
