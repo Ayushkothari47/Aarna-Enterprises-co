@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import React from "react";
-
+import { ToastContainer, toast } from 'react-toastify';
 
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/Navbar";
@@ -29,7 +29,12 @@ function Layout() {
     <div className="App">
       {!hideLayout && <Navbar />}
 
+      <ToastContainer />
+
+
       <Routes>
+
+
         {/* User routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/gallery" element={<ImageGallery />} />

@@ -73,25 +73,25 @@ function BookingManagement() {
 
     // 🔥 Apply filters HERE
     const filteredBookings = bookings.filter(b => {
-  const search = mobileSearch; // use local mobile search
-  return (
-    b.bookingName.toLowerCase().includes(filters.bookingName) &&
-    b.pickup.toLowerCase().includes(filters.pickup) &&
-    b.destination.toLowerCase().includes(filters.destination) &&
-    b.date.toLowerCase().includes(filters.date) &&
-    b.time.toLowerCase().includes(filters.time) &&
-    String(b.totalPassengers).includes(filters.totalPassengers) &&
-    b.status.toLowerCase().includes(filters.status) &&
+      const search = mobileSearch; // use local mobile search
+      return (
+        b.bookingName.toLowerCase().includes(filters.bookingName) &&
+        b.pickup.toLowerCase().includes(filters.pickup) &&
+        b.destination.toLowerCase().includes(filters.destination) &&
+        b.date.toLowerCase().includes(filters.date) &&
+        b.time.toLowerCase().includes(filters.time) &&
+        String(b.totalPassengers).includes(filters.totalPassengers) &&
+        b.status.toLowerCase().includes(filters.status) &&
 
-    // 🔥 Mobile Search (name, package, contact, date)
-    (
-      b.bookingName.toLowerCase().includes(search) ||
-      b.userName?.toLowerCase().includes(search) ||
-      b.userContact?.toLowerCase().includes(search) ||
-      b.date.toLowerCase().includes(search)
-    )
-  );
-});
+        // 🔥 Mobile Search (name, package, contact, date)
+        (
+          b.bookingName.toLowerCase().includes(search) ||
+          b.userName?.toLowerCase().includes(search) ||
+          b.userContact?.toLowerCase().includes(search) ||
+          b.date.toLowerCase().includes(search)
+        )
+      );
+    });
 
 
     return (
@@ -113,22 +113,37 @@ function BookingManagement() {
             {/* Filter Inputs Row */}
             <tr className="bg-gray-800">
               {[
-                { key: "bookingName", placeholder: "Search name" },
-                { key: "pickup", placeholder: "Search pickup" },
-                { key: "destination", placeholder: "Search destination" },
-                { key: "date", placeholder: "Search date" },
-                { key: "time", placeholder: "Search time" },
-                { key: "totalPassengers", placeholder: "Passengers" },
-                { key: "status", placeholder: "Status" }
+                { key: "bookingName", placeholder: "Search name", type: "text" },
+                { key: "pickup", placeholder: "Search pickup", type: "text" },
+                { key: "destination", placeholder: "Search destination", type: "text" },
+                { key: "date", placeholder: "Search date", type: "date" },
+                { key: "time", placeholder: "Search time", type: "time" },
+                { key: "totalPassengers", placeholder: "Passengers", type: "text" },
+                { key: "status", type: "select" }
+
               ].map((col) => (
                 <th key={col.key} className="px-2 py-2">
-                  <input
-                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-md placeholder-gray-400 
-                        border border-gray-600 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 
-                        transition-all text-sm"
-                    placeholder={col.placeholder}
-                    onChange={(e) => handleFilterChange(col.key, e.target.value)}
-                  />
+                  {col.key === "status" ? (
+                    <select
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600 
+               focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 text-sm"
+                      onChange={(e) => handleFilterChange("status", e.target.value)}
+                    >
+                      <option value="">All</option>
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  ) : (
+                    <input
+                      type={col.type}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600 
+               focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 text-sm"
+                      placeholder={col.placeholder}
+                      onChange={(e) => handleFilterChange(col.key, e.target.value)}
+                    />
+                  )}
+
                 </th>
               ))}
             </tr>
@@ -176,52 +191,52 @@ function BookingManagement() {
     );
   };
 
-  
-  const renderMobileCards = (bookings) => {
-  if (bookings.length === 0)
-    return <p className="text-white mt-4">No bookings found.</p>;
 
-  // 🔍 MOBILE SEARCH FILTER
-  const filteredBookings = bookings.filter((b) => {
-    const s = mobileSearch.toLowerCase();
+  const renderMobileCards = (bookings) => {
+    if (bookings.length === 0)
+      return <p className="text-white mt-4">No bookings found.</p>;
+
+    // 🔍 MOBILE SEARCH FILTER
+    const filteredBookings = bookings.filter((b) => {
+      const s = mobileSearch.toLowerCase();
+
+      return (
+        // MOBILE SEARCH CONDITIONS
+        (b.bookingName?.toLowerCase().includes(s) ||
+          b.userName?.toLowerCase().includes(s) ||
+          b.userContact?.toLowerCase().includes(s) ||
+          b.date?.toLowerCase().includes(s)) &&
+
+        // DESKTOP FILTERS SHOULD NOT AFFECT MOBILE (OPTIONAL)
+        b.bookingName.toLowerCase().includes(filters.bookingName) &&
+        b.pickup.toLowerCase().includes(filters.pickup) &&
+        b.destination.toLowerCase().includes(filters.destination) &&
+        b.date.toLowerCase().includes(filters.date) &&
+        b.time.toLowerCase().includes(filters.time) &&
+        String(b.totalPassengers).includes(filters.totalPassengers) &&
+        b.status.toLowerCase().includes(filters.status)
+      );
+    });
 
     return (
-      // MOBILE SEARCH CONDITIONS
-      (b.bookingName?.toLowerCase().includes(s) ||
-        b.userName?.toLowerCase().includes(s) ||
-        b.userContact?.toLowerCase().includes(s) ||
-        b.date?.toLowerCase().includes(s)) &&
-      
-      // DESKTOP FILTERS SHOULD NOT AFFECT MOBILE (OPTIONAL)
-      b.bookingName.toLowerCase().includes(filters.bookingName) &&
-      b.pickup.toLowerCase().includes(filters.pickup) &&
-      b.destination.toLowerCase().includes(filters.destination) &&
-      b.date.toLowerCase().includes(filters.date) &&
-      b.time.toLowerCase().includes(filters.time) &&
-      String(b.totalPassengers).includes(filters.totalPassengers) &&
-      b.status.toLowerCase().includes(filters.status)
-    );
-  });
-
-  return (
-    <div className="space-y-4">
-      {filteredBookings.map((booking) => (
-        <div
-          key={booking._id}
-          onClick={() => handleRowClick(booking)}
-          className="bg-gray-800 rounded-xl p-4 shadow-md border border-gray-700 
+      <div className="space-y-4">
+        {filteredBookings.map((booking) => (
+          <div
+            key={booking._id}
+            onClick={() => handleRowClick(booking)}
+            className="bg-gray-800 rounded-xl p-4 shadow-md border border-gray-700 
                      hover:bg-gray-700 transition cursor-pointer"
-        >
-          <p><span className="text-gray-400">User:</span> {booking.userName}</p>
-          <p><span className="text-gray-400">Contact:</span> {booking.userContact}</p>
-          <p><span className="text-gray-400">Package:</span> {booking.bookingName}</p>
-          <p><span className="text-gray-400">Persons:</span> {booking.totalPassengers}</p>
-          <p><span className="text-gray-400">Date:</span> {booking.date}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
+          >
+            <p><span className="text-gray-400">User:</span> {booking.userName}</p>
+            <p><span className="text-gray-400">Contact:</span> {booking.userContact}</p>
+            <p><span className="text-gray-400">Package:</span> {booking.bookingName}</p>
+            <p><span className="text-gray-400">Persons:</span> {booking.totalPassengers}</p>
+            <p><span className="text-gray-400">Date:</span> {booking.date}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
 
 

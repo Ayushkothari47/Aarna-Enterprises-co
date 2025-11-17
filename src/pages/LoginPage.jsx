@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../api/api"; // adjust path if needed
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 
 function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -15,13 +16,18 @@ function LoginPage() {
     e.preventDefault();
     try {
       const res = await api.post("/admin/admin-login", formData);
+      toast.success("Login Successful!");
       // Save token in localStorage
       localStorage.setItem("token", res.data.token);
       // Navigate to dashboard or protected page
-      navigate("/admin");
+      setTimeout(() => {
+        navigate("/admin");
+      }, 800);
+
     } catch (err) {
-      console.error(err.response?.data?.msg || "Login failed");
-      alert(err.response?.data?.msg || "Login failed");
+      // console.error(err.response?.data?.msg || "Login failed");
+      toast.error(err.response?.data?.msg || "Login failed");
+      // alert(err.response?.data?.msg || "Login failed");
     }
   };
 
@@ -81,6 +87,7 @@ function LoginPage() {
           </button>
         </form>
       </div>
+    
     </div>
   );
 }
