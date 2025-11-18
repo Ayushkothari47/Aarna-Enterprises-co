@@ -1,6 +1,7 @@
 // EmailManagement.jsx
 import React, { useEffect, useState } from "react";
 import api from '../api/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const EmailManagement = () => {
@@ -31,7 +32,7 @@ const EmailManagement = () => {
             const data = Array.isArray(response.data.data) ? response.data.data : [];
             setEmails(data);
         } catch (error) {
-            console.error("Error fetching emails:", error);
+            toast.error("Error fetching emails:", error)
         }
     };
 
@@ -41,7 +42,7 @@ const EmailManagement = () => {
             const response = await api.get("/email/get-email-template");
             setEmailTemplate(response.data);
         } catch (error) {
-            console.error("Error fetching template:", error);
+            toast.error("Error fetching template:", error)
         }
     };
 
@@ -63,15 +64,15 @@ const EmailManagement = () => {
 
     const sendBulkEmail = async () => {
         if (!bulkSubject.trim()) {
-            alert("Subject cannot be empty!");
+            toast.error("Subject cannot be empty!")
             return;
         }
         if (!bulkContent.trim()) {
-            alert("Content cannot be empty!");
+            toast.error("Content cannot be empty!")
             return;
         }
         if (selectedEmails.length === 0) {
-            alert("Please select at least one email!");
+            toast.error("Please select at least one email!")
             return;
         }
 
@@ -84,29 +85,30 @@ const EmailManagement = () => {
                 headers: {
                 'Content-Type': 'application/json'
             }});
-            alert("Bulk email sent!");
+          
+            toast.success("Bulk Emails sent successfully!")
             setSelectedEmails([]);
             setBulkSubject("");
             setBulkContent("");
         } catch (error) {
-            console.error("Error sending bulk email:", error);
+            toast.error("Error sending bulk email:", error)
         }
     };
 
     const updateEmailTemplate = async (updatedTemplate) => {
         for (const key in updatedTemplate) {
             if (typeof updatedTemplate[key] === "string" && !updatedTemplate[key].trim()) {
-                alert("Template fields cannot be empty!");
+                toast.error("Template fields cannot be empty!")
                 return;
             }
         }
 
         try {
             await api.put("/email/update-email-template", updatedTemplate);
-            alert("Template updated!");
+            toast.success("Template updated successful!")
             fetchEmailTemplate();
         } catch (error) {
-            console.error("Error updating template:", error);
+            toast.error("Error updating template:", error)
         }
     };
 

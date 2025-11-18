@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from '../api/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -23,7 +24,7 @@ function HeroBanner() {
       setBanners(result.data[0].banners);
     }
   } catch (error) {
-    console.error("Error fetching banners:", error);
+    toast.error("Error fetching banners:", error)
   } finally {
     setLoading(false);
   }

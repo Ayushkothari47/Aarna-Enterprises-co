@@ -5,12 +5,12 @@ import Ayush from "../Icons/ak.jpg";
 import Anup from "../Icons/Anup.jpeg";
 import api from '../api/api';
 import axios from "axios";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -52,14 +52,15 @@ const fetchTestimonials = async () => {
   } catch (error) {
  
     if (error.response) {
-      
-      console.error("Error fetching testimonials:", error.response.data.message);
-    } else if (error.request) {
-     
-      console.error("No response from server:", error.request);
-    } else {
- 
-      console.error("Error fetching testimonials:", error.message);
+      toast.error("Error fetching testimonials:", error.response.data.message);
+    } 
+    
+    else if (error.request) {
+      toast.success("No response from server:", error.request);
+    } 
+    
+    else {
+      toast.success("Error fetching testimonials:", error.message)
     }
   } finally {
     setLoading(false);

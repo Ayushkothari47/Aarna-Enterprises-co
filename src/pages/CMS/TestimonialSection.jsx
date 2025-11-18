@@ -1,7 +1,7 @@
 // 📁 src/components/CMS/TestimonialSection.jsx
 import React, { useEffect, useState } from "react";
 import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-
+import { ToastContainer, toast } from 'react-toastify';
 import api from '../../api/api';
 
 
@@ -34,7 +34,7 @@ const TestimonialSection = () => {
             const res = await api.get("/siteContent/get-all-reviews");
             setTestimonials(res.data?.data || []);
         } catch (err) {
-            console.error("Error fetching testimonials:", err);
+            toast.error("Error fetching testimonials:", err)
         } finally {
             setLoading(false);
         }
@@ -43,7 +43,7 @@ const TestimonialSection = () => {
     const handleAddTestimonial = async (e) => {
         e.preventDefault();
         if (!formData.person_name || !formData.rating || !formData.review || !formData.profile_pic) {
-            return alert("All fields are required!");
+            return toast.error("All fields are required!")
         }
 
         const data = new FormData();
@@ -60,9 +60,10 @@ const TestimonialSection = () => {
             });
             setTestimonials([res.data.data, ...testimonials]);
             setShowAddModal(false);
+            toast.success("Review Added!");
             setFormData({ person_name: "", rating: "", review: "", profile_pic: null });
         } catch (err) {
-            console.error("Error uploading testimonial:", err);
+            toast.error("Error uploading testimonial:", err)
         } finally {
             setUploading(false);
         }
@@ -80,8 +81,9 @@ const TestimonialSection = () => {
             setTestimonials(testimonials.filter(t => t.testimonial_Id !== selectedTestimonial.testimonial_Id));
             setShowDeleteModal(false);
             setSelectedTestimonial(null);
+            toast.success("Review Deleted!");
         } catch (err) {
-            console.error("Error deleting testimonial:", err);
+            toast.error("Error deleting testimonial:", err)
         } finally {
             setDeleting(false); // stop loading
         }
@@ -102,8 +104,9 @@ const TestimonialSection = () => {
             await api.patch(`/CMS/update-visibility/${testimonial.testimonial_Id}`, {
                 isVisible: !testimonial.isVisible,
             });
+            toast.success("Visibility changed!")
         } catch (err) {
-            console.error("Error updating visibility:", err);
+            toast.error("Error updating visibility:", err)
             // Revert change on error
             setTestimonials(prevTestimonials =>
                 prevTestimonials.map(t =>

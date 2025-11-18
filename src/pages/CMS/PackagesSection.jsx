@@ -1,8 +1,7 @@
 // 📁 src/components/CMS/PackagesSection.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { TrashIcon, PlusIcon, XMarkIcon, PencilIcon } from "@heroicons/react/24/solid";
-
+import { ToastContainer, toast } from 'react-toastify';
 import api from '../../api/api';
 
 
@@ -38,7 +37,7 @@ const PackagesSection = () => {
             const res = await api.get("/CMS/fetchAllPackages");
             setPackages(res.data?.data ?? []);
         } catch (err) {
-            console.error("Error fetching packages:", err);
+            toast.error("Error fetching packages:", err)
         } finally {
             setLoading(false);
         }
@@ -52,7 +51,7 @@ const PackagesSection = () => {
             !newPackage.price ||
             !newPackage.thumbnail_url
         ) {
-            return alert("Please fill all required fields and upload a thumbnail.");
+            return toast.error("Please fill all required fields & Images")
         }
 
         try {
@@ -94,8 +93,7 @@ const PackagesSection = () => {
             });
             setShowAddModal(false);
         } catch (err) {
-            console.error("Error adding package:", err);
-            alert("Failed to add package.");
+            toast.error("Failed to add package.")
         } finally {
             setUploading(false);
         }
@@ -113,9 +111,9 @@ const PackagesSection = () => {
         setPackages((prev) => prev.filter((p) => p.packageId !== selectedPackage));
         setShowDeleteModal(false);
     } catch (err) {
-        console.error("Error deleting package:", err);
-        alert("Failed to delete package.");
-    } finally {
+        toast.error("Failed to delete package.")
+    } 
+    finally {
         setDeleting(false);
     }
 };
@@ -175,8 +173,9 @@ const PackagesSection = () => {
             setSelectedPackage(res.data.data);
             setShowDetailModal(false);
             setEditMode(false);
+            toast.success("Package Updated!")
         } catch (err) {
-            console.error("Error saving package:", err);
+            toast.error("Error saving package:", err)
         }
     };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from '../api/api';
-
+import { ToastContainer, toast } from 'react-toastify';
 
 function GalleryManagement() {
   const [images, setImages] = useState([]);
@@ -17,7 +17,7 @@ function GalleryManagement() {
           setImages(res.data.data || []);
         }
       } catch (err) {
-        console.error("Error fetching images:", err);
+        toast.error("Error fetching images:", err)
       } finally {
         setLoading(false);
       }
@@ -44,7 +44,7 @@ function GalleryManagement() {
 
       // Check response for failure
       if (res.status !== 200) {
-        console.error("Failed to update status:", res.data.message || res.data);
+        toast.error("Failed to update status:", res.data.message || res.data)
 
         // Rollback state on failure
         setImages((prev) =>
@@ -54,7 +54,7 @@ function GalleryManagement() {
         );
       }
     } catch (err) {
-      console.error("Error updating status:", err);
+      toast.error("Error updating status:", err)
 
       // Rollback state on error
       setImages((prev) =>
@@ -84,13 +84,12 @@ function GalleryManagement() {
         console.error("Failed to delete image:", res.data.message || res.data);
         // Rollback on failure
         setImages(previousImages);
-        alert("Failed to delete image. Please try again.");
+        toast.error("Failed to delete image. Please try again.")
       }
     } catch (err) {
-      console.error("Error deleting image:", err);
+      toast.error("Error deleting image:", err)
       // Rollback on error
       setImages(previousImages);
-      alert("Error deleting image. Please try again.");
     }
   };
 

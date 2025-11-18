@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from '../api/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -34,13 +35,13 @@ const Packages = () => {
         setLoading(false);
 
       } catch (err) {
-        console.error("Error fetching packages:", err);
+        toast.error("Error fetching packages:", err)
 
         // Axios error handling
         if (err.response) {
-          setError(err.response.data.message || "Failed to fetch packages");
+          toast.error(err.response.data.message || "Failed to fetch packages")
         } else {
-          setError("Unable to reach server");
+          toast.error("Unable to reach server")
         }
 
         setLoading(false);

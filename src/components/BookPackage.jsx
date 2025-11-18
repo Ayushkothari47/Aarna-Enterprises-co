@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import api from '../api/api';
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 
 const BookPackage = () => {
   const location = useLocation();
@@ -74,21 +75,20 @@ const handleSubmit = async (e) => {
     setIsSubmitting(false);
 
     // Axios automatically parses JSON
-    if (response.status === 200) {
-      alert("Booking successful!");
-      console.log(response.data);
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Booking Successful!");
     } else {
-      alert(response.data.message || "Booking failed.");
+      toast.error("Fail to book!");
     }
   } catch (error) {
     setIsSubmitting(false);
-    console.error("Error submitting booking:", error);
+    toast.error("Error submitting booking:", error);
 
     // Better error handling
     if (error.response) {
-      alert(error.response.data.message || "Booking failed.");
+      toast.error(error.response.data.message || "Booking failed.");
     } else {
-      alert("Error submitting booking. Try again later.");
+      toast.error("Error submitting booking. Try again later.");
     }
   }
 };

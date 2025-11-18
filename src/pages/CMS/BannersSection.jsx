@@ -1,8 +1,8 @@
 // 📁 src/components/CMS/BannerSection.jsx
 import React, { useEffect, useState } from "react";
 import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-
 import api from '../../api/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 const BannerSection = () => {
   const [banners, setBanners] = useState([]);
@@ -27,7 +27,7 @@ const BannerSection = () => {
       const visibility = res.data?.data?.[0]?.isVisible ?? false;
       setIsVisible(visibility);
     } catch (err) {
-      console.error("Error fetching banners:", err);
+      toast.error("Error fetching banners:", err)
     } finally {
       setLoading(false);
     }
@@ -41,7 +41,7 @@ const BannerSection = () => {
       const updatedVisibility = res.data?.data?.isVisible;
       setIsVisible(updatedVisibility ?? false);
     } catch (err) {
-      console.error("Error updating banner visibility:", err);
+      toast.error("Error updating banner visibility:", err)
     }
   };
 
@@ -58,9 +58,11 @@ const BannerSection = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setBanners(res.data.data.banners);
-    } catch (err) {
-      console.error("Error uploading banner:", err);
-    } finally {
+    } 
+    catch (err) {
+      toast.error("Error uploading banner:", err)
+    } 
+    finally {
       setUploading(false);
       e.target.value = null;
     }
@@ -76,10 +78,11 @@ const BannerSection = () => {
       setDeleting(true);  // Set deleting to true when the delete process starts
       await api.delete("/CMS/deleteBanner", { data: { bannerUrl: selectedBanner } });
       setBanners(banners.filter((b) => b !== selectedBanner));
+      toast.success("Banner Deleted!")
       setShowDeleteModal(false);
       setSelectedBanner(null);
     } catch (err) {
-      console.error("Error deleting banner:", err);
+      toast.error("Error deleting banner:", err)
     } finally {
       setDeleting(false);  // Reset deleting state
     }

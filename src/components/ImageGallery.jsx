@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import api from '../api/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const ImageGallery = () => {
@@ -18,8 +19,9 @@ const ImageGallery = () => {
     try {
       const res = await api.get("/gallery/fetchApprovedImage");
       setImages(res.data.data || []);
-    } catch (error) {
-      console.error("Error fetching images:", error);
+    } 
+    catch (error) {
+      toast.error("Error fetching images:", error)
     } finally {
       setLoading(false);
     }
@@ -41,7 +43,7 @@ const ImageGallery = () => {
   // Upload confirmed image
   const handleConfirmUpload = async () => {
     if (!author.trim()) {
-      alert("Please enter your name before uploading.");
+      toast.error("Author name Required !")
       return;
     }
 
@@ -56,14 +58,14 @@ const ImageGallery = () => {
       await api.post("/gallery/upload-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Image uploaded successfully! Wait for admin Approval");
+      toast.success("Upload Successsful, Please wait for admin approval")
       setShowConfirm(false);
       setPreviewURL(null);
       setSelectedFile(null);
       fetchApprovedImages();
-    } catch (error) {
-      console.error("Upload failed:", error);
-      alert("❌ Upload failed. Check console for details.");
+    } 
+    catch (error) {
+      toast.error("Upload failed:", error)
     } finally {
       setUploading(false); // stop uploading
     }

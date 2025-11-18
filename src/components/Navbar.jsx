@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import planeIcon from "../assets/plane.png";
 import trainIcon from "../assets/train.png";
 import taxiIcon from "../assets/taxi.png";
-
 import api from '../api/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const Navbar = () => {
@@ -94,7 +94,8 @@ const Navbar = () => {
 
         // Check response status (optional)
         if (res.status !== 200) {
-          throw new Error(res.data.message || "Failed to submit booking");
+          toast.error(res.data.message || "Failed to submit booking")
+          // throw new Error(res.data.message || "Failed to submit booking");
         }
 
         // Clear form
@@ -111,15 +112,15 @@ const Navbar = () => {
           userContact: "",
         });
 
-        setSuccessMessage("Booking submitted successfully!");
+        toast.success("Booking Successful")
 
       } catch (error) {
-        console.error("Error submitting booking:", error);
+        toast.error("Error submitting booking:", error)
 
         if (error.response) {
-          setErrorMessage(error.response.data.message || "Something went wrong");
+          toast.error(error.response.data.message || "Something went wrong")
         } else {
-          setErrorMessage(error.message || "Something went wrong");
+            toast.error(error.message || "Something went wrong")
         }
       } finally {
         setIsSubmitting(false);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from '../api/api';
-
+import { ToastContainer, toast } from 'react-toastify';
 
 const rideUpdateAPI = "/booking/updateRideBookings";
 const packageUpdateAPI = "/booking/updatePackageBookings";
@@ -40,7 +40,7 @@ function BookingManagement() {
       const res = await api.get("/booking/getAllPackageBookings");
       setPackageBookings(res.data.data);
     } catch (err) {
-      console.error("Error fetching package bookings", err);
+      toast.error("Error fetching package bookings", err)
     }
   };
 
@@ -49,7 +49,7 @@ function BookingManagement() {
       const res = await api.get("/booking/getAllRideBookings");
       setRideBookings(res.data.data);
     } catch (err) {
-      console.error("Error fetching ride bookings", err);
+      toast.error("Error fetching ride bookings", err)
     }
   };
 
@@ -252,7 +252,7 @@ function BookingManagement() {
       const res = await api.put(updateURL, { status: newStatus });
 
       if (res.status === 200) {
-        alert(`Booking ${newStatus} successfully!`);
+        toast.success(`Booking ${newStatus} successfully!`)
         setSelectedBooking(null);
 
         // Refresh updated list
@@ -263,8 +263,7 @@ function BookingManagement() {
         }
       }
     } catch (err) {
-      console.error("Error updating booking status", err);
-      alert("Failed to update status. Try again later.");
+      toast.error("Failed to update status. Try again later.")
     }
   };
 

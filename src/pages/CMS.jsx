@@ -1,8 +1,3 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { TrashIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-
-
 import BannerSection from "./CMS/BannersSection";
 import PackagesSection from "./CMS/PackagesSection";
 import TestimonialSection from "./CMS/TestimonialSection";
