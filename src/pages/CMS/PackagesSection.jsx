@@ -158,6 +158,8 @@ const PackagesSection = () => {
                     formData.append(key, editedPackage[`${key}_file`]);
                 }
             });
+            setShowDetailModal(false);
+            setUploading(true);
 
 
             const res = await api.post("/CMS/updatePackage", formData, {
@@ -174,6 +176,7 @@ const PackagesSection = () => {
             setShowDetailModal(false);
             setEditMode(false);
             toast.success("Package Updated!")
+            setUploading(false);
         } catch (err) {
             toast.error("Error saving package:", err)
         }
