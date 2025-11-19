@@ -105,18 +105,18 @@ const PackagesSection = () => {
     };
 
     const confirmDelete = async () => {
-    try {
-        setDeleting(true);
-        await api.delete("/CMS/deletePackage", { data: { packageId: selectedPackage } });
-        setPackages((prev) => prev.filter((p) => p.packageId !== selectedPackage));
-        setShowDeleteModal(false);
-    } catch (err) {
-        toast.error("Failed to delete package.")
-    } 
-    finally {
-        setDeleting(false);
-    }
-};
+        try {
+            setDeleting(true);
+            await api.delete("/CMS/deletePackage", { data: { packageId: selectedPackage } });
+            setPackages((prev) => prev.filter((p) => p.packageId !== selectedPackage));
+            setShowDeleteModal(false);
+        } catch (err) {
+            toast.error("Failed to delete package.")
+        }
+        finally {
+            setDeleting(false);
+        }
+    };
 
 
     const openDetailView = (pkg) => {
@@ -267,43 +267,55 @@ const PackagesSection = () => {
             )}
 
             {deleting && (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col justify-center items-center z-[200]">
-        <div className="border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-4"></div>
-        <p className="text-white text-lg font-semibold tracking-wide">
-            Deleting...
-        </p>
-    </div>
-)}
+                <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col justify-center items-center z-[200]">
+                    <div className="border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-4"></div>
+                    <p className="text-white text-lg font-semibold tracking-wide">
+                        Deleting...
+                    </p>
+                </div>
+            )}
 
 
             {/* Detailed Package Modal */}
             {showDetailModal && editedPackage && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
                     <div className="bg-neutral-900 border border-yellow-400 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
-                        <button
-                            onClick={closeDetailView}
-                            className="absolute top-3 right-3 text-yellow-400 hover:text-white"
-                        >
-                            <XMarkIcon className="w-6 h-6" />
-                        </button>
 
-                        <div className="flex items-center justify-between mb-4">
+                        {/* Top Bar */}
+                        <div className="flex items-center justify-between mb-6">
+                            {/* Title */}
                             <h2 className="text-2xl font-bold text-yellow-400">
                                 {editMode ? "Edit Package" : "Package Details"}
                             </h2>
-                            <button
-                                onClick={() => setEditMode(!editMode)}
-                                className="text-yellow-400 hover:text-white flex items-center gap-1"
-                            >
-                                <PencilIcon className="w-5 h-5" />
-                                Edit
-                            </button>
+
+                            {/* Right Action Buttons */}
+                            <div className="flex items-center gap-4">
+                                {/* Edit Button */}
+                                <button
+                                    onClick={() => setEditMode(!editMode)}
+                                    className="text-yellow-400 hover:text-white flex items-center gap-1"
+                                >
+                                    <PencilIcon className="w-5 h-5" />
+                                    Edit
+                                </button>
+
+                                {/* Close Button */}
+                                <button
+                                    onClick={closeDetailView}
+                                    className="text-yellow-400 hover:text-white"
+                                >
+                                    <XMarkIcon className="w-6 h-6" />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Images Section */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                             {["thumbnail_url", "img1", "img2", "img3"].map((key, idx) => (
-                                <div key={idx} className="relative border border-yellow-400 rounded-lg overflow-hidden h-40 flex justify-center items-center bg-neutral-800">
+                                <div
+                                    key={idx}
+                                    className="relative border border-yellow-400 rounded-lg overflow-hidden h-40 flex justify-center items-center bg-neutral-800"
+                                >
                                     {editedPackage[key] ? (
                                         <>
                                             <img
@@ -311,6 +323,7 @@ const PackagesSection = () => {
                                                 alt={`Image ${idx + 1}`}
                                                 className="w-full h-full object-cover"
                                             />
+
                                             {editMode && (
                                                 <button
                                                     onClick={() => handleRemoveImage(key)}
@@ -325,7 +338,9 @@ const PackagesSection = () => {
                                             <label className="flex flex-col items-center justify-center h-full w-full cursor-pointer hover:bg-yellow-400/20">
                                                 <PlusIcon className="w-10 h-10 text-yellow-400" />
                                                 <p className="text-xs text-gray-400 mt-1">
-                                                    {key === "thumbnail_url" ? "Upload Thumbnail" : "Add Image"}
+                                                    {key === "thumbnail_url"
+                                                        ? "Upload Thumbnail"
+                                                        : "Add Image"}
                                                 </p>
                                                 <input
                                                     type="file"
@@ -347,24 +362,35 @@ const PackagesSection = () => {
                                 value={editedPackage.packageName.replace(/"/g, "")}
                                 disabled={!editMode}
                                 onChange={(e) =>
-                                    setEditedPackage({ ...editedPackage, packageName: e.target.value })
+                                    setEditedPackage({
+                                        ...editedPackage,
+                                        packageName: e.target.value,
+                                    })
                                 }
                                 className="w-full p-2 rounded-md bg-neutral-800 border border-yellow-400 text-white"
                             />
+
                             <textarea
                                 value={editedPackage.packageDescription.replace(/"/g, "")}
                                 disabled={!editMode}
                                 onChange={(e) =>
-                                    setEditedPackage({ ...editedPackage, packageDescription: e.target.value })
+                                    setEditedPackage({
+                                        ...editedPackage,
+                                        packageDescription: e.target.value,
+                                    })
                                 }
                                 className="w-full p-2 rounded-md bg-neutral-800 border border-yellow-400 text-white min-h-[100px]"
                             />
+
                             <input
                                 type="number"
                                 value={editedPackage.price}
                                 disabled={!editMode}
                                 onChange={(e) =>
-                                    setEditedPackage({ ...editedPackage, price: e.target.value })
+                                    setEditedPackage({
+                                        ...editedPackage,
+                                        price: e.target.value,
+                                    })
                                 }
                                 className="w-full p-2 rounded-md bg-neutral-800 border border-yellow-400 text-white"
                             />
@@ -383,6 +409,7 @@ const PackagesSection = () => {
                         )}
                     </div>
                 </div>
+
             )}
 
 

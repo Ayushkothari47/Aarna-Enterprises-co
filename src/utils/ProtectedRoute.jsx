@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token"); // get JWT from localStorage
+  const token = sessionStorage.getItem("token"); // get JWT from Session Storage
 
   if (!token) {
     // if no token, redirect to login

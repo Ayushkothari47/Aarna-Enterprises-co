@@ -17,8 +17,8 @@ function LoginPage() {
     try {
       const res = await api.post("/admin/admin-login", formData);
       toast.success("Login Successful!");
-      // Save token in localStorage
-      localStorage.setItem("token", res.data.token);
+      // Save token in SessionStorage
+      sessionStorage.setItem("token", res.data.token);
       // Navigate to dashboard or protected page
       setTimeout(() => {
         navigate("/admin");

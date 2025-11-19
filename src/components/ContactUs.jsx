@@ -11,7 +11,7 @@ function ContactUs() {
     <div className="fixed bottom-6 right-0 sm:bottom-4 sm:right-2 text-white p-4 rounded-xl shadow-lg flex flex-col gap-4 z-50">
       
       {/* Call Button */}
-      <a href={`tel:${phoneNumber}`} className='w-14 cursor-pointer bg-black border-2 border-white rounded-full p-2 flex items-center justify-center'>
+      <a href={`tel:${phoneNumber}`} className='w-14 md:hidden cursor-pointer bg-black border-2 border-white rounded-full p-2 flex items-center justify-center'>
         <img src={CallIcon} className='rotate-270' alt="Call"/>
       </a>
 

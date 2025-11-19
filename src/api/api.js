@@ -9,7 +9,7 @@ const api = axios.create({
 // Add a request interceptor
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token') || "NONE"; // get JWT from localStorage
+    const token = sessionStorage.getItem('token') || "NONE"; // get JWT from SessionStorage
     if (token) {
       config.headers['x-auth-token'] = token; // attach token to every request
     }
