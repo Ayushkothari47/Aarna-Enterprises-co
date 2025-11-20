@@ -361,28 +361,33 @@ const Navbar = () => {
               { name: "station", icon: trainIcon, label: "STATION" },
             ].map((tab) => (
               <button
-                key={tab.name}
-                onClick={() =>
-                  setActiveTab(activeTab === tab.name ? "" : tab.name)
-                }
-                className={`flex items-center text-white text-sm transition-all duration-300 group ${activeTab === tab.name ? "text-yellow-300" : ""
-                  }`}
-              >
+  key={tab.name}
+  onClick={() => {
+    setActiveTab(activeTab === tab.name ? "" : tab.name);
+    setIsMobileMenuOpen(false);   // ← auto close
+  }}
+  className={`flex items-center text-white text-sm transition-all duration-300 group ${activeTab === tab.name ? "text-yellow-300" : ""}`}
+>
+
                 <img src={tab.icon} alt={tab.label} className="w-6 h-6" />
                 <span className="ml-2">| {tab.label}</span>
               </button>
             ))}
 
             <Link
-              to="/gallery"
-              className="text-white py-2 hover:text-yellow-300"
-            >
+  to="/gallery"
+  onClick={() => setIsMobileMenuOpen(false)}  // ← auto close
+  className="text-white py-2 hover:text-yellow-300"
+>
+
               Gallery
             </Link>
-            <Link
-              to="/about"
-              className="text-white py-2 hover:text-yellow-300"
-            >
+           <Link
+  to="/about"
+  onClick={() => setIsMobileMenuOpen(false)}
+  className="text-white py-2 hover:text-yellow-300"
+>
+
               About Us
             </Link>
           </div>
