@@ -71,33 +71,26 @@ exports.loginAdmin = async (req, res) => {
 };
 
 
-exports.updateAdmin = async (req, res) => {
-  const { adminId, adminName, email, contact, password } = req.body;
-
-  const updateFields = { adminId, adminName, email, contact, password };
-
+exports.fetchAllAdmins = async (req, res) => {
   try {
-    let admin = await Admin.findById(req.params.id);
+    const admins = await Admin.find().sort({ createdAt: -1 }); // newest first
 
-    if (!admin) return res.status(404).json({ msg: 'Admin not found' });
+    return res.status(200).json({
+      success: true,
+      count: admins.length,
+      data: admins,
+    });
+  } catch (error) {
+    console.error("Error fetching admins:", error);
 
-    admin = await Admin.findByIdAndUpdate(req.params.id, { $set: updateFields }, { new: true });
-
-    res.json(admin);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch admins",
+      error: error.message,
+    });
   }
 };
 
-exports.deleteAdmin = async (req, res) => {
-  try {
-    await Admin.findByIdAndRemove(req.params.id);
-    res.json({ msg: 'Admin removed' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-};
+
 
 
