@@ -47,16 +47,13 @@ exports.sendEmail = async (req, res) => {
 
 exports.fetchEmails = async (req, res) => {
   try {
-    // Find all documents but only select the 'userEmail' field
-    const emails = await Booking.find({}, 'userEmail').lean();
-
-    // Extract emails into a simple array
-    const emailList = emails.map(e => e.userEmail);
+    // Use MongoDB's distinct to get unique 'userEmail' values
+    const emailList = await Booking.distinct('userEmail');
 
     // Send response with status 200 (OK)
     return res.status(200).json({
       success: true,
-      message: 'User emails fetched successfully',
+      message: 'Unique user emails fetched successfully',
       data: emailList,
     });
   } catch (error) {
@@ -70,6 +67,7 @@ exports.fetchEmails = async (req, res) => {
     });
   }
 };
+
 
 
 exports.sendBulkEmail = async (req, res) => {
