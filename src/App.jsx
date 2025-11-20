@@ -11,6 +11,7 @@ import BookPackage from "./components/BookPackage";
 import AdminPage from "./pages/AdminPage";
 import BookingManagement from "./pages/BookingManagement";
 import GalleryManagement from "./pages/GalleryManagement";
+import AccountManagement from "./pages/AccountManagement"
 import CMS from "./pages/CMS";
 import EmailManagement from "./pages/EmailManagement";
 import ContactUs from "./components/ContactUs";
@@ -49,6 +50,7 @@ function Layout() {
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         <Route path="/admin/booking-management" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
         <Route path="/admin/gallery-management" element={<ProtectedRoute><GalleryManagement /></ProtectedRoute>} />
+        <Route path="/admin/account-management" element={<ProtectedRoute><AccountManagement /></ProtectedRoute>} />
         <Route path="/admin/CMS" element={<ProtectedRoute><CMS /></ProtectedRoute>} />
         <Route path="/admin/email-management" element={<ProtectedRoute><EmailManagement /></ProtectedRoute>} />
       </Routes>
