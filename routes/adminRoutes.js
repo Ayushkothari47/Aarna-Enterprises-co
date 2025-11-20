@@ -6,6 +6,6 @@ const auth = require('../middlewares/auth')
 
 router.post('/admin-register', adminController.registerAdmin);
 router.post('/admin-login', adminController.loginAdmin);
-router.post('/fetchAllAdmins', auth,adminController.fetchAllAdmins);
+router.get('/fetchAllAdmins', auth,adminController.fetchAllAdmins);
 
 module.exports = router;
