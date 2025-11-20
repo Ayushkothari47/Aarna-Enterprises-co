@@ -11,7 +11,7 @@ function AdminPage() {
     { img: Car, title: "Booking Management", link: "/admin/booking-management" },
     { img: Gallery, title: "Gallery Management", link: "/admin/gallery-management" },
     { img: Email, title: "Email Management", link: "/admin/email-management" },
-    { img: Account, title: "Account Management" },
+    { img: Account, title: "Account Management", link: "/admin/account-management" },
     { img: Content, title: "Content Management", link: "/admin/CMS" },
   ];
 

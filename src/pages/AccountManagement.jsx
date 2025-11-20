@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function AdminManagement() {
+    const navigate = useNavigate();
     const [admins, setAdmins] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -13,6 +15,7 @@ export default function AdminManagement() {
         email: "",
         contact: "",
         password: "",
+        confirmPassword: "",
     });
 
     // Fetch admins from backend
@@ -20,11 +23,10 @@ export default function AdminManagement() {
         try {
             setUploading(true);
             const res = await api.get("/admin/fetchAllAdmins");
-
             setAdmins(res.data.data || []);
             setUploading(false);
         } catch (err) {
-            toast.error("Error fetching admins:", err)
+            toast.error("Error fetching admins");
             setUploading(false);
         }
     };
@@ -44,8 +46,9 @@ export default function AdminManagement() {
             } else {
                 toast.error("Something went wrong!");
             }
+
             setUploading(false);
-            setShowModal(false);   // CLOSE modal after success or error
+            setShowModal(false);
 
             // Refresh list
             fetchAdmins();
@@ -56,32 +59,55 @@ export default function AdminManagement() {
                 email: "",
                 contact: "",
                 password: "",
+                confirmPassword: "",
             });
-
         } catch (err) {
-            toast.error("Error adding admin:", err);
+            toast.error("Error adding admin");
             setUploading(false);
-
         }
     };
-
 
     return (
         <div className="min-h-screen bg-black text-yellow-500 p-6">
 
             {/* Header */}
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Admin Management</h1>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-yellow-500 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition"
-                >
-                    + Add Admin
-                </button>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                {/* Top row on mobile: back button + add admin */}
+                <div className="flex justify-between items-center w-full md:w-auto">
+                    <button
+                        onClick={() => navigate("/admin")}
+                        className="bg-black border border-yellow-400 text-yellow-400 px-4 py-2 rounded font-semibold hover:bg-yellow-400 hover:text-black transition"
+                    >
+                        ← Back
+                    </button>
+
+                    {/* Mobile Add Admin button */}
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-yellow-500 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition md:hidden"
+                    >
+                        + Add Admin
+                    </button>
+                </div>
+
+                {/* Heading */}
+                <h1 className="text-3xl font-bold text-center md:text-left">
+                    Admin Management
+                </h1>
+
+                {/* Desktop Add Admin button */}
+                <div className="hidden md:block">
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-yellow-500 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition"
+                    >
+                        + Add Admin
+                    </button>
+                </div>
             </div>
 
 
-            {/* 👇 Spinner overlay when uploading */}
+            {/* Spinner overlay */}
             {uploading && (
                 <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center z-[100]">
                     <div className="loader border-t-4 border-yellow-400 rounded-full w-16 h-16 animate-spin mb-6"></div>
@@ -107,7 +133,7 @@ export default function AdminManagement() {
                         {admins.map((admin, index) => (
                             <tr
                                 key={admin._id}
-                                className="border-t border-yellow-400 hover:bg-yellow-400 hover:text-black transition"
+                                className="border-2 border-yellow-500 hover:bg-gray-800 hover:text-white transition"
                             >
                                 <td className="p-3">{index + 1}</td>
                                 <td className="p-3">{admin.adminId}</td>
@@ -121,21 +147,30 @@ export default function AdminManagement() {
             </div>
 
             {/* Mobile Cards */}
-            <div className="md:hidden space-y-4">
+            <div className="md:hidden space-y-4 mt-4">
                 {admins.map((admin, index) => (
                     <div
                         key={admin._id}
                         className="border border-yellow-400 p-4 rounded bg-black shadow-lg"
                     >
-                        <p><span className="font-bold">S.No:</span> {index + 1}</p>
-                        <p><span className="font-bold">Admin ID:</span> {admin.adminId}</p>
-                        <p><span className="font-bold">Name:</span> {admin.adminName}</p>
-                        <p><span className="font-bold">Email:</span> {admin.email}</p>
-                        <p><span className="font-bold">Contact:</span> {admin.contact}</p>
+                        <p>
+                            <span className="font-bold">S.No:</span> {index + 1}
+                        </p>
+                        <p>
+                            <span className="font-bold">Admin ID:</span> {admin.adminId}
+                        </p>
+                        <p>
+                            <span className="font-bold">Name:</span> {admin.adminName}
+                        </p>
+                        <p>
+                            <span className="font-bold">Email:</span> {admin.email}
+                        </p>
+                        <p>
+                            <span className="font-bold">Contact:</span> {admin.contact}
+                        </p>
                     </div>
                 ))}
             </div>
-
 
             {/* Add Admin Modal */}
             {showModal && (
@@ -148,7 +183,9 @@ export default function AdminManagement() {
                                 className="w-full p-2 rounded bg-black border border-yellow-400 text-yellow-400"
                                 placeholder="Full Name"
                                 value={form.adminName}
-                                onChange={(e) => setForm({ ...form, adminName: e.target.value })}
+                                onChange={(e) =>
+                                    setForm({ ...form, adminName: e.target.value })
+                                }
                             />
 
                             <input
@@ -178,8 +215,10 @@ export default function AdminManagement() {
                                 type="password"
                                 className="w-full p-2 rounded bg-black border border-yellow-400 text-yellow-400"
                                 placeholder="Confirm Password"
-                                value={form.confirmPassword || ""}
-                                onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                                value={form.confirmPassword}
+                                onChange={(e) =>
+                                    setForm({ ...form, confirmPassword: e.target.value })
+                                }
                             />
                         </div>
 
@@ -193,8 +232,13 @@ export default function AdminManagement() {
 
                             <button
                                 onClick={() => {
-                                    // Validation
-                                    if (!form.adminName || !form.email || !form.contact || !form.password || !form.confirmPassword) {
+                                    if (
+                                        !form.adminName ||
+                                        !form.email ||
+                                        !form.contact ||
+                                        !form.password ||
+                                        !form.confirmPassword
+                                    ) {
                                         toast.error("Please fill all fields!");
                                         return;
                                     }
@@ -217,8 +261,6 @@ export default function AdminManagement() {
                     </div>
                 </div>
             )}
-
-
         </div>
     );
 }

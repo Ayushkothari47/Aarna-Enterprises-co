@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from "react";
 import api from '../api/api';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 
 const EmailManagement = () => {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("bulk");
     const [emails, setEmails] = useState([]);
     const [selectedEmails, setSelectedEmails] = useState([]);
@@ -120,6 +122,12 @@ const EmailManagement = () => {
 
     return (
         <div className="bg-black min-h-screen p-4 sm:p-6 md:p-10 text-yellow-400">
+        <button
+        onClick={() => navigate("/admin")}
+        className="bg-black border border-yellow-400 text-yellow-400 mb-2 px-4 py-2 rounded font-semibold hover:bg-yellow-400 hover:text-black transition"
+      >
+        ← Back
+      </button>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center sm:text-center">
                 Email Management
             </h1>

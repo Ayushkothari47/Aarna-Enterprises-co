@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import api from '../api/api';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 function GalleryManagement() {
+   const navigate = useNavigate();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -96,13 +98,19 @@ function GalleryManagement() {
 
   if (loading)
     return (
-      <div className="bg-black text-yellow-400 min-h-screen flex justify-center items-center text-xl">
+      <div className="bg-black text-yellow-400  min-h-screen flex justify-center items-center text-xl">
         Loading images...
       </div>
     );
 
   return (
     <div className="bg-black text-white min-h-screen p-5 font-sans relative">
+    <button
+        onClick={() => navigate("/admin")}
+        className="bg-black border border-yellow-400 mb-2 text-yellow-400 px-4 py-2 rounded font-semibold hover:bg-yellow-400 hover:text-black transition"
+      >
+        ← Back
+      </button>
       <h2 className="text-center text-2xl md:text-3xl font-bold mb-6 text-yellow-400">
         Gallery Management
       </h2>

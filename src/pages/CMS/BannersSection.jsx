@@ -100,7 +100,7 @@ const BannerSection = () => {
 
         {/* Toggle Visibility */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-300">Visible</span>
+          <span className="text-sm ms-2 text-gray-300">Visible</span>
           <button
             onClick={handleToggleVisibility}
             className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${isVisible ? "bg-yellow-400" : "bg-gray-600"
