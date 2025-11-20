@@ -28,15 +28,20 @@ const EmailManagement = () => {
 
 
 
-    const fetchEmails = async () => {
-        try {
-            const response = await api.get("/email/fetch-emails");
-            const data = Array.isArray(response.data.data) ? response.data.data : [];
-            setEmails(data);
-        } catch (error) {
-            toast.error("Error fetching emails:", error)
-        }
-    };
+   const fetchEmails = async () => {
+    try {
+        const response = await api.get("/email/fetch-emails");
+        let data = Array.isArray(response.data.data) ? response.data.data : [];
+
+        // Filter only unique emails
+        data = [...new Set(data)];
+
+        setEmails(data);
+    } catch (error) {
+        toast.error("Error fetching emails: " + (error.message || error));
+    }
+};
+
 
 
     const fetchEmailTemplate = async () => {
