@@ -12,6 +12,20 @@ const Navbar = () => {
   const [activeTab, setActiveTab] = useState(""); // default hidden
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+
+  useEffect(() => {
+  if (activeTab) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+
+  // Cleanup on unmount
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [activeTab]);
+
   const [formData, setFormData] = useState({
     pickup: "",
     destination: "",
@@ -160,6 +174,7 @@ const Navbar = () => {
             selected={formData.date}
             onChange={(date) => setFormData({ ...formData, date })}
             placeholderText="Select a date"
+             className="w-1/1 border border-white p-2 rounded text-gray-400 placeholder-gray-400"
           />
           <DatePicker
             selected={formData.time}
@@ -170,6 +185,7 @@ const Navbar = () => {
             timeCaption="Time"
             dateFormat="h:mm aa"
             placeholderText="Select a time"
+             className="w-1/1 border border-white  p-2 rounded text-gray-400 placeholder-gray-400"
           />
 
         </div>
