@@ -4,12 +4,19 @@ const CMS_Controller = require('../controllers/CMS_Controller');
 const upload = require('../middlewares/upload');
 const auth = require('../middlewares/auth');
 
-//For Banners
+//For Desktop/Tab Banners
 router.post('/uploadBanner',auth, upload.array("banners"), CMS_Controller.uploadBanners);
 router.post("/addBanner", auth, upload.single("banner"), CMS_Controller.addBanner);
 router.get('/fetchAllBanner', CMS_Controller.getAllBanners);
 router.put('/updateBannerVisibility',auth, CMS_Controller.updateBannerVisibility)
 router.delete('/deleteBanner',auth, CMS_Controller.deleteBanner)
+
+//For mobile Banners
+router.post('/uploadMobileBanner',auth, upload.array("banners"), CMS_Controller.uploadMobileBanners);
+router.post("/addMobileBanner", auth, upload.single("banner"), CMS_Controller.addMobileBanner);
+router.get('/fetchAllMobileBanner', CMS_Controller.getAllMobileBanners);
+router.put('/updateBannerMobileVisibility',auth, CMS_Controller.updateBannerVisibility)
+router.delete('/deleteMobileBanner',auth, CMS_Controller.deleteMobileBanner)
 
 //For Packages
 router.post(
