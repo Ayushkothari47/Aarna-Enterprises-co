@@ -1,6 +1,7 @@
 import BannerSection from "./CMS/BannersSection";
 import PackagesSection from "./CMS/PackagesSection";
 import TestimonialSection from "./CMS/TestimonialSection";
+import MobileBannerSection from "./CMS/MobileBannerSection";
 import { useNavigate } from "react-router-dom";
 
 
@@ -20,6 +21,9 @@ const CMSPage = () => {
 
       {/* Banner Section */}
       <BannerSection />
+
+      {/* Mobile Banner Section */}
+      <MobileBannerSection />
 
       {/* Package Section */}
       <PackagesSection />

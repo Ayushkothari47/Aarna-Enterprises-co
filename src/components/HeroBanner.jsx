@@ -2,37 +2,40 @@ import React, { useState, useEffect } from "react";
 import api from '../api/api';
 import { ToastContainer, toast } from 'react-toastify';
 
-
+const Desktop_fetchAllBanner = "/siteContent/fetchAllBanner";
+const Mobile_fetchAllBanner = "/siteContent/fetchAllMobileBanner";
 
 function HeroBanner() {
   const [banners, setBanners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true); 
-  const [hideBanner, setHideBanner] = useState(false); 
+  const [loading, setLoading] = useState(true);
+  const [hideBanner, setHideBanner] = useState(false);
+
+  // ✔ Detect device (mobile vs desktop)
+  const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
-    
     const fetchBanners = async () => {
-  try {
-    const response = await api.get("/siteContent/fetchAllBanner");
-    const result = response.data;
+      try {
+        const endpoint = isMobile ? Mobile_fetchAllBanner : Desktop_fetchAllBanner;
 
-    
-    if (result.message === "No visible banners found.") {
-      setHideBanner(true);
-    } else if (result.data && result.data.length > 0) {
-      setBanners(result.data[0].banners);
-    }
-  } catch (error) {
-    toast.error("Error fetching banners:", error)
-  } finally {
-    setLoading(false);
-  }
-};
+        const response = await api.get(endpoint);
+        const result = response.data;
 
+        if (result.message === "No visible banners found.") {
+          setHideBanner(true);
+        } else if (result.data && result.data.length > 0) {
+          setBanners(result.data[0].banners);
+        }
+      } catch (error) {
+        toast.error("Error fetching banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchBanners();
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     if (banners.length === 0) return;
@@ -61,7 +64,6 @@ function HeroBanner() {
     );
   }
 
-  // Hide banner section completely if API says no banners
   if (hideBanner || banners.length === 0) {
     return null;
   }
@@ -79,7 +81,7 @@ function HeroBanner() {
         />
       ))}
 
-      {/* Dots indicator */}
+      {/* Dots */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {banners.map((_, index) => (
           <div
