@@ -12,7 +12,16 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const cors = require('cors');
 const app = express();
-app.use(cors());
+
+// app.use(cors());
+
+app.use(cors({
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ["Content-Type", "Authorization", "x-auth-token"],
+}));
+
+
 app.use(bodyParser.json());
 
 // Connect Database
