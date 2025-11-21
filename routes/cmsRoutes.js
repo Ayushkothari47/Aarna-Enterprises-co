@@ -15,6 +15,7 @@ router.delete('/deleteBanner',auth, CMS_Controller.deleteBanner)
 router.post('/uploadMobileBanner',auth, upload.array("banners"), CMS_Controller.uploadMobileBanners);
 router.post("/addMobileBanner", auth, upload.single("banner"), CMS_Controller.addMobileBanner);
 router.get('/fetchAllMobileBanner', CMS_Controller.getMobileBanners);
+router.get('/fetchAllMobileBanners', CMS_Controller.getAllMobileBanners);
 router.put('/updateBannerMobileVisibility',auth, CMS_Controller.updateMobileBannerVisibility)
 router.delete('/deleteMobileBanner',auth, CMS_Controller.deleteMobileBanner)
 
