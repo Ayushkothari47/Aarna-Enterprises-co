@@ -5,7 +5,8 @@ import trainIcon from "../assets/train.png";
 import taxiIcon from "../assets/taxi.png";
 import api from '../api/api';
 import { ToastContainer, toast } from 'react-toastify';
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState(""); // default hidden
@@ -120,7 +121,7 @@ const Navbar = () => {
         if (error.response) {
           toast.error(error.response.data.message || "Something went wrong")
         } else {
-            toast.error(error.message || "Something went wrong")
+          toast.error(error.message || "Something went wrong")
         }
       } finally {
         setIsSubmitting(false);
@@ -155,20 +156,22 @@ const Navbar = () => {
           autoComplete="off"
         />
         <div className="flex space-x-2">
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInput}
-            className="w-1/2 border p-2 rounded text-blue-800 [filter:invert(1)] [cursor:pointer]"
+          <DatePicker
+            selected={formData.date}
+            onChange={(date) => setFormData({ ...formData, date })}
+            placeholderText="Select a date"
           />
-          <input
-            type="time"
-            name="time"
-            value={formData.time}
-            onChange={handleInput}
-            className="w-1/2 border p-2 rounded text-blue-800 [filter:invert(1)] [cursor:pointer]"
+          <DatePicker
+            selected={formData.time}
+            onChange={(time) => setFormData({ ...formData, time })}
+            showTimeSelect
+            showTimeSelectOnly
+            timeIntervals={15}
+            timeCaption="Time"
+            dateFormat="h:mm aa"
+            placeholderText="Select a time"
           />
+
         </div>
 
         <div className="flex space-x-2">
@@ -361,13 +364,13 @@ const Navbar = () => {
               { name: "station", icon: trainIcon, label: "STATION" },
             ].map((tab) => (
               <button
-  key={tab.name}
-  onClick={() => {
-    setActiveTab(activeTab === tab.name ? "" : tab.name);
-    setIsMobileMenuOpen(false);   // ← auto close
-  }}
-  className={`flex items-center text-white text-sm transition-all duration-300 group ${activeTab === tab.name ? "text-yellow-300" : ""}`}
->
+                key={tab.name}
+                onClick={() => {
+                  setActiveTab(activeTab === tab.name ? "" : tab.name);
+                  setIsMobileMenuOpen(false);   // ← auto close
+                }}
+                className={`flex items-center text-white text-sm transition-all duration-300 group ${activeTab === tab.name ? "text-yellow-300" : ""}`}
+              >
 
                 <img src={tab.icon} alt={tab.label} className="w-6 h-6" />
                 <span className="ml-2">| {tab.label}</span>
@@ -375,18 +378,18 @@ const Navbar = () => {
             ))}
 
             <Link
-  to="/gallery"
-  onClick={() => setIsMobileMenuOpen(false)}  // ← auto close
-  className="text-white py-2 hover:text-yellow-300"
->
+              to="/gallery"
+              onClick={() => setIsMobileMenuOpen(false)}  // ← auto close
+              className="text-white py-2 hover:text-yellow-300"
+            >
 
               Gallery
             </Link>
-           <Link
-  to="/about"
-  onClick={() => setIsMobileMenuOpen(false)}
-  className="text-white py-2 hover:text-yellow-300"
->
+            <Link
+              to="/about"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white py-2 hover:text-yellow-300"
+            >
 
               About Us
             </Link>
