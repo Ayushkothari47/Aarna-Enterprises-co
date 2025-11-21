@@ -160,14 +160,14 @@ const Navbar = () => {
             name="date"
             value={formData.date}
             onChange={handleInput}
-            className="w-1/2 border p-2 rounded text-gray-600 [filter:invert(1)] [cursor:pointer]"
+            className="w-1/2 border p-2 rounded text-blue-800 [filter:invert(1)] [cursor:pointer]"
           />
           <input
             type="time"
             name="time"
             value={formData.time}
             onChange={handleInput}
-            className="w-1/2 border p-2 rounded text-gray-600 [filter:invert(1)] [cursor:pointer]"
+            className="w-1/2 border p-2 rounded text-blue-800 [filter:invert(1)] [cursor:pointer]"
           />
         </div>
 
