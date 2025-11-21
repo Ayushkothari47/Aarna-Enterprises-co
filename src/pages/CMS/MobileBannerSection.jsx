@@ -20,7 +20,7 @@ const MobileBannerSection = () => {
 
   const fetchMobileBanners = async () => {
     try {
-      const res = await api.get("/CMS/fetchAllMobileBanner");
+      const res = await api.get("/CMS/fetchAllMobileBanners");
       const bannerData = res.data?.data?.[0]?.banners || [];
       setMobileBanners(bannerData);
       const visibility = res.data?.data?.[0]?.isVisible ?? false;
